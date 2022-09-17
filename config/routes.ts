@@ -27,7 +27,7 @@ export default [
     hideInMenu: false,
     routes: [
       {
-        name: 'Guide',
+        name: 'Getting Started',
         path: '/dashboard/guide',
         component: './Welcome',
       },
@@ -79,6 +79,11 @@ export default [
         name: 'Billing',
         path: '/company/billing',
         component: './Manage/Campaigns',
+      },
+      {
+        name: 'Template',
+        path: '/company/template',
+        component: './Template',
       },
     ],
   },
