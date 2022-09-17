@@ -26,6 +26,7 @@ export const GET_OFFER = gql`
             status
             mmpAlias
             offerID
+            order
           }
         }
       }
@@ -81,6 +82,7 @@ export const CREATE_ACTIVATION = gql`
           status
           mmpAlias
           offerID
+          order
         }
       }
       ... on ResponseError {
@@ -105,6 +107,7 @@ export const EDIT_ACTIVATION = gql`
           status
           mmpAlias
           offerID
+          order
         }
       }
       ... on ResponseError {

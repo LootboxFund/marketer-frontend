@@ -1,4 +1,5 @@
 import {
+  ActivationID,
   AdvertiserID,
   ConquestStatus,
   MeasurementPartnerType,
@@ -36,7 +37,10 @@ export type CreateActivationFormModalProps = {
   toggleActivationModal: (visible: boolean) => void;
   offerID: OfferID;
   createActivation: (payload: Omit<CreateActivationInput, 'offerID'>) => void;
-  editActivation: (payload: Omit<EditActivationInput, 'offerID'>) => void;
+  editActivation: (
+    activationID: ActivationID,
+    payload: Omit<EditActivationInput, 'offerID'>,
+  ) => void;
 };
 
 const ACTIVATION_INFO = {
@@ -114,6 +118,7 @@ const CreateActivationFormModal: React.FC<CreateActivationFormModalProps> = ({
     }
   }, []);
   const handleFinishEdit = useCallback(async (values) => {
+    if (!activationToEdit) return;
     console.log('Submit: ', values);
     const payload = {} as Omit<EditActivationInput, 'offerID'>;
     if (values.name) {
@@ -133,7 +138,7 @@ const CreateActivationFormModal: React.FC<CreateActivationFormModalProps> = ({
     }
     setPendingActivationEdit(true);
     try {
-      await editActivation(payload);
+      await editActivation(activationToEdit.id as ActivationID, payload);
       setPendingActivationEdit(false);
       if (!lockedToEdit) {
         setViewMode(true);
@@ -177,7 +182,26 @@ const CreateActivationFormModal: React.FC<CreateActivationFormModalProps> = ({
             ActivationStatus.Archived,
           ],
         },
-        { key: 'mmpAlias', label: 'Measurement ID', required: true },
+        {
+          key: 'mmpAlias',
+          label: 'Measurement ID',
+          required: true,
+          rules: [
+            {
+              validator: (rule: any, value: any, callback: any) => {
+                return new Promise((resolve, reject) => {
+                  const re = new RegExp('^[a-zA-Z0-9_-]*$');
+                  const urlSafe = re.test(value);
+                  if (!urlSafe) {
+                    reject(new Error(`Can only contain letters, numbers, underscores and dashes`));
+                  } else {
+                    resolve('Success');
+                  }
+                });
+              },
+            },
+          ],
+        },
       ],
     };
     return meta;

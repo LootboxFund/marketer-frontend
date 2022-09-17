@@ -1,4 +1,4 @@
-import {
+import type {
   ViewCreatedOfferResponse,
   QueryViewCreatedOfferArgs,
   Offer,
@@ -6,16 +6,17 @@ import {
   ResponseError,
   MutationEditOfferArgs,
   EditOfferResponseSuccess,
-  CreateActivationPayload,
   CreateActivationInput,
-  ActivationStatus,
   Activation,
   EditActivationResponseSuccess,
+  CreateActivationResponseSuccess,
+  MutationCreateActivationArgs,
   MutationEditActivationArgs,
   EditActivationInput,
 } from '@/api/graphql/generated/types';
+import { ActivationStatus } from '@/api/graphql/generated/types';
 import { useMutation, useQuery } from '@apollo/client';
-import { Spin, Image, Row, Col, Card, Button, Modal } from 'antd';
+import { Spin, Image, Row, Col, Card, Button } from 'antd';
 import React, { useCallback, useState } from 'react';
 import { CREATE_ACTIVATION, EDIT_OFFER, GET_OFFER, EDIT_ACTIVATION } from './api.gql';
 import styles from './index.less';
@@ -23,13 +24,9 @@ import { useParams } from 'react-router-dom';
 import BreadCrumbDynamic from '@/components/BreadCrumbDynamic';
 import { $ColumnGap, $Horizontal, $Vertical } from '@/components/generics';
 import CreateOfferForm from '@/components/CreateOfferForm';
-import { ActivationID, AdvertiserID, OfferID } from '@wormgraph/helpers';
+import type { ActivationID, AdvertiserID, OfferID } from '@wormgraph/helpers';
 import CreateActivationFormModal from '@/components/CreateActivationFormModal';
-import { EditActivationPayload } from '../../../api/graphql/generated/types';
-import {
-  CreateActivationResponseSuccess,
-  MutationCreateActivationArgs,
-} from '../../../api/graphql/generated/types';
+import { CaretDownOutlined, CaretUpOutlined } from '@ant-design/icons';
 
 const advertiserID = 'p7BpSqP6U4n4NEanEcFt' as AdvertiserID;
 
@@ -83,6 +80,11 @@ const OfferPage: React.FC = () => {
   >(EDIT_ACTIVATION, {
     refetchQueries: [{ query: GET_OFFER, variables: { offerID } }],
   });
+  // SWAP POSITIONS ACTIVATION
+  const [swapActivationPositionsMutation] = useMutation<
+    { editActivation: ResponseError | EditActivationResponseSuccess },
+    MutationEditActivationArgs
+  >(EDIT_ACTIVATION);
 
   if (!offerID) {
     return <div>Offer ID not found</div>;
@@ -136,19 +138,22 @@ const OfferPage: React.FC = () => {
     setActivationModalVisible(false);
     setActivationModalType(null);
   };
-  const editActivation = async (payload: Omit<EditActivationInput, 'offerID'>) => {
-    if (!activationToEdit) return;
+  const editActivation = async (
+    activationID: ActivationID,
+    payload: Omit<EditActivationInput, 'offerID'>,
+  ) => {
     const res = await editActivationMutation({
       variables: {
         payload: {
-          activationID: activationToEdit.id as ActivationID,
+          activationID,
           activation: {
             name: payload.name,
             description: payload.description || '',
             pricing: payload.pricing,
             status: payload.status,
             mmpAlias: payload.mmpAlias,
-            id: activationToEdit.id as ActivationID,
+            id: activationID,
+            order: payload.order,
           },
         },
       },
@@ -161,6 +166,57 @@ const OfferPage: React.FC = () => {
     setActivationModalType(null);
     setActivationToEdit(null);
   };
+  const swapPositionsInFunnel = async ({
+    oldLow,
+    oldHigh,
+  }: {
+    oldLow: Activation;
+    oldHigh: Activation;
+  }) => {
+    console.log(oldLow);
+    console.log(oldHigh);
+    const newHigherPosition = oldLow.order === oldHigh.order ? oldHigh.order + 1 : oldHigh.order;
+    const newLowerPosition = oldLow.order === oldHigh.order ? oldLow.order - 1 : oldLow.order;
+    if (offer && offer.activations) {
+      const newOfferStatus = {
+        ...offer,
+        activations: offer.activations.map((activation) => {
+          if (activation.id === oldLow.id) {
+            return { ...activation, order: newHigherPosition };
+          }
+          if (activation.id === oldHigh.id) {
+            return { ...activation, order: newLowerPosition };
+          }
+          return activation;
+        }),
+      };
+      setOffer(newOfferStatus);
+    }
+    await Promise.all([
+      swapActivationPositionsMutation({
+        variables: {
+          payload: {
+            activationID: oldLow.id as ActivationID,
+            activation: {
+              id: oldLow.id as ActivationID,
+              order: newHigherPosition,
+            },
+          },
+        },
+      }),
+      swapActivationPositionsMutation({
+        variables: {
+          payload: {
+            activationID: oldHigh.id as ActivationID,
+            activation: {
+              id: oldHigh.id as ActivationID,
+              order: newLowerPosition,
+            },
+          },
+        },
+      }),
+    ]);
+  };
   const breadLine = [
     { title: 'Manage', route: '/manage' },
     { title: 'Offers', route: '/manage/offers' },
@@ -170,6 +226,10 @@ const OfferPage: React.FC = () => {
     flex: '100%',
   };
   const maxWidth = '1000px';
+  const activationsSorted = (offer?.activations || [])
+    .slice()
+    .sort((a, b) => a.order - b.order)
+    .sort((a, b) => (a.status === ActivationStatus.Active ? -1 : 1));
   return (
     <div style={{ maxWidth }}>
       {loading || !offer ? (
@@ -203,7 +263,7 @@ const OfferPage: React.FC = () => {
           </$Horizontal>
           <br />
           <$Horizontal justifyContent="space-between">
-            <h2>Activations</h2>
+            <h2>Activation Funnel</h2>
             <Button
               type="link"
               onClick={() => {
@@ -218,41 +278,69 @@ const OfferPage: React.FC = () => {
 
           <br />
           <Card>
-            {(offer.activations || [])
-              .slice()
-              .sort((a, b) => (a.status === ActivationStatus.Active ? -1 : 1))
-              .map((activation) => {
-                return (
-                  <Card.Grid key={activation.id} style={gridStyle}>
-                    <Row
-                      style={activation.status !== ActivationStatus.Active ? { opacity: 0.2 } : {}}
-                    >
-                      <Col span={16}>
-                        {activation.name}{' '}
-                        {activation.status !== ActivationStatus.Active
-                          ? ` (${activation.status})`
-                          : ''}
-                      </Col>
-                      <Col span={4} style={{ textAlign: 'right' }}>
-                        ${activation.pricing}
-                      </Col>
-                      <Col span={4} style={{ textAlign: 'right' }}>
-                        <Button
-                          type="link"
+            {activationsSorted.map((activation, i) => {
+              return (
+                <Card.Grid key={activation.id} style={gridStyle}>
+                  <Row
+                    style={activation.status !== ActivationStatus.Active ? { opacity: 0.2 } : {}}
+                  >
+                    <Col span={14}>
+                      {activation.name}{' '}
+                      {activation.status !== ActivationStatus.Active
+                        ? ` (${activation.status})`
+                        : ''}
+                    </Col>
+                    <Col span={4} style={{ textAlign: 'right', verticalAlign: 'center' }}>
+                      ${activation.pricing}
+                    </Col>
+                    <Col span={4} style={{ alignItems: 'flex-end' }}>
+                      <$Horizontal justifyContent="flex-end">
+                        <CaretUpOutlined
                           onClick={() => {
-                            setActivationModalType('view-edit');
-                            setActivationModalVisible(true);
-                            setActivationToEdit(activation);
+                            if (i - 1 >= 0) {
+                              const prev = activationsSorted[i - 1];
+                              const curr = activationsSorted[i];
+                              swapPositionsInFunnel({
+                                oldLow: prev,
+                                oldHigh: curr,
+                              });
+                            }
                           }}
-                          style={{ alignSelf: 'flex-end' }}
-                        >
-                          View
-                        </Button>
-                      </Col>
-                    </Row>
-                  </Card.Grid>
-                );
-              })}
+                          style={{ cursor: 'pointer', fontSize: '1.2rem' }}
+                        />
+                        <$ColumnGap />
+                        <CaretDownOutlined
+                          onClick={() => {
+                            if (i + 1 < activationsSorted.length) {
+                              const curr = activationsSorted[i];
+                              const next = activationsSorted[i + 1];
+                              swapPositionsInFunnel({
+                                oldLow: curr,
+                                oldHigh: next,
+                              });
+                            }
+                          }}
+                          style={{ cursor: 'pointer', fontSize: '1.2rem' }}
+                        />
+                      </$Horizontal>
+                    </Col>
+                    <Col span={2} style={{ textAlign: 'right' }}>
+                      <Button
+                        type="link"
+                        onClick={() => {
+                          setActivationModalType('view-edit');
+                          setActivationModalVisible(true);
+                          setActivationToEdit(activation);
+                        }}
+                        style={{ alignSelf: 'flex-end' }}
+                      >
+                        View
+                      </Button>
+                    </Col>
+                  </Row>
+                </Card.Grid>
+              );
+            })}
           </Card>
           {activationModalType && (
             <CreateActivationFormModal
