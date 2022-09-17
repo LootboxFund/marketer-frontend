@@ -92,3 +92,27 @@ export const CREATE_ACTIVATION = gql`
     }
   }
 `;
+
+export const EDIT_ACTIVATION = gql`
+  mutation EditActivation($payload: EditActivationPayload!) {
+    editActivation(payload: $payload) {
+      ... on EditActivationResponseSuccess {
+        activation {
+          id
+          name
+          description
+          pricing
+          status
+          mmpAlias
+          offerID
+        }
+      }
+      ... on ResponseError {
+        error {
+          code
+          message
+        }
+      }
+    }
+  }
+`;

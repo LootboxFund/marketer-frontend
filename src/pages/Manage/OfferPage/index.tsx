@@ -1,4 +1,4 @@
-import type {
+import {
   ViewCreatedOfferResponse,
   QueryViewCreatedOfferArgs,
   Offer,
@@ -8,17 +8,22 @@ import type {
   EditOfferResponseSuccess,
   CreateActivationPayload,
   CreateActivationInput,
+  ActivationStatus,
+  Activation,
+  EditActivationResponseSuccess,
+  MutationEditActivationArgs,
+  EditActivationInput,
 } from '@/api/graphql/generated/types';
 import { useMutation, useQuery } from '@apollo/client';
 import { Spin, Image, Row, Col, Card, Button, Modal } from 'antd';
 import React, { useCallback, useState } from 'react';
-import { CREATE_ACTIVATION, EDIT_OFFER, GET_OFFER } from './api.gql';
+import { CREATE_ACTIVATION, EDIT_OFFER, GET_OFFER, EDIT_ACTIVATION } from './api.gql';
 import styles from './index.less';
 import { useParams } from 'react-router-dom';
 import BreadCrumbDynamic from '@/components/BreadCrumbDynamic';
 import { $ColumnGap, $Horizontal, $Vertical } from '@/components/generics';
 import CreateOfferForm from '@/components/CreateOfferForm';
-import { AdvertiserID, OfferID } from '@wormgraph/helpers';
+import { ActivationID, AdvertiserID, OfferID } from '@wormgraph/helpers';
 import CreateActivationFormModal from '@/components/CreateActivationFormModal';
 import { EditActivationPayload } from '../../../api/graphql/generated/types';
 import {
@@ -41,6 +46,7 @@ const OfferPage: React.FC = () => {
   const [activationModalType, setActivationModalType] = useState<'create' | 'view-edit' | null>(
     null,
   );
+  const [activationToEdit, setActivationToEdit] = useState<Activation | null>(null);
 
   // GET OFFER
   const { data, loading, error } = useQuery<
@@ -71,8 +77,12 @@ const OfferPage: React.FC = () => {
     refetchQueries: [{ query: GET_OFFER, variables: { offerID } }],
   });
   // EDIT ACTIVATION
-  //
-  //
+  const [editActivationMutation] = useMutation<
+    { editActivation: ResponseError | EditActivationResponseSuccess },
+    MutationEditActivationArgs
+  >(EDIT_ACTIVATION, {
+    refetchQueries: [{ query: GET_OFFER, variables: { offerID } }],
+  });
 
   if (!offerID) {
     return <div>Offer ID not found</div>;
@@ -123,6 +133,33 @@ const OfferPage: React.FC = () => {
       // @ts-ignore
       throw new Error(res?.data?.createActivation?.error?.message || words.anErrorOccured);
     }
+    setActivationModalVisible(false);
+    setActivationModalType(null);
+  };
+  const editActivation = async (payload: Omit<EditActivationInput, 'offerID'>) => {
+    if (!activationToEdit) return;
+    const res = await editActivationMutation({
+      variables: {
+        payload: {
+          activationID: activationToEdit.id as ActivationID,
+          activation: {
+            name: payload.name,
+            description: payload.description || '',
+            pricing: payload.pricing,
+            status: payload.status,
+            mmpAlias: payload.mmpAlias,
+            id: activationToEdit.id as ActivationID,
+          },
+        },
+      },
+    });
+    if (!res?.data || res?.data?.editActivation?.__typename === 'ResponseError') {
+      // @ts-ignore
+      throw new Error(res?.data?.editActivation?.error?.message || words.anErrorOccured);
+    }
+    setActivationModalVisible(false);
+    setActivationModalType(null);
+    setActivationToEdit(null);
   };
   const breadLine = [
     { title: 'Manage', route: '/manage' },
@@ -131,7 +168,6 @@ const OfferPage: React.FC = () => {
   ];
   const gridStyle: React.CSSProperties = {
     flex: '100%',
-    textAlign: 'left',
   };
   const maxWidth = '1000px';
   return (
@@ -182,22 +218,53 @@ const OfferPage: React.FC = () => {
 
           <br />
           <Card>
-            {[1, 2, 3].map((activation) => {
-              return (
-                <Card.Grid key={activation} style={gridStyle}>
-                  {activation}
-                </Card.Grid>
-              );
-            })}
+            {(offer.activations || [])
+              .slice()
+              .sort((a, b) => (a.status === ActivationStatus.Active ? -1 : 1))
+              .map((activation) => {
+                return (
+                  <Card.Grid key={activation.id} style={gridStyle}>
+                    <Row
+                      style={activation.status !== ActivationStatus.Active ? { opacity: 0.2 } : {}}
+                    >
+                      <Col span={16}>
+                        {activation.name}{' '}
+                        {activation.status !== ActivationStatus.Active
+                          ? ` (${activation.status})`
+                          : ''}
+                      </Col>
+                      <Col span={4} style={{ textAlign: 'right' }}>
+                        ${activation.pricing}
+                      </Col>
+                      <Col span={4} style={{ textAlign: 'right' }}>
+                        <Button
+                          type="link"
+                          onClick={() => {
+                            setActivationModalType('view-edit');
+                            setActivationModalVisible(true);
+                            setActivationToEdit(activation);
+                          }}
+                          style={{ alignSelf: 'flex-end' }}
+                        >
+                          View
+                        </Button>
+                      </Col>
+                    </Row>
+                  </Card.Grid>
+                );
+              })}
           </Card>
           {activationModalType && (
             <CreateActivationFormModal
               activationModalVisible={activationModalVisible}
               toggleActivationModal={toggleActivationModal}
               pendingActivationEdit={pendingActivationEdit}
+              setPendingActivationEdit={setPendingActivationEdit}
               createActivation={createActivation}
+              editActivation={editActivation}
               offerID={offerID as OfferID}
               mode={activationModalType}
+              activationToEdit={activationToEdit}
             />
           )}
         </div>

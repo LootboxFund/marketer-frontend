@@ -11,8 +11,10 @@ import FormBuilder from 'antd-form-builder';
 import { Button, Card, Form, Modal } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import type {
+  Activation,
   CreateActivationInput,
   CreateOfferPayload,
+  EditActivationInput,
   EditOfferPayload,
 } from '@/api/graphql/generated/types';
 import { PriceInput, PriceView } from '../CurrencyInput';
@@ -26,20 +28,15 @@ import type {
 const advertiserID = 'p7BpSqP6U4n4NEanEcFt';
 
 export type CreateActivationFormModalProps = {
-  activation?: {
-    name: string;
-    description?: string;
-    pricing: number;
-    status: ActivationStatus;
-    mmpAlias: string;
-    offerID: OfferID;
-  };
+  activationToEdit: Activation | null;
   mode: 'create' | 'view-edit';
   activationModalVisible: boolean;
   pendingActivationEdit: boolean;
+  setPendingActivationEdit: (pending: boolean) => void;
   toggleActivationModal: (visible: boolean) => void;
   offerID: OfferID;
   createActivation: (payload: Omit<CreateActivationInput, 'offerID'>) => void;
+  editActivation: (payload: Omit<EditActivationInput, 'offerID'>) => void;
 };
 
 const ACTIVATION_INFO = {
@@ -51,16 +48,17 @@ const ACTIVATION_INFO = {
 };
 
 const CreateActivationFormModal: React.FC<CreateActivationFormModalProps> = ({
-  activation,
+  activationToEdit,
   createActivation,
+  editActivation,
   mode,
   toggleActivationModal,
   pendingActivationEdit,
   activationModalVisible,
+  setPendingActivationEdit,
 }) => {
   const [form] = Form.useForm();
   const [viewMode, setViewMode] = useState(true);
-  const [pending, setPending] = useState(false);
   const [activationInfo, setActivationInfo] = useState(ACTIVATION_INFO);
   const lockedToEdit = mode === 'create';
   useEffect(() => {
@@ -69,16 +67,16 @@ const CreateActivationFormModal: React.FC<CreateActivationFormModalProps> = ({
     }
   }, []);
   useEffect(() => {
-    if (activation) {
+    if (activationToEdit) {
       setActivationInfo({
-        name: activation.name,
-        description: activation.description || '',
-        pricing: 1,
-        status: ActivationStatus.Active,
-        mmpAlias: '',
+        name: activationToEdit.name,
+        description: activationToEdit.description || '',
+        pricing: activationToEdit.pricing,
+        status: activationToEdit.status,
+        mmpAlias: activationToEdit.mmpAlias,
       });
     }
-  }, [activation]);
+  }, [activationToEdit]);
   const handleFinishCreate = useCallback(async (values) => {
     console.log('Submit: ', values);
     const payload = {} as Omit<CreateActivationInput, 'offerID'>;
@@ -95,12 +93,12 @@ const CreateActivationFormModal: React.FC<CreateActivationFormModalProps> = ({
       payload.mmpAlias = values.mmpAlias;
     }
     if (values.pricing) {
-      payload.pricing = values.pricing;
+      payload.pricing = values.pricing.price;
     }
-    setPending(true);
+    setPendingActivationEdit(true);
     try {
       await createActivation(payload);
-      setPending(false);
+      setPendingActivationEdit(false);
       if (!lockedToEdit) {
         setViewMode(true);
       }
@@ -115,29 +113,56 @@ const CreateActivationFormModal: React.FC<CreateActivationFormModalProps> = ({
       });
     }
   }, []);
-  const handleFinishEdit = useCallback(async (values) => {}, []);
+  const handleFinishEdit = useCallback(async (values) => {
+    console.log('Submit: ', values);
+    const payload = {} as Omit<EditActivationInput, 'offerID'>;
+    if (values.name) {
+      payload.name = values.name;
+    }
+    if (values.description) {
+      payload.description = values.description;
+    }
+    if (values.status) {
+      payload.status = values.status;
+    }
+    if (values.mmpAlias) {
+      payload.mmpAlias = values.mmpAlias;
+    }
+    if (values.pricing) {
+      payload.pricing = values.pricing.price;
+    }
+    setPendingActivationEdit(true);
+    try {
+      await editActivation(payload);
+      setPendingActivationEdit(false);
+      if (!lockedToEdit) {
+        setViewMode(true);
+      }
+      Modal.success({
+        title: 'Success',
+        content: mode === 'create' ? 'Activation created' : 'Activation updated',
+      });
+    } catch (e: any) {
+      Modal.error({
+        title: 'Failure',
+        content: `${e.message}`,
+      });
+    }
+  }, []);
   const getMeta = () => {
     const meta = {
-      columns: 1,
-      disabled: pending,
+      disabled: pendingActivationEdit,
       initialValues: activationInfo,
-      // name: String!
-      // description: String
-      // pricing: Float!
-      // status: ActivationStatus!
-      // mmpAlias: String!
-      // offerID: ID!
       fields: [
         { key: 'name', label: 'Name', required: true },
         { key: 'description', label: 'Description', widget: 'textarea' },
-
         {
           key: 'pricing',
           label: 'Pricing',
           widget: PriceInput,
           viewWidget: PriceView,
           initialValue: {
-            price: mode === 'create' ? 1 : activation?.pricing || 1,
+            price: mode === 'create' ? 1 : activationToEdit?.pricing || 1,
             currency: 'USDC Polygon',
           },
         },
@@ -159,12 +184,18 @@ const CreateActivationFormModal: React.FC<CreateActivationFormModalProps> = ({
   };
   return (
     <Modal
-      title="Add Activation Event"
+      title={mode === 'create' ? 'Add Activation Event' : 'Edit Activation Event'}
       closable={!pendingActivationEdit}
       maskClosable={!pendingActivationEdit}
       visible={activationModalVisible}
       destroyOnClose
-      onOk={() => form.submit()}
+      onOk={() => {
+        if (viewMode) {
+          toggleActivationModal(false);
+        } else {
+          form.submit();
+        }
+      }}
       onCancel={() => {
         form.resetFields();
         if (!lockedToEdit) {
@@ -193,32 +224,6 @@ const CreateActivationFormModal: React.FC<CreateActivationFormModalProps> = ({
             onFinish={mode === 'create' ? handleFinishCreate : handleFinishEdit}
           >
             <FormBuilder form={form} meta={getMeta()} viewMode={viewMode} />
-            {!viewMode && (
-              <Form.Item className="form-footer" wrapperCol={{ span: 16, offset: 4 }}>
-                {/* {mode === 'create' ? (
-                  <Button htmlType="submit" type="primary" disabled={pending}>
-                    {pending ? 'Creating...' : 'Create'}
-                  </Button>
-                ) : (
-                  <Button htmlType="submit" type="primary" disabled={pending}>
-                    {pending ? 'Updating...' : 'Update'}
-                  </Button>
-                )} */}
-
-                {/* <Button
-                  onClick={() => {
-                    form.resetFields();
-                    if (!lockedToEdit) {
-                      setViewMode(true);
-                    }
-                    toggleActivationModal(false);
-                  }}
-                  style={{ marginLeft: '15px' }}
-                >
-                  Cancel
-                </Button> */}
-              </Form.Item>
-            )}
           </Form>
         </div>
       </Card>
