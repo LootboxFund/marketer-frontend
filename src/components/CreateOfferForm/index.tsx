@@ -1,37 +1,56 @@
-import { ConquestStatus } from '@wormgraph/helpers';
+import {
+  AdvertiserID,
+  ConquestStatus,
+  MeasurementPartnerType,
+  OfferStatus,
+} from '@wormgraph/helpers';
 import moment from 'moment';
 import type { Moment } from 'moment';
 import FormBuilder from 'antd-form-builder';
 import { Button, Card, Form, Modal } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
-import type { UpdateConquestPayload } from '@/api/graphql/generated/types';
+import type { CreateOfferPayload, EditOfferPayload } from '@/api/graphql/generated/types';
+import { PriceInput, PriceView } from '../CurrencyInput';
+import { Rule } from 'antd/lib/form';
 
-export type CreateCampaignFormProps = {
-  conquest?: {
+const advertiserID = 'p7BpSqP6U4n4NEanEcFt';
+
+export type CreateOfferFormProps = {
+  offer?: {
     title: string;
-    description: string;
-    status: ConquestStatus;
+    description?: string;
+    image?: string;
+    advertiserID?: AdvertiserID;
+    maxBudget: number;
     startDate: number;
     endDate: number;
+    status: OfferStatus;
+    affiliateBaseLink?: string;
+    mmp?: MeasurementPartnerType;
   };
-  onSubmit: (payload: Omit<UpdateConquestPayload, 'id'>) => void;
+  onSubmit: (payload: Omit<EditOfferPayload, 'id'> | CreateOfferPayload) => void;
   mode: 'create' | 'edit-only' | 'view-edit' | 'view-only';
 };
 
-const CONQUEST_INFO = {
+const OFFER_INFO = {
   title: '',
   description: '',
+  image: '',
+  advertiserID: '',
+  maxBudget: 1000,
   startDate: moment(new Date()),
-  endDate: moment(new Date()),
-  status: ConquestStatus.Planned,
+  endDate: moment(new Date()).add(365, 'days'),
+  status: OfferStatus.Active,
+  affiliateBaseLink: '',
+  mmp: MeasurementPartnerType.Manual,
 };
 const DateView = ({ value }: { value: Moment }) => value.format('MMM Do YYYY');
 
-const CreateCampaignForm: React.FC<CreateCampaignFormProps> = ({ conquest, onSubmit, mode }) => {
+const CreateOfferForm: React.FC<CreateOfferFormProps> = ({ offer, onSubmit, mode }) => {
   const [form] = Form.useForm();
   const [viewMode, setViewMode] = useState(true);
   const [pending, setPending] = useState(false);
-  const [conquestInfo, setConquestInfo] = useState(CONQUEST_INFO);
+  const [offerInfo, setOfferInfo] = useState(OFFER_INFO);
   const lockedToEdit = mode === 'create' || mode === 'edit-only';
   useEffect(() => {
     if (lockedToEdit) {
@@ -39,19 +58,25 @@ const CreateCampaignForm: React.FC<CreateCampaignFormProps> = ({ conquest, onSub
     }
   }, []);
   useEffect(() => {
-    if (conquest) {
-      setConquestInfo({
-        title: conquest.title,
-        description: conquest.description,
-        startDate: moment.unix(conquest.startDate),
-        endDate: moment.unix(conquest.endDate),
-        status: conquest.status,
+    if (offer) {
+      setOfferInfo({
+        title: offer.title,
+        description: offer.description || '',
+        image: offer.image || '',
+        advertiserID: advertiserID,
+        maxBudget: offer.maxBudget || 1000,
+        startDate: moment.unix(offer.startDate),
+        endDate: moment.unix(offer.endDate),
+        status: offer.status || OfferStatus.Active,
+        affiliateBaseLink: offer.affiliateBaseLink || '',
+        mmp: offer.mmp || MeasurementPartnerType.Manual,
       });
     }
-  }, [conquest]);
+  }, [offer]);
   const handleFinish = useCallback(async (values) => {
     console.log('Submit: ', values);
-    const payload = {} as Omit<UpdateConquestPayload, 'id'>;
+    type OfferFormPayloadFE = CreateOfferPayload | Omit<EditOfferPayload, 'id'>;
+    const payload = {} as OfferFormPayloadFE;
     if (values.title) {
       payload.title = values.title;
     }
@@ -60,6 +85,17 @@ const CreateCampaignForm: React.FC<CreateCampaignFormProps> = ({ conquest, onSub
     }
     if (values.status) {
       payload.status = values.status;
+    }
+    if (values.maxBudget) {
+      payload.maxBudget = values.maxBudget.price;
+    }
+    if (values.affiliateBaseLink) {
+      // @ts-ignore
+      payload.affiliateBaseLink = values.affiliateBaseLink;
+    }
+    if (values.mmp) {
+      // @ts-ignore
+      payload.mmp = values.mmp;
     }
     if (values.startDate) {
       payload.startDate = values.startDate.unix();
@@ -76,7 +112,7 @@ const CreateCampaignForm: React.FC<CreateCampaignFormProps> = ({ conquest, onSub
       }
       Modal.success({
         title: 'Success',
-        content: mode === 'create' ? 'Campaign created' : 'Campaign updated',
+        content: mode === 'create' ? 'Offer created' : 'Offer updated',
       });
     } catch (e: any) {
       Modal.error({
@@ -89,7 +125,7 @@ const CreateCampaignForm: React.FC<CreateCampaignFormProps> = ({ conquest, onSub
     const meta = {
       columns: 2,
       disabled: pending,
-      initialValues: conquestInfo,
+      initialValues: offerInfo,
       fields: [
         { key: 'title', label: 'Title', required: true },
         {
@@ -106,14 +142,44 @@ const CreateCampaignForm: React.FC<CreateCampaignFormProps> = ({ conquest, onSub
           viewWidget: DateView,
         },
         {
+          key: 'maxBudget',
+          label: 'Max Budget',
+          widget: PriceInput,
+          viewWidget: PriceView,
+          initialValue: {
+            price: mode === 'create' ? 1000 : offer?.maxBudget || 1000,
+            currency: 'USDC Polygon',
+          },
+        },
+        {
+          key: 'affiliateBaseLink',
+          label: 'Affiliate Link',
+          required: mode === 'create' ? true : false,
+          rules: [
+            { required: true } as Rule,
+            { type: 'url' } as Rule,
+            { type: 'string', min: 3 } as Rule,
+          ],
+        },
+        {
           key: 'status',
           label: 'Status',
           widget: 'radio-group',
           options: [
-            ConquestStatus.Active,
-            ConquestStatus.Inactive,
-            ConquestStatus.Planned,
-            ConquestStatus.Archived,
+            OfferStatus.Active,
+            OfferStatus.Inactive,
+            OfferStatus.Planned,
+            OfferStatus.Archived,
+          ],
+        },
+        {
+          key: 'mmp',
+          label: 'Measurement Partner',
+          widget: 'select',
+          options: [
+            MeasurementPartnerType.Appsflyer,
+            MeasurementPartnerType.LootboxPixel,
+            MeasurementPartnerType.Manual,
           ],
         },
       ],
@@ -164,4 +230,4 @@ const CreateCampaignForm: React.FC<CreateCampaignFormProps> = ({ conquest, onSub
   );
 };
 
-export default CreateCampaignForm;
+export default CreateOfferForm;

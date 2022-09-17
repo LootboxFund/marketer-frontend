@@ -24,17 +24,16 @@ export default [
     path: '/dashboard',
     icon: 'TrophyOutlined',
     name: 'Dashboard',
-    hideInMenu: false,
     routes: [
       {
         hideInMenu: true,
         path: '/dashboard',
-        redirect: '/dashboard/guide',
+        redirect: '/dashboard/getting-started',
       },
       {
         name: 'Getting Started',
-        path: '/dashboard/guide',
-        component: './Welcome',
+        path: '/dashboard/getting-started',
+        component: './Dashboard/GettingStarted',
       },
       {
         name: 'Campaigns',
@@ -43,14 +42,26 @@ export default [
       },
       {
         name: 'Campaign',
-        path: '/dashboard/campaigns/cid/:campaignID',
+        path: '/dashboard/campaigns/id/:campaignID',
         hideInMenu: true,
         component: './Dashboard/CampaignPage',
+      },
+      {
+        name: 'Create Campaign',
+        path: '/dashboard/campaigns/create',
+        hideInMenu: true,
+        component: './Dashboard/CampaignCreate',
       },
       {
         name: 'Events',
         path: '/dashboard/events',
         component: './Welcome',
+      },
+      {
+        name: 'Event',
+        path: '/dashboard/events/id/:eventID',
+        hideInMenu: true,
+        component: './Dashboard/CampaignPage',
       },
       {
         name: 'Partners',
@@ -65,13 +76,47 @@ export default [
     name: 'Manage',
     routes: [
       {
+        hideInMenu: true,
+        path: '/manage',
+        redirect: '/manage/tutorial',
+      },
+      {
+        name: 'Tutorial',
+        path: '/manage/tutorial',
+        component: './Manage/Tutorial',
+      },
+      {
         name: 'Offers',
         path: '/manage/offers',
-        component: './Welcome',
+        component: './Manage/OffersPage',
+      },
+      {
+        name: 'Offer',
+        path: '/manage/offers/id/:offerID',
+        hideInMenu: true,
+        component: './Manage/OfferPage',
+      },
+      {
+        name: 'Create Offer',
+        path: '/manage/offers/create',
+        hideInMenu: true,
+        component: './Manage/OfferCreate',
       },
       {
         name: 'Ads',
-        path: '/manage/ads',
+        path: '/manage/adsets',
+        component: './Welcome',
+      },
+      {
+        name: 'Ad Set',
+        path: '/manage/adsets/id/:adSetID',
+        hideInMenu: true,
+        component: './Welcome',
+      },
+      {
+        name: 'Ad',
+        path: '/manage/ads/id/:adID',
+        hideInMenu: true,
         component: './Welcome',
       },
     ],
@@ -117,7 +162,7 @@ export default [
   },
   {
     path: '/',
-    redirect: '/dashboard/guide',
+    redirect: '/dashboard/getting-started',
   },
   {
     path: '*',
