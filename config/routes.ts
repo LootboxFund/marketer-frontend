@@ -27,6 +27,11 @@ export default [
     hideInMenu: false,
     routes: [
       {
+        hideInMenu: true,
+        path: '/dashboard',
+        redirect: '/dashboard/guide',
+      },
+      {
         name: 'Getting Started',
         path: '/dashboard/guide',
         component: './Welcome',
@@ -34,17 +39,23 @@ export default [
       {
         name: 'Campaigns',
         path: '/dashboard/campaigns',
-        component: './Manage/Campaigns',
+        component: './Dashboard/CampaignsPage',
+      },
+      {
+        name: 'Campaign',
+        path: '/dashboard/campaigns/cid/:campaignID',
+        hideInMenu: true,
+        component: './Dashboard/CampaignPage',
       },
       {
         name: 'Events',
         path: '/dashboard/events',
-        component: './Manage/Campaigns',
+        component: './Welcome',
       },
       {
         name: 'Partners',
-        path: '/dashboard/events',
-        component: './Manage/Campaigns',
+        path: '/dashboard/partners',
+        component: './Welcome',
       },
     ],
   },
@@ -56,12 +67,12 @@ export default [
       {
         name: 'Offers',
         path: '/manage/offers',
-        component: './Manage/Campaigns',
+        component: './Welcome',
       },
       {
         name: 'Ads',
         path: '/manage/ads',
-        component: './Manage/Campaigns',
+        component: './Welcome',
       },
     ],
   },
@@ -73,12 +84,12 @@ export default [
       {
         name: 'Account',
         path: '/company/account',
-        component: './Manage/Campaigns',
+        component: './Welcome',
       },
       {
         name: 'Billing',
         path: '/company/billing',
-        component: './Manage/Campaigns',
+        component: './Welcome',
       },
       {
         name: 'Template',

@@ -20,7 +20,6 @@
 
 .content {
   flex: 1;
-  padding: 32px 0;
 }
 
 .loading_container {
@@ -38,7 +37,23 @@
   }
 
   .content {
-    padding: 32px 0 24px;
+  }
+}
+
+.tournaments_grid {
+  display: grid;
+  flex: 1;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  padding: 32px 0;
+  column-gap: 15px;
+  row-gap: 15px;
+  @media only screen and (max-width: 1000px) {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+  @media only screen and (max-width: 600px) {
+    grid-template-columns: 1fr 1fr;
+    column-gap: 10px;
+    row-gap: 10px;
   }
 }
 

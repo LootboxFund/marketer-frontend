@@ -1,15 +1,21 @@
 import type {
+  ConquestPreview,
   ListConquestPreviewsResponse,
   QueryListConquestPreviewsArgs,
 } from '@/api/graphql/generated/types';
+import { Link } from 'umi';
 import { PageContainer } from '@ant-design/pro-components';
 import { useQuery } from '@apollo/client';
+import Card from 'antd/lib/card/Card';
+import Meta from 'antd/lib/card/Meta';
 import Spin from 'antd/lib/spin';
-import React from 'react';
+import React, { useState } from 'react';
 import { LIST_CONQUEST_PREVIEWS } from './api.gql';
 import styles from './index.less';
 
-const Template: React.FC = () => {
+const CampaignsPage: React.FC = () => {
+  const [conquests, setConquests] = useState<ConquestPreview[]>([]);
+
   const { data, loading, error } = useQuery<
     { listConquestPreviews: ListConquestPreviewsResponse },
     QueryListConquestPreviewsArgs
@@ -18,6 +24,7 @@ const Template: React.FC = () => {
     onCompleted: (data) => {
       if (data?.listConquestPreviews.__typename === 'ListConquestPreviewsResponseSuccess') {
         const conquests = data.listConquestPreviews.conquests;
+        setConquests(conquests);
         console.log(conquests);
       }
     },
@@ -36,11 +43,21 @@ const Template: React.FC = () => {
         </div>
       ) : (
         <div className={styles.content}>
-          <span>Template</span>
+          {conquests.map((conquest) => (
+            <Link key={conquest.id} to={`/dashboard/campaigns/cid/${conquest.id}`}>
+              <Card
+                hoverable
+                style={{ flex: 1 }}
+                cover={<img alt="example" src={conquest.image || ''} />}
+              >
+                <Meta title={conquest.title} />
+              </Card>
+            </Link>
+          ))}
         </div>
       )}
     </PageContainer>
   );
 };
 
-export default Template;
+export default CampaignsPage;
