@@ -21,10 +21,66 @@ export default [
     ],
   },
   {
-    path: '/welcome',
-    name: 'welcome',
-    icon: 'smile',
-    component: './Welcome',
+    path: '/dashboard',
+    icon: 'TrophyOutlined',
+    name: 'Dashboard',
+    hideInMenu: false,
+    routes: [
+      {
+        name: 'Guide',
+        path: '/dashboard/guide',
+        component: './Welcome',
+      },
+      {
+        name: 'Campaigns',
+        path: '/dashboard/campaigns',
+        component: './Manage/Campaigns',
+      },
+      {
+        name: 'Events',
+        path: '/dashboard/events',
+        component: './Manage/Campaigns',
+      },
+      {
+        name: 'Partners',
+        path: '/dashboard/events',
+        component: './Manage/Campaigns',
+      },
+    ],
+  },
+  {
+    path: '/manage',
+    icon: 'ShoppingOutlined',
+    name: 'Manage',
+    routes: [
+      {
+        name: 'Offers',
+        path: '/manage/offers',
+        component: './Manage/Campaigns',
+      },
+      {
+        name: 'Ads',
+        path: '/manage/ads',
+        component: './Manage/Campaigns',
+      },
+    ],
+  },
+  {
+    path: '/company',
+    icon: 'ShopOutlined',
+    name: 'Company',
+    routes: [
+      {
+        name: 'Account',
+        path: '/company/account',
+        component: './Manage/Campaigns',
+      },
+      {
+        name: 'Billing',
+        path: '/company/billing',
+        component: './Manage/Campaigns',
+      },
+    ],
   },
   {
     path: '/admin',
@@ -44,14 +100,8 @@ export default [
     ],
   },
   {
-    name: 'list.table-list',
-    icon: 'table',
-    path: '/list',
-    component: './TableList',
-  },
-  {
     path: '/',
-    redirect: '/welcome',
+    redirect: '/dashboard/guide',
   },
   {
     path: '*',
