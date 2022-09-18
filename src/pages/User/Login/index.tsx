@@ -88,8 +88,9 @@ const Login: React.FC = () => {
       </div>
       <div className={styles.content}>
         <LoginForm
-          logo={<img alt="logo" src="/logo.svg" />}
-          title="Ant Design"
+          title={
+            <h1 style={{ fontWeight: 900, color: '#26A6EF', fontSize: '2rem' }}>🎁 LOOTBOX</h1>
+          }
           subTitle={intl.formatMessage({ id: 'pages.layouts.userLayout.title' })}
           initialValues={{
             autoLogin: true,

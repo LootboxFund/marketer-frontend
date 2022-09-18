@@ -18,7 +18,7 @@ import type {
   EditActivationInput,
   EditOfferPayload,
 } from '@/api/graphql/generated/types';
-import { PriceInput, PriceView } from '../CurrencyInput';
+import { PriceInput, PriceView } from '../AntFormBuilder';
 import { Rule } from 'antd/lib/form';
 import { ActivationStatus } from '../../api/graphql/generated/types';
 import type {
@@ -117,43 +117,46 @@ const CreateActivationFormModal: React.FC<CreateActivationFormModalProps> = ({
       });
     }
   }, []);
-  const handleFinishEdit = useCallback(async (values) => {
-    if (!activationToEdit) return;
-    console.log('Submit: ', values);
-    const payload = {} as Omit<EditActivationInput, 'offerID'>;
-    if (values.name) {
-      payload.name = values.name;
-    }
-    if (values.description) {
-      payload.description = values.description;
-    }
-    if (values.status) {
-      payload.status = values.status;
-    }
-    if (values.mmpAlias) {
-      payload.mmpAlias = values.mmpAlias;
-    }
-    if (values.pricing) {
-      payload.pricing = values.pricing.price;
-    }
-    setPendingActivationEdit(true);
-    try {
-      await editActivation(activationToEdit.id as ActivationID, payload);
-      setPendingActivationEdit(false);
-      if (!lockedToEdit) {
-        setViewMode(true);
+  const handleFinishEdit = useCallback(
+    async (values) => {
+      if (!activationToEdit) return;
+      console.log('Submit: ', values);
+      const payload = {} as Omit<EditActivationInput, 'offerID'>;
+      if (values.name) {
+        payload.name = values.name;
       }
-      Modal.success({
-        title: 'Success',
-        content: mode === 'create' ? 'Activation created' : 'Activation updated',
-      });
-    } catch (e: any) {
-      Modal.error({
-        title: 'Failure',
-        content: `${e.message}`,
-      });
-    }
-  }, []);
+      if (values.description) {
+        payload.description = values.description;
+      }
+      if (values.status) {
+        payload.status = values.status;
+      }
+      if (values.mmpAlias) {
+        payload.mmpAlias = values.mmpAlias;
+      }
+      if (values.pricing) {
+        payload.pricing = values.pricing.price;
+      }
+      setPendingActivationEdit(true);
+      try {
+        await editActivation(activationToEdit.id as ActivationID, payload);
+        setPendingActivationEdit(false);
+        if (!lockedToEdit) {
+          setViewMode(true);
+        }
+        Modal.success({
+          title: 'Success',
+          content: mode === 'create' ? 'Activation created' : 'Activation updated',
+        });
+      } catch (e: any) {
+        Modal.error({
+          title: 'Failure',
+          content: `${e.message}`,
+        });
+      }
+    },
+    [activationToEdit],
+  );
   const getMeta = () => {
     const meta = {
       disabled: pendingActivationEdit,

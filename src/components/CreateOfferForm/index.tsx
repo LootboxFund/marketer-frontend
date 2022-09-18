@@ -10,8 +10,9 @@ import FormBuilder from 'antd-form-builder';
 import { Button, Card, Form, Modal } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import type { CreateOfferPayload, EditOfferPayload } from '@/api/graphql/generated/types';
-import { PriceInput, PriceView } from '../CurrencyInput';
+import { PriceInput, PriceView } from '../AntFormBuilder';
 import { Rule } from 'antd/lib/form';
+import { DateView } from '../AntFormBuilder';
 
 const advertiserID = 'p7BpSqP6U4n4NEanEcFt';
 
@@ -44,8 +45,6 @@ const OFFER_INFO = {
   affiliateBaseLink: '',
   mmp: MeasurementPartnerType.Manual,
 };
-const DateView = ({ value }: { value: Moment }) => value.format('MMM Do YYYY');
-
 const CreateOfferForm: React.FC<CreateOfferFormProps> = ({ offer, onSubmit, mode }) => {
   const [form] = Form.useForm();
   const [viewMode, setViewMode] = useState(true);

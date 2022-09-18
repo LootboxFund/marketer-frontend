@@ -1,10 +1,11 @@
-import { ConquestStatus } from '@wormgraph/helpers';
+import { AdvertiserID, ConquestStatus } from '@wormgraph/helpers';
 import moment from 'moment';
 import type { Moment } from 'moment';
 import FormBuilder from 'antd-form-builder';
-import { Button, Card, Form, Modal } from 'antd';
-import { useCallback, useEffect, useState } from 'react';
+import { Button, Card, Form, Modal, Upload } from 'antd';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { UpdateConquestPayload } from '@/api/graphql/generated/types';
+import { AntUploadFile, HiddenViewWidget } from '../AntFormBuilder';
 
 export type CreateCampaignFormProps = {
   conquest?: {
@@ -14,6 +15,7 @@ export type CreateCampaignFormProps = {
     startDate: number;
     endDate: number;
   };
+  advertiserID: AdvertiserID;
   onSubmit: (payload: Omit<UpdateConquestPayload, 'id'>) => void;
   mode: 'create' | 'edit-only' | 'view-edit' | 'view-only';
 };
@@ -27,10 +29,16 @@ const CONQUEST_INFO = {
 };
 const DateView = ({ value }: { value: Moment }) => value.format('MMM Do YYYY');
 
-const CreateCampaignForm: React.FC<CreateCampaignFormProps> = ({ conquest, onSubmit, mode }) => {
+const CreateCampaignForm: React.FC<CreateCampaignFormProps> = ({
+  conquest,
+  onSubmit,
+  mode,
+  advertiserID,
+}) => {
   const [form] = Form.useForm();
   const [viewMode, setViewMode] = useState(true);
   const [pending, setPending] = useState(false);
+  const newImageDestination = useRef('');
   const [conquestInfo, setConquestInfo] = useState(CONQUEST_INFO);
   const lockedToEdit = mode === 'create' || mode === 'edit-only';
   useEffect(() => {
@@ -67,6 +75,9 @@ const CreateCampaignForm: React.FC<CreateCampaignFormProps> = ({ conquest, onSub
     if (values.endDate) {
       payload.endDate = values.endDate.unix();
     }
+    if (newImageDestination) {
+      payload.image = newImageDestination.current;
+    }
     setPending(true);
     try {
       await onSubmit(payload);
@@ -98,7 +109,11 @@ const CreateCampaignForm: React.FC<CreateCampaignFormProps> = ({ conquest, onSub
           widget: 'date-picker',
           viewWidget: DateView,
         },
-        { key: 'description', label: 'Description', widget: 'textarea' },
+        {
+          key: 'description',
+          label: 'Description',
+          widget: 'textarea',
+        },
         {
           key: 'endDate',
           label: 'End Date',
@@ -118,6 +133,16 @@ const CreateCampaignForm: React.FC<CreateCampaignFormProps> = ({ conquest, onSub
         },
       ],
     };
+    if (!viewMode) {
+      meta.fields.push({
+        key: 'image',
+        label: 'Image',
+        // @ts-ignore
+        widget: () => (
+          <AntUploadFile advertiserID={advertiserID} newImageDestination={newImageDestination} />
+        ),
+      });
+    }
     return meta;
   };
   return (

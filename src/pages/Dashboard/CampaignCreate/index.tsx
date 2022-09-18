@@ -15,6 +15,7 @@ import { LIST_CONQUEST_PREVIEWS } from '../CampaignsPage/api.gql';
 import { history } from '@umijs/max';
 import { CREATE_CONQUEST } from './api.gql';
 import styles from './index.less';
+import { AdvertiserID } from '@wormgraph/helpers';
 
 const advertiserID = 'p7BpSqP6U4n4NEanEcFt';
 
@@ -45,7 +46,13 @@ const CampaignCreate: React.FC = () => {
   return (
     <PageContainer>
       <div className={styles.content}>
-        <CreateCampaignForm onSubmit={createConquest} mode="create" />
+        <div style={{ maxWidth: '800px' }}>
+          <CreateCampaignForm
+            onSubmit={createConquest}
+            mode="create"
+            advertiserID={advertiserID as AdvertiserID}
+          />
+        </div>
       </div>
     </PageContainer>
   );

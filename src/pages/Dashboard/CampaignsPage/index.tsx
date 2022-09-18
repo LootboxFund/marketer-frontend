@@ -72,8 +72,10 @@ const CampaignsPage: React.FC = () => {
               <Link key={conquest.id} to={`/dashboard/campaigns/id/${conquest.id}`}>
                 <Card
                   hoverable
-                  style={{ flex: 1 }}
-                  cover={<img alt="example" src={conquest.image || ''} />}
+                  className={styles.card}
+                  cover={
+                    <img alt="example" src={conquest.image || ''} className={styles.cardImage} />
+                  }
                 >
                   <Meta title={conquest.title} />
                 </Card>
