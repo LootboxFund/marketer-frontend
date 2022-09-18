@@ -39,7 +39,7 @@ const CreateCampaignForm: React.FC<CreateCampaignFormProps> = ({
   const [form] = Form.useForm();
   const [viewMode, setViewMode] = useState(true);
   const [pending, setPending] = useState(false);
-  const newImageDestination = useRef('');
+  const newMediaDestination = useRef('');
   const [conquestInfo, setConquestInfo] = useState(CONQUEST_INFO);
   const lockedToEdit = mode === 'create' || mode === 'edit-only';
   useEffect(() => {
@@ -76,8 +76,8 @@ const CreateCampaignForm: React.FC<CreateCampaignFormProps> = ({
     if (values.endDate) {
       payload.endDate = values.endDate;
     }
-    if (newImageDestination.current) {
-      payload.image = newImageDestination.current;
+    if (newMediaDestination.current) {
+      payload.image = newMediaDestination.current;
     }
     setPending(true);
     try {
@@ -102,8 +102,10 @@ const CreateCampaignForm: React.FC<CreateCampaignFormProps> = ({
       columns: 2,
       disabled: pending,
       initialValues: conquestInfo,
-      fields: [
-        { key: 'title', label: 'Title', required: true },
+      fields: [{ key: 'title', label: 'Title', required: true }],
+    };
+    if (mode !== 'create') {
+      const editOnlyFields = [
         {
           key: 'startDate',
           label: 'Start Date',
@@ -132,21 +134,22 @@ const CreateCampaignForm: React.FC<CreateCampaignFormProps> = ({
             ConquestStatus.Archived,
           ],
         },
-      ],
-    };
-    if (!viewMode) {
-      meta.fields.push({
-        key: 'image',
-        label: 'Image',
-        // @ts-ignore
-        widget: () => (
-          <AntUploadFile
-            advertiserID={advertiserID}
-            folderName={AdvertiserStorageFolder.CAMPAIGN_IMAGE}
-            newImageDestination={newImageDestination}
-          />
-        ),
-      });
+      ];
+      editOnlyFields.forEach((f: any) => meta.fields.push(f));
+      if (!viewMode) {
+        meta.fields.push({
+          key: 'image',
+          label: 'Image',
+          // @ts-ignore
+          widget: () => (
+            <AntUploadFile
+              advertiserID={advertiserID}
+              folderName={AdvertiserStorageFolder.CAMPAIGN_IMAGE}
+              newMediaDestination={newMediaDestination}
+            />
+          ),
+        });
+      }
     }
     return meta;
   };

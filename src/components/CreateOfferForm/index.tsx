@@ -53,7 +53,7 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
   mode,
   advertiserID,
 }) => {
-  const newImageDestination = useRef('');
+  const newMediaDestination = useRef('');
   const [form] = Form.useForm();
   const [viewMode, setViewMode] = useState(true);
   const [pending, setPending] = useState(false);
@@ -110,8 +110,8 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
     if (values.endDate) {
       payload.endDate = values.endDate;
     }
-    if (newImageDestination.current) {
-      payload.image = newImageDestination.current;
+    if (newMediaDestination.current) {
+      payload.image = newMediaDestination.current;
     }
     setPending(true);
     try {
@@ -205,7 +205,7 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
           <AntUploadFile
             advertiserID={advertiserID}
             folderName={AdvertiserStorageFolder.OFFER_IMAGE}
-            newImageDestination={newImageDestination}
+            newMediaDestination={newMediaDestination}
           />
         ),
       });

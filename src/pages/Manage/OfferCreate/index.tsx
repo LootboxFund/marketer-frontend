@@ -17,6 +17,7 @@ import { history } from '@umijs/max';
 import { CREATE_OFFER } from './api.gql';
 import styles from './index.less';
 import { LIST_CREATED_OFFERS } from '../OffersPage/api.gql';
+import { AdvertiserID } from '@wormgraph/helpers';
 
 const advertiserID = 'p7BpSqP6U4n4NEanEcFt';
 
@@ -58,7 +59,11 @@ const OfferCreate: React.FC = () => {
   return (
     <PageContainer>
       <div className={styles.content}>
-        <CreateOfferForm onSubmit={createOffer} mode="create" />
+        <CreateOfferForm
+          onSubmit={createOffer}
+          mode="create"
+          advertiserID={advertiserID as AdvertiserID}
+        />
       </div>
     </PageContainer>
   );

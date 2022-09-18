@@ -2,7 +2,8 @@ import type { Moment } from 'moment';
 import { Button, Col, InputNumber, message, Row, Select, Spin, Upload } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import type { UploadFile, UploadProps } from 'antd/es/upload/interface';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { ChromePicker } from 'react-color';
 import { AdvertiserID, ConquestID } from '@wormgraph/helpers';
 import { AdvertiserStorageFolder, uploadImageToFirestore } from '@/api/firebase/storage';
 import { $Vertical, $Horizontal } from '@/components/generics';
@@ -12,13 +13,13 @@ export const HiddenViewWidget = (data: any) => null;
 interface AntUploadFileProps {
   advertiserID: AdvertiserID;
   conquestID?: ConquestID;
-  newImageDestination: React.MutableRefObject<string>;
+  newMediaDestination: React.MutableRefObject<string>;
   folderName: AdvertiserStorageFolder;
 }
 export const AntUploadFile: React.FC<AntUploadFileProps> = ({
   advertiserID,
   conquestID,
-  newImageDestination,
+  newMediaDestination,
   folderName,
 }) => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
@@ -29,7 +30,7 @@ export const AntUploadFile: React.FC<AntUploadFileProps> = ({
       folderID: conquestID,
       advertiserID,
     });
-    newImageDestination.current = destination;
+    newMediaDestination.current = destination;
     onSuccess('ok');
   };
   const handleChange: UploadProps['onChange'] = async (info: any) => {
@@ -116,4 +117,17 @@ export const PriceView = ({ value }: { value: any }) => {
       ${value.price} {value.currency}
     </span>
   );
+};
+
+export const AntColorPicker = ({ updateColor, initialColor }: any) => {
+  const [color, setColor] = useState();
+  useEffect(() => {
+    setColor(initialColor);
+  }, []);
+  const handleChangeComplete = (data: any) => {
+    setColor(data.hex);
+    console.log(`chrome color picker data`, data.hex);
+    updateColor(data.hex);
+  };
+  return <ChromePicker color={color} onChangeComplete={handleChangeComplete} />;
 };
