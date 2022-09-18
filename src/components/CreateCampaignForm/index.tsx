@@ -6,6 +6,7 @@ import { Button, Card, Form, Modal, Upload } from 'antd';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { UpdateConquestPayload } from '@/api/graphql/generated/types';
 import { AntUploadFile, HiddenViewWidget } from '../AntFormBuilder';
+import { AdvertiserStorageFolder } from '@/api/firebase/storage';
 
 export type CreateCampaignFormProps = {
   conquest?: {
@@ -70,12 +71,12 @@ const CreateCampaignForm: React.FC<CreateCampaignFormProps> = ({
       payload.status = values.status;
     }
     if (values.startDate) {
-      payload.startDate = values.startDate.unix();
+      payload.startDate = values.startDate;
     }
     if (values.endDate) {
-      payload.endDate = values.endDate.unix();
+      payload.endDate = values.endDate;
     }
-    if (newImageDestination) {
+    if (newImageDestination.current) {
       payload.image = newImageDestination.current;
     }
     setPending(true);
@@ -139,7 +140,11 @@ const CreateCampaignForm: React.FC<CreateCampaignFormProps> = ({
         label: 'Image',
         // @ts-ignore
         widget: () => (
-          <AntUploadFile advertiserID={advertiserID} newImageDestination={newImageDestination} />
+          <AntUploadFile
+            advertiserID={advertiserID}
+            folderName={AdvertiserStorageFolder.CAMPAIGN_IMAGE}
+            newImageDestination={newImageDestination}
+          />
         ),
       });
     }

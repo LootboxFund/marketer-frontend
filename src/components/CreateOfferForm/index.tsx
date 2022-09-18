@@ -8,11 +8,12 @@ import moment from 'moment';
 import type { Moment } from 'moment';
 import FormBuilder from 'antd-form-builder';
 import { Button, Card, Form, Modal } from 'antd';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { CreateOfferPayload, EditOfferPayload } from '@/api/graphql/generated/types';
-import { PriceInput, PriceView } from '../AntFormBuilder';
+import { AntUploadFile, PriceInput, PriceView } from '../AntFormBuilder';
 import { Rule } from 'antd/lib/form';
 import { DateView } from '../AntFormBuilder';
+import { AdvertiserStorageFolder } from '@/api/firebase/storage';
 
 const advertiserID = 'p7BpSqP6U4n4NEanEcFt';
 
@@ -29,6 +30,7 @@ export type CreateOfferFormProps = {
     affiliateBaseLink?: string;
     mmp?: MeasurementPartnerType;
   };
+  advertiserID: AdvertiserID;
   onSubmit: (payload: Omit<EditOfferPayload, 'id'> | CreateOfferPayload) => void;
   mode: 'create' | 'edit-only' | 'view-edit' | 'view-only';
 };
@@ -45,7 +47,13 @@ const OFFER_INFO = {
   affiliateBaseLink: '',
   mmp: MeasurementPartnerType.Manual,
 };
-const CreateOfferForm: React.FC<CreateOfferFormProps> = ({ offer, onSubmit, mode }) => {
+const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
+  offer,
+  onSubmit,
+  mode,
+  advertiserID,
+}) => {
+  const newImageDestination = useRef('');
   const [form] = Form.useForm();
   const [viewMode, setViewMode] = useState(true);
   const [pending, setPending] = useState(false);
@@ -97,10 +105,13 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({ offer, onSubmit, mode
       payload.mmp = values.mmp;
     }
     if (values.startDate) {
-      payload.startDate = values.startDate.unix();
+      payload.startDate = values.startDate;
     }
     if (values.endDate) {
-      payload.endDate = values.endDate.unix();
+      payload.endDate = values.endDate;
+    }
+    if (newImageDestination.current) {
+      payload.image = newImageDestination.current;
     }
     setPending(true);
     try {
@@ -154,6 +165,7 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({ offer, onSubmit, mode
           key: 'affiliateBaseLink',
           label: 'Affiliate Link',
           required: mode === 'create' ? true : false,
+          disabled: mode === 'create' ? false : true,
           rules: [
             { required: true } as Rule,
             { type: 'url' } as Rule,
@@ -173,7 +185,8 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({ offer, onSubmit, mode
         },
         {
           key: 'mmp',
-          label: 'Measurement Partner',
+          label: 'Tracking',
+          disabled: mode === 'create' ? false : true,
           widget: 'select',
           options: [
             MeasurementPartnerType.Appsflyer,
@@ -183,6 +196,20 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({ offer, onSubmit, mode
         },
       ],
     };
+    if (!viewMode) {
+      // @ts-ignore
+      meta.fields.push({
+        key: 'image',
+        label: 'Image',
+        widget: () => (
+          <AntUploadFile
+            advertiserID={advertiserID}
+            folderName={AdvertiserStorageFolder.OFFER_IMAGE}
+            newImageDestination={newImageDestination}
+          />
+        ),
+      });
+    }
     return meta;
   };
   return (

@@ -12,11 +12,13 @@ import BreadCrumbDynamic from '@/components/BreadCrumbDynamic';
 import CreateCampaignForm from '@/components/CreateCampaignForm';
 import { $Horizontal } from '@/components/generics';
 import { useMutation, useQuery } from '@apollo/client';
+import { AdvertiserID } from '@wormgraph/helpers';
 import { Card, Empty, Image } from 'antd';
 import Meta from 'antd/lib/card/Meta';
 import Spin from 'antd/lib/spin';
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { LIST_CONQUEST_PREVIEWS } from '../CampaignsPage/api.gql';
 import { GET_CONQUEST, UPDATE_CONQUEST } from './api.gql';
 import styles from './index.less';
 
@@ -50,6 +52,7 @@ const Template: React.FC = () => {
   >(UPDATE_CONQUEST, {
     refetchQueries: [
       { query: GET_CONQUEST, variables: { advertiserID, conquestID: campaignID || '' } },
+      { query: LIST_CONQUEST_PREVIEWS, variables: { advertiserID } },
     ],
   });
   if (!campaignID) {
@@ -100,6 +103,7 @@ const Template: React.FC = () => {
                 endDate: conquest.endDate || 0,
                 status: conquest.status,
               }}
+              advertiserID={advertiserID as AdvertiserID}
               onSubmit={updateConquest}
               mode="view-edit"
             />

@@ -27,6 +27,7 @@ import CreateOfferForm from '@/components/CreateOfferForm';
 import type { ActivationID, AdvertiserID, OfferID } from '@wormgraph/helpers';
 import CreateActivationFormModal from '@/components/CreateActivationFormModal';
 import { CaretDownOutlined, CaretUpOutlined } from '@ant-design/icons';
+import { LIST_CREATED_OFFERS } from '../OffersPage/api.gql';
 
 const advertiserID = 'p7BpSqP6U4n4NEanEcFt' as AdvertiserID;
 
@@ -64,7 +65,10 @@ const OfferPage: React.FC = () => {
     { editOffer: ResponseError | EditOfferResponseSuccess },
     MutationEditOfferArgs
   >(EDIT_OFFER, {
-    refetchQueries: [{ query: GET_OFFER, variables: { offerID } }],
+    refetchQueries: [
+      { query: GET_OFFER, variables: { offerID } },
+      { query: LIST_CREATED_OFFERS, variables: { advertiserID } },
+    ],
   });
   // CREATE ACTIVATION
   const [createActivationMutation] = useMutation<
@@ -255,6 +259,7 @@ const OfferPage: React.FC = () => {
                 affiliateBaseLink: offer.affiliateBaseLink || '',
                 mmp: offer.mmp,
               }}
+              advertiserID={advertiserID}
               onSubmit={editOffer}
               mode="view-edit"
             />
@@ -284,16 +289,20 @@ const OfferPage: React.FC = () => {
                   <Row
                     style={activation.status !== ActivationStatus.Active ? { opacity: 0.2 } : {}}
                   >
-                    <Col span={14}>
+                    <Col span={14} className={styles.verticalCenter}>
                       {activation.name}{' '}
                       {activation.status !== ActivationStatus.Active
                         ? ` (${activation.status})`
                         : ''}
                     </Col>
-                    <Col span={4} style={{ textAlign: 'right', verticalAlign: 'center' }}>
+                    <Col
+                      span={4}
+                      className={styles.verticalCenter}
+                      style={{ alignItems: 'flex-end' }}
+                    >
                       ${activation.pricing}
                     </Col>
-                    <Col span={4} style={{ alignItems: 'flex-end' }}>
+                    <Col span={4} className={styles.verticalCenter}>
                       <$Horizontal justifyContent="flex-end">
                         <CaretUpOutlined
                           onClick={() => {

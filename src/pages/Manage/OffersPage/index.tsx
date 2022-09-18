@@ -67,8 +67,8 @@ const OffersPage: React.FC = () => {
               <Link key={offer.id} to={`/manage/offers/id/${offer.id}`}>
                 <Card
                   hoverable
-                  style={{ flex: 1 }}
-                  cover={<img alt="example" src={offer.image || ''} />}
+                  className={styles.card}
+                  cover={<img alt="example" src={offer.image || ''} className={styles.cardImage} />}
                 >
                   <Meta title={offer.title} />
                 </Card>

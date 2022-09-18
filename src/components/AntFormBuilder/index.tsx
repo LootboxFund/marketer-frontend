@@ -13,16 +13,18 @@ interface AntUploadFileProps {
   advertiserID: AdvertiserID;
   conquestID?: ConquestID;
   newImageDestination: React.MutableRefObject<string>;
+  folderName: AdvertiserStorageFolder;
 }
 export const AntUploadFile: React.FC<AntUploadFileProps> = ({
   advertiserID,
   conquestID,
   newImageDestination,
+  folderName,
 }) => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const customUploadImage = async ({ file, onSuccess }: any) => {
     const destination = await uploadImageToFirestore({
-      folderName: AdvertiserStorageFolder.CAMPAIGN_IMAGE,
+      folderName,
       file: file,
       folderID: conquestID,
       advertiserID,
