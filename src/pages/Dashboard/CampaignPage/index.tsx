@@ -10,13 +10,15 @@ import type {
 } from '@/api/graphql/generated/types';
 import BreadCrumbDynamic from '@/components/BreadCrumbDynamic';
 import CreateCampaignForm from '@/components/CreateCampaignForm';
-import { PageContainer } from '@ant-design/pro-components';
+import { $Horizontal } from '@/components/generics';
 import { useMutation, useQuery } from '@apollo/client';
-import { Card, Empty } from 'antd';
+import { AdvertiserID } from '@wormgraph/helpers';
+import { Card, Empty, Image } from 'antd';
 import Meta from 'antd/lib/card/Meta';
 import Spin from 'antd/lib/spin';
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { LIST_CONQUEST_PREVIEWS } from '../CampaignsPage/api.gql';
 import { GET_CONQUEST, UPDATE_CONQUEST } from './api.gql';
 import styles from './index.less';
 
@@ -50,14 +52,18 @@ const Template: React.FC = () => {
   >(UPDATE_CONQUEST, {
     refetchQueries: [
       { query: GET_CONQUEST, variables: { advertiserID, conquestID: campaignID || '' } },
+      { query: LIST_CONQUEST_PREVIEWS, variables: { advertiserID } },
     ],
   });
+  if (!campaignID) {
+    return <span>Campaign ID not found</span>;
+  }
   const updateConquest = async (payload: Omit<UpdateConquestPayload, 'id'>) => {
     const res = await updateConquestMutation({
       variables: {
         payload: {
           ...payload,
-          id: campaignID || '',
+          id: campaignID,
         },
         advertiserID: advertiserID,
       },
@@ -75,7 +81,7 @@ const Template: React.FC = () => {
   const breadLine = [
     { title: 'Dashboard', route: '/dashboard' },
     { title: 'Campaigns', route: '/dashboard/campaigns' },
-    { title: conquest?.title || '', route: `/dashboard/campaigns/cid/${conquest?.id}` },
+    { title: conquest?.title || '', route: `/dashboard/campaigns/id/${conquest?.id}` },
   ];
   return (
     <div>
@@ -86,18 +92,23 @@ const Template: React.FC = () => {
       ) : (
         <div className={styles.content}>
           <BreadCrumbDynamic breadLine={breadLine} />
-          <h1>{conquest?.title}</h1>
+          <h1>{conquest.title}</h1>
           <br />
-          <CreateCampaignForm
-            conquest={{
-              title: conquest?.title || '',
-              description: conquest?.description || '',
-              startDate: conquest?.startDate || 0,
-              endDate: conquest?.endDate || 0,
-              status: conquest?.status,
-            }}
-            onSubmit={updateConquest}
-          />
+          <$Horizontal style={{ maxWidth: '1000px' }}>
+            <CreateCampaignForm
+              conquest={{
+                title: conquest.title || '',
+                description: conquest.description || '',
+                startDate: conquest.startDate || 0,
+                endDate: conquest.endDate || 0,
+                status: conquest.status,
+              }}
+              advertiserID={advertiserID as AdvertiserID}
+              onSubmit={updateConquest}
+              mode="view-edit"
+            />
+            <Image width={200} src={conquest.image || ''} />
+          </$Horizontal>
           <br />
           <br />
           <h2>Tournaments</h2>

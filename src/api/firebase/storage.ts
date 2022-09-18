@@ -1,10 +1,17 @@
-import { storage } from './app'
-import { ref, uploadBytes, getDownloadURL } from '@firebase/storage'
-import { v4 as uuidV4 } from 'uuid'
+import { storage } from './app';
+import { ref, uploadBytes, getDownloadURL } from '@firebase/storage';
+import { v4 as uuidV4 } from 'uuid';
+import { AdvertiserID } from '@wormgraph/helpers';
 
-export const USER_ASSET_SUB_FOLDER = 'users'
-export const LOOTBOX_ASSET_FOLDER = `assets`
-export const LOOTBOX_ASSET_SUB_FOLDER = 'lootbox'
+export const USER_ASSET_SUB_FOLDER = 'users';
+export const LOOTBOX_ADVERTISER_ASSET_FOLDER = `advertiser-assets`;
+export enum AdvertiserStorageFolder {
+  CAMPAIGN_IMAGE = 'campaign-image',
+  OFFER_IMAGE = 'offer-image',
+  ADSET_IMAGE = 'adset-image',
+  AD_IMAGE = 'ad-image',
+  AD_VIDEO = 'ad-video',
+}
 
 /**
  * Save image to gbucket
@@ -12,64 +19,35 @@ export const LOOTBOX_ASSET_SUB_FOLDER = 'lootbox'
  * @param file
  */
 const uploadImageToBucket = async (fileDestination: string, file: File) => {
+  console.log('uploadImageToBucket');
   // Create a reference to 'mountains.jpg'
-  const storageRef = ref(storage, fileDestination)
-
+  const storageRef = ref(storage, fileDestination);
+  console.log('is it working?');
   // 'file' comes from the Blob or File API
-  await uploadBytes(storageRef, file)
-  const downloadURL = await getDownloadURL(storageRef)
-  return downloadURL
-}
+  await uploadBytes(storageRef, file);
+  console.log('uploaded bites');
+  const downloadURL = await getDownloadURL(storageRef);
+  console.log(downloadURL);
+  return downloadURL;
+};
 
-export const uploadLootboxLogo = async (folder: string, file: File): Promise<string> => {
-  const extension = file?.name?.split('.').pop()
-  const fileDestination = `${LOOTBOX_ASSET_FOLDER}/${LOOTBOX_ASSET_SUB_FOLDER}/${folder}/logo${
-    extension ? '.' + extension : ''
-  }`
-  const res = await uploadImageToBucket(fileDestination, file)
-  return res
-}
-
-export const uploadLootboxCover = async (folder: string, file: File): Promise<string> => {
-  const extension = file?.name?.split('.').pop()
-  const fileDestination = `${LOOTBOX_ASSET_FOLDER}/${LOOTBOX_ASSET_SUB_FOLDER}/${folder}/cover${
-    extension ? '.' + extension : ''
-  }`
-  const res = await uploadImageToBucket(fileDestination, file)
-  return res
-}
-
-export const uploadLootboxBadge = async (folder: string, file: File): Promise<string> => {
-  const extension = file?.name?.split('.').pop()
-  const fileDestination = `${LOOTBOX_ASSET_FOLDER}/${LOOTBOX_ASSET_SUB_FOLDER}/${folder}/badge${
-    extension ? '.' + extension : ''
-  }`
-  const res = await uploadImageToBucket(fileDestination, file)
-  return res
-}
-
-export const uploadTournamentCover = async (file: File): Promise<string> => {
-  const extension = file?.name?.split('.').pop()
-  const folder = uuidV4()
-  const fileDestination = `${LOOTBOX_ASSET_FOLDER}/tournament/${folder}/cover${extension ? '.' + extension : ''}`
-  const res = await uploadImageToBucket(fileDestination, file)
-  return res
-}
-
-export const uploadUserAvatar = async (folder: string, file: File): Promise<string> => {
-  const extension = file?.name?.split('.').pop()
-  const fileDestination = `${LOOTBOX_ASSET_FOLDER}/${USER_ASSET_SUB_FOLDER}/${folder}/avatar-${uuidV4()}${
-    extension ? '.' + extension : ''
-  }`
-  const res = await uploadImageToBucket(fileDestination, file)
-  return res
-}
-
-export const uploadUserHeadshot = async (folder: string, file: File): Promise<string> => {
-  const extension = file?.name?.split('.').pop()
-  const fileDestination = `${LOOTBOX_ASSET_FOLDER}/${USER_ASSET_SUB_FOLDER}/${folder}/headshot-${uuidV4()}${
-    extension ? '.' + extension : ''
-  }`
-  const res = await uploadImageToBucket(fileDestination, file)
-  return res
-}
+export const uploadImageToFirestore = async ({
+  folderName,
+  folderID,
+  file,
+  advertiserID,
+}: {
+  folderName: AdvertiserStorageFolder;
+  folderID?: string;
+  file: File;
+  advertiserID: AdvertiserID;
+}): Promise<string> => {
+  const extension = file?.name?.split('.').pop();
+  const fileID = uuidV4();
+  const fileDestination = `${LOOTBOX_ADVERTISER_ASSET_FOLDER}/advertiser/${advertiserID}/${folderName}/${
+    folderID || 'unknown'
+  }/${fileID}/${extension ? '.' + extension : ''}`;
+  console.log(`fileDestination = ${fileDestination}`);
+  const downloadURL = await uploadImageToBucket(fileDestination, file);
+  return downloadURL;
+};

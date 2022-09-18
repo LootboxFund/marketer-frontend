@@ -52,7 +52,7 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
   name: 'LootboxWidgets',
   version: '1.0',
-  defaultOptions: defaultOptions,
+  // defaultOptions: defaultOptions,
 });
 
 export default client;
