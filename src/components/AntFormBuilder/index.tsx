@@ -31,6 +31,7 @@ export const AntUploadFile: React.FC<AntUploadFileProps> = ({
       advertiserID,
     });
     newMediaDestination.current = destination;
+
     onSuccess('ok');
   };
   const handleChange: UploadProps['onChange'] = async (info: any) => {

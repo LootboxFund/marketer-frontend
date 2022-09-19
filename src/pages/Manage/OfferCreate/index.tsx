@@ -53,7 +53,9 @@ const OfferCreate: React.FC = () => {
       // @ts-ignore
       throw new Error(res?.data?.createOffer?.error?.message || words.anErrorOccured);
     }
-    history.push('/manage/offers');
+    if (res?.data?.createOffer?.__typename === 'CreateOfferResponseSuccess') {
+      history.push(`/manage/offers/id/${res?.data?.createOffer?.offer?.id}`);
+    }
   };
 
   return (

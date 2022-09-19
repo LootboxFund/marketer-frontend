@@ -49,7 +49,9 @@ const AdCreate: React.FC = () => {
       // @ts-ignore
       throw new Error(res?.data?.createAd?.error?.message || words.anErrorOccured);
     }
-    history.push('/manage/ads');
+    if (res?.data?.createAd?.__typename === 'CreateAdResponseSuccess') {
+      history.push(`/manage/ads/id/${res?.data?.createAd?.ad?.id}`);
+    }
   };
 
   return (

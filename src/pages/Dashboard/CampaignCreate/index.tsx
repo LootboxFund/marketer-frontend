@@ -21,7 +21,7 @@ const advertiserID = 'p7BpSqP6U4n4NEanEcFt';
 
 const CampaignCreate: React.FC = () => {
   const [createConquestMutation] = useMutation<
-    { updateConquest: ResponseError | CreateConquestResponseSuccess },
+    { createConquest: ResponseError | CreateConquestResponseSuccess },
     MutationCreateConquestArgs
   >(CREATE_CONQUEST, {
     refetchQueries: [{ query: LIST_CONQUEST_PREVIEWS, variables: { advertiserID } }],
@@ -36,11 +36,13 @@ const CampaignCreate: React.FC = () => {
         },
       },
     });
-    if (!res?.data || res?.data?.updateConquest?.__typename === 'ResponseError') {
+    if (!res?.data || res?.data?.createConquest?.__typename === 'ResponseError') {
       // @ts-ignore
-      throw new Error(res?.data?.updateConquest?.error?.message || words.anErrorOccured);
+      throw new Error(res?.data?.createConquest?.error?.message || words.anErrorOccured);
     }
-    history.push('/dashboard/campaigns');
+    if (res?.data?.createConquest?.__typename === 'CreateConquestResponseSuccess') {
+      history.push(`/dashboard/campaigns/id/${res?.data?.createConquest?.conquest?.id}`);
+    }
   };
 
   return (

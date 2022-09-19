@@ -9,10 +9,12 @@ import FormBuilder from 'antd-form-builder';
 import { Button, Card, Form, Image, Modal } from 'antd';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
+  Ad,
   AdStatus,
   CreateAdPayload,
   CreativeType,
   EditAdPayload,
+  OfferPreview,
   Placement,
 } from '@/api/graphql/generated/types';
 import { AntColorPicker, AntUploadFile, PriceInput, PriceView } from '../AntFormBuilder';
@@ -281,7 +283,7 @@ const CreateAdForm: React.FC<CreateAdFormProps> = ({
           widget: 'select',
           tooltip: 'This determines where your ad is shown',
           required: true,
-          initialValuue: adInfo.placement,
+          initialValue: adInfo.placement,
           options: [Placement.AfterPayout, Placement.BeforePayout, Placement.AfterTicketClaim],
         },
         {
@@ -311,9 +313,23 @@ const CreateAdForm: React.FC<CreateAdFormProps> = ({
     };
     if (!viewMode) {
       meta.fields.push({
-        key: 'media',
+        key: 'creative.thumbnail',
         label: 'Media',
-        // required: true,
+        rules: [
+          {
+            validator: (rule: any, value: any, callback: any) => {
+              // Do async validation to check if username already exists
+              // Use setTimeout to emulate api call
+              return new Promise((resolve, reject) => {
+                if (!newMediaDestination.current) {
+                  reject(new Error(`Upload a file`));
+                } else {
+                  resolve(newMediaDestination.current);
+                }
+              });
+            },
+          },
+        ],
         // @ts-ignore
         widget: () => (
           <AntUploadFile
@@ -446,16 +462,6 @@ const CreateAdForm: React.FC<CreateAdFormProps> = ({
               <legend>{`Submit`}</legend>
               <$Horizontal justifyContent="flex-end">
                 <Form.Item className="form-footer" style={{ width: 'auto' }}>
-                  {mode === 'create' ? (
-                    <Button htmlType="submit" type="primary" disabled={pending}>
-                      {pending ? 'Creating...' : 'Create'}
-                    </Button>
-                  ) : (
-                    <Button htmlType="submit" type="primary" disabled={pending}>
-                      {pending ? 'Updating...' : 'Update'}
-                    </Button>
-                  )}
-
                   <Button
                     onClick={() => {
                       form.resetFields();
@@ -466,10 +472,20 @@ const CreateAdForm: React.FC<CreateAdFormProps> = ({
                         history.back();
                       }
                     }}
-                    style={{ marginLeft: '15px' }}
+                    style={{ marginRight: '15px' }}
                   >
                     Cancel
                   </Button>
+
+                  {mode === 'create' ? (
+                    <Button htmlType="submit" type="primary" disabled={pending}>
+                      {pending ? 'Creating...' : 'Create'}
+                    </Button>
+                  ) : (
+                    <Button htmlType="submit" type="primary" disabled={pending}>
+                      {pending ? 'Updating...' : 'Update'}
+                    </Button>
+                  )}
                 </Form.Item>
               </$Horizontal>
             </fieldset>

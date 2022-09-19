@@ -1,13 +1,41 @@
 import { gql } from '@apollo/client';
 
-export const LIST_CONQUEST_PREVIEWS = gql`
-  query ListConquestPreviews($advertiserID: ID!) {
-    listConquestPreviews(advertiserID: $advertiserID) {
-      ... on ListConquestPreviewsResponseSuccess {
-        conquests {
+export const CREATE_AD_SET = gql`
+  mutation CreateAdSet($payload: CreateAdSetPayload!) {
+    createAdSet(payload: $payload) {
+      ... on CreateAdSetResponseSuccess {
+        adSet {
           id
-          title
-          image
+          name
+          description
+          status
+          advertiserID
+          placement
+          offerIDs
+          adIDs
+          ads {
+            id
+            advertiserID
+            status
+            name
+            placement
+            publicInfo
+            description
+            impressions
+            clicks
+            uniqueClicks
+            creative {
+              adID
+              advertiserID
+              creativeType
+              creativeLinks
+              callToAction
+              thumbnail
+              infographicLink
+              aspectRatio
+              themeColor
+            }
+          }
         }
       }
       ... on ResponseError {
