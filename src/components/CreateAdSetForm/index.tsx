@@ -299,6 +299,7 @@ const CreateAdSetForm: React.FC<CreateAdSetFormProps> = ({
         {
           key: 'placement',
           widget: 'select',
+          viewWidget: (data: any) => <input disabled={true} value={data.value} />,
           required: true,
           options: [Placement.AfterTicketClaim, Placement.BeforePayout, Placement.AfterPayout],
           rules: [
