@@ -15,12 +15,14 @@ interface AntUploadFileProps {
   conquestID?: ConquestID;
   newMediaDestination: React.MutableRefObject<string>;
   folderName: AdvertiserStorageFolder;
+  acceptedFileTypes: 'image/*,video/*' | 'image/*' | 'video/*';
 }
 export const AntUploadFile: React.FC<AntUploadFileProps> = ({
   advertiserID,
   conquestID,
   newMediaDestination,
   folderName,
+  acceptedFileTypes,
 }) => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const customUploadImage = async ({ file, onSuccess }: any) => {
@@ -78,7 +80,7 @@ export const AntUploadFile: React.FC<AntUploadFileProps> = ({
         fileList={fileList}
         listType="text"
         style={{ overflow: 'hidden' }}
-        accept="image/*"
+        accept={acceptedFileTypes}
         customRequest={customUploadImage}
       >
         <Button icon={<UploadOutlined />}>Upload</Button>

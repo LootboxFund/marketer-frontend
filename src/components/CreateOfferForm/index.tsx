@@ -206,6 +206,7 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
             advertiserID={advertiserID}
             folderName={AdvertiserStorageFolder.OFFER_IMAGE}
             newMediaDestination={newMediaDestination}
+            acceptedFileTypes={'image/*'}
           />
         ),
       });

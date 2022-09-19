@@ -64,7 +64,7 @@ const AdSetToOfferPicker: React.FC<AdSetToOfferPickerProps> = ({
       <Transfer
         disabled={disabled}
         dataSource={offersToShow}
-        titles={['Offers', 'Allowed with Ad Set']}
+        titles={['Select Options', 'Appears in these Offers']}
         targetKeys={targetKeys}
         selectedKeys={selectedKeys}
         showSearch

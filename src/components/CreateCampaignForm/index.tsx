@@ -146,6 +146,7 @@ const CreateCampaignForm: React.FC<CreateCampaignFormProps> = ({
               advertiserID={advertiserID}
               folderName={AdvertiserStorageFolder.CAMPAIGN_IMAGE}
               newMediaDestination={newMediaDestination}
+              acceptedFileTypes={'image/*'}
             />
           ),
         });

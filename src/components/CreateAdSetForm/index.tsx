@@ -44,7 +44,8 @@ export type CreateAdSetFormProps = {
     adIDs: AdID[];
   };
   advertiserID: AdvertiserID;
-  onSubmitCreate: (payload: CreateAdSetPayload) => void;
+  onSubmitCreate?: (payload: CreateAdSetPayload) => void;
+  onSubmitEdit?: (payload: EditAdSetPayload) => void;
   mode: 'create' | 'edit-only' | 'view-edit' | 'view-only';
   listOfAds: Ad[];
   listOfOffers: OfferPreview[];
@@ -63,6 +64,7 @@ const AD_SET_INFO = {
 const CreateAdSetForm: React.FC<CreateAdSetFormProps> = ({
   adSet,
   onSubmitCreate,
+  onSubmitEdit,
   mode,
   advertiserID,
   listOfAds,
@@ -101,6 +103,7 @@ const CreateAdSetForm: React.FC<CreateAdSetFormProps> = ({
   }, [adSet]);
 
   const handleFinishCreate = useCallback(async (values) => {
+    if (!onSubmitCreate) return;
     console.log('Submit: ', values);
     const payload = {} as CreateAdSetPayload;
     if (values.name) {
@@ -143,48 +146,49 @@ const CreateAdSetForm: React.FC<CreateAdSetFormProps> = ({
     }
   }, []);
 
-  // const handleFinishEdit = useCallback(async (values) => {
-  //   console.log('Submit: ', values);
-  //   const payload = {} as EditAdSetPayload;
-  //   if (values.name) {
-  //     payload.name = values.name;
-  //   }
-  //   if (values.description) {
-  //     payload.description = values.description;
-  //   }
-  //   if (values.status) {
-  //     payload.status = values.status;
-  //   }
-  //   // if (values.placement) {
-  //   //   payload.placement = values.placement;
-  //   // }
-  //   if (chosenAdSets.current && chosenAdSets.current.length > 0) {
-  //     payload.adIDs = chosenAdSets.current;
-  //   }
-  //   if (chosenAdSets.current && chosenAdSets.current.length > 0) {
-  //     payload.adIDs = chosenAdSets.current;
-  //   }
-  //   if (chosenOffers.current && chosenOffers.current.length > 0) {
-  //     payload.offerIDs = chosenOffers.current;
-  //   }
-  //   setPending(true);
-  //   try {
-  //     await onSubmitEdit(payload);
-  //     setPending(false);
-  //     if (!lockedToEdit) {
-  //       setViewMode(true);
-  //     }
-  //     Modal.success({
-  //       title: 'Success',
-  //       content: 'Ad Set Updated',
-  //     });
-  //   } catch (e: any) {
-  //     Modal.error({
-  //       title: 'Failure',
-  //       content: `${e.message}`,
-  //     });
-  //   }
-  // }, []);
+  const handleFinishEdit = useCallback(async (values) => {
+    if (!onSubmitEdit) return;
+    console.log('Submit: ', values);
+    const payload = {} as EditAdSetPayload;
+    if (values.name) {
+      payload.name = values.name;
+    }
+    if (values.description) {
+      payload.description = values.description;
+    }
+    if (values.status) {
+      payload.status = values.status;
+    }
+    // if (values.placement) {
+    //   payload.placement = values.placement;
+    // }
+    if (chosenAdSets.current && chosenAdSets.current.length > 0) {
+      payload.adIDs = chosenAdSets.current;
+    }
+    if (chosenAdSets.current && chosenAdSets.current.length > 0) {
+      payload.adIDs = chosenAdSets.current;
+    }
+    if (chosenOffers.current && chosenOffers.current.length > 0) {
+      payload.offerIDs = chosenOffers.current;
+    }
+    setPending(true);
+    try {
+      await onSubmitEdit(payload);
+      setPending(false);
+      if (!lockedToEdit) {
+        setViewMode(true);
+      }
+      Modal.success({
+        title: 'Success',
+        content: 'Ad Set Updated',
+      });
+    } catch (e: any) {
+      Modal.error({
+        title: 'Failure',
+        content: `${e.message}`,
+      });
+    }
+  }, []);
 
   const renderAdSetToOfferPicker = () => {
     return (
@@ -291,7 +295,7 @@ const CreateAdSetForm: React.FC<CreateAdSetFormProps> = ({
           render() {
             return (
               <span style={{ color: 'gray', paddingBottom: '10px' }}>
-                {`Pick a Placement for your Ad Set`}
+                {`Pick a Placement for your Ad Set (All creatives will match this placement).`}
               </span>
             );
           },
@@ -299,14 +303,15 @@ const CreateAdSetForm: React.FC<CreateAdSetFormProps> = ({
         {
           key: 'placement',
           widget: 'select',
-          viewWidget: (data: any) => <input disabled={true} value={data.value} />,
+          viewWidget: (data: any) => (
+            <input disabled={true} value={data.value} style={{ margin: '10px 0px' }} />
+          ),
           required: true,
+          disabled: mode !== 'create',
           options: [Placement.AfterTicketClaim, Placement.BeforePayout, Placement.AfterPayout],
           rules: [
             {
               validator: (rule: any, value: any, callback: any) => {
-                // Do async validation to check if username already exists
-                // Use setTimeout to emulate api call
                 return new Promise((resolve, reject) => {
                   setChosenPlacementInternalState(value);
                   resolve(value);
@@ -350,7 +355,7 @@ const CreateAdSetForm: React.FC<CreateAdSetFormProps> = ({
           render() {
             return (
               <fieldset>
-                <legend>Available In Offers</legend>
+                <legend>{`Available In Offers (Can modify anytime)`}</legend>
               </fieldset>
             );
           },
@@ -399,7 +404,11 @@ const CreateAdSetForm: React.FC<CreateAdSetFormProps> = ({
             Edit
           </Button>
         )}
-        <Form layout="horizontal" form={form} onFinish={handleFinishCreate}>
+        <Form
+          layout="horizontal"
+          form={form}
+          onFinish={mode === 'create' ? handleFinishCreate : handleFinishEdit}
+        >
           <FormBuilder form={form} meta={getMeta()} viewMode={viewMode} />
           {!viewMode && (
             <$Horizontal justifyContent="flex-end">

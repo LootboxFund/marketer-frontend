@@ -336,6 +336,7 @@ const CreateAdForm: React.FC<CreateAdFormProps> = ({
             advertiserID={advertiserID}
             folderName={AdvertiserStorageFolder.AD_VIDEO}
             newMediaDestination={newMediaDestination}
+            acceptedFileTypes={'image/*,video/*'}
           />
         ),
       });
