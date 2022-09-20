@@ -1,4 +1,3 @@
-import { getNotices } from '@/services/ant-design-pro/api';
 import { useModel, useRequest } from '@umijs/max';
 import { message, Tag } from 'antd';
 import { groupBy } from 'lodash';
@@ -73,7 +72,7 @@ const NoticeIconView: React.FC = () => {
   const { initialState } = useModel('@@initialState');
   const { currentUser } = initialState || {};
   const [notices, setNotices] = useState<API.NoticeIconItem[]>([]);
-  const { data } = useRequest(getNotices);
+  // const { data } = useRequest(getNotices);
 
   useEffect(() => {
     setNotices(data || []);

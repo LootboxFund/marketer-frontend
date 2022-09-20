@@ -3,13 +3,13 @@ import RightContent from '@/components/RightContent';
 import { LinkOutlined } from '@ant-design/icons';
 import type { Settings as LayoutSettings } from '@ant-design/pro-components';
 import { SettingDrawer } from '@ant-design/pro-components';
-import type { RunTimeLayoutConfig } from '@umijs/max';
 import { history, Link } from '@umijs/max';
 import { ApolloProvider } from '@apollo/client';
 import client from '@/api/graphql/client';
 import defaultSettings from '../config/defaultSettings';
 import { errorConfig } from './requestErrorConfig';
-import { currentUser as queryCurrentUser } from './services/ant-design-pro/api';
+import { GET_ADVERTISER } from './pages/User/Login/api.gql';
+import { AdvertiserAdminViewResponse } from './api/graphql/generated/types';
 
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
@@ -19,16 +19,19 @@ const loginPath = '/user/login';
  * */
 export async function getInitialState(): Promise<{
   settings?: Partial<LayoutSettings>;
-  currentUser?: API.CurrentUser;
+  currentUser?: any;
   loading?: boolean;
-  fetchUserInfo?: () => Promise<API.CurrentUser | undefined>;
+  fetchUserInfo?: () => Promise<any | undefined>;
 }> {
   const fetchUserInfo = async () => {
     try {
-      const msg = await queryCurrentUser({
-        skipErrorHandler: true,
+      const response = await client.query<AdvertiserAdminViewResponse>({
+        query: GET_ADVERTISER,
       });
-      return msg.data;
+      if (response.data.__typename === 'AdvertiserAdminViewResponseSuccess') {
+        return response.data;
+      }
+      return;
     } catch (error) {
       history.push(loginPath);
     }
@@ -50,7 +53,13 @@ export async function getInitialState(): Promise<{
 }
 
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
-export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
+export const layout: any = ({
+  initialState,
+  setInitialState,
+}: {
+  initialState: any;
+  setInitialState: any;
+}) => {
   // console.log(initialState?.settings);
   return {
     rightContentRender: () => <RightContent />,
@@ -95,7 +104,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     // 自定义 403 页面
     // unAccessible: <div>unAccessible</div>,
     // 增加一个 loading 的状态
-    childrenRender: (children, props) => {
+    childrenRender: (children: any, props: any) => {
       // if (initialState?.loading) return <PageLoading />;
       return (
         <>
@@ -107,7 +116,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
                 enableDarkTheme
                 settings={initialState?.settings}
                 onSettingChange={(settings) => {
-                  setInitialState((preInitialState) => ({
+                  setInitialState((preInitialState: any) => ({
                     ...preInitialState,
                     settings,
                   }));
