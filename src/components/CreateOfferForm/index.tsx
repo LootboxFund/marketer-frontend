@@ -15,8 +15,6 @@ import { Rule } from 'antd/lib/form';
 import { DateView } from '../AntFormBuilder';
 import { AdvertiserStorageFolder } from '@/api/firebase/storage';
 
-const advertiserID = 'p7BpSqP6U4n4NEanEcFt';
-
 export type CreateOfferFormProps = {
   offer?: {
     title: string;

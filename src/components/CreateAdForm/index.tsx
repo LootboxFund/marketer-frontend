@@ -54,8 +54,6 @@ export enum AdSampleCallToActions {
   'Watch Now' = 'Watch Now',
 }
 
-const advertiserID = 'p7BpSqP6U4n4NEanEcFt';
-
 export type CreateAdFormProps = {
   ad?: {
     id?: string;

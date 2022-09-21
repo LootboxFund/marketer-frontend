@@ -1,9 +1,9 @@
-import { Spin } from 'antd';
+import { Button, Spin } from 'antd';
 import { COLORS } from '@wormgraph/helpers';
 import { PropsWithChildren, useState } from 'react';
 import { useAuth } from '@/api/firebase/useAuth';
 import { useQuery } from '@apollo/client';
-import { history } from '@umijs/max';
+import { history, Link } from '@umijs/max';
 import {
   AdvertiserAdminViewResponse,
   AdvertiserAdminViewResponseSuccess,
@@ -29,10 +29,15 @@ const AuthGuard = ({ children, strict, ...props }: AuthGuardProps) => {
       },
     },
   );
-  if (loading || !advertiserUser) {
-    return <Spin style={{ margin: 'auto' }} />;
-  }
   if (!user) {
+    // return <Spin style={{ margin: 'auto' }} />;
+    return (
+      <Link to="/user/login">
+        <Button type="primary">Login</Button>
+      </Link>
+    );
+  }
+  if (loading || !advertiserUser) {
     return <Spin style={{ margin: 'auto' }} />;
   }
   return children;

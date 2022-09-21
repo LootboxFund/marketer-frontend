@@ -79,7 +79,7 @@ const AdSetPage: React.FC = () => {
   } = useQuery<{ listCreatedOffers: ListCreatedOffersResponse }, QueryListCreatedOffersArgs>(
     LIST_CREATED_OFFERS,
     {
-      variables: { advertiserID: 'p7BpSqP6U4n4NEanEcFt' },
+      variables: { advertiserID },
       onCompleted: (data) => {
         if (data?.listCreatedOffers.__typename === 'ListCreatedOffersResponseSuccess') {
           const offers = data.listCreatedOffers.offers;

@@ -18,6 +18,11 @@ export default [
         path: '/user/login',
         component: './User/Login',
       },
+      {
+        name: 'logout',
+        path: '/user/logout',
+        component: './User/Logout',
+      },
     ],
   },
   {
@@ -147,7 +152,7 @@ export default [
       {
         name: 'Account',
         path: '/company/account',
-        component: './Welcome',
+        component: './Company/AccountPage',
       },
       {
         name: 'Billing',

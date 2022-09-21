@@ -13,7 +13,7 @@
 - ✅ Add/Remove Tournament to Conquest
 - ✅ Add auth permissions on CRUD
 
-- 🔵 Deploy to Staging
+- ✅ Deploy to Staging
 - ⬜️ Refactor widgets to new graphql
 
 - ⬜️ Lootbox Pixel on Google Tag Manager
@@ -22,9 +22,11 @@
 - 🔵 View Historical Tournaments
 - 🔵 View Historical Partners
 
-- ⬜️ Basic Offer Analytics
-- ⬜️ Basic Event Analytics
-- ⬜️ Basic Organizer Analytics
+- ⬜️ Basic Offer Analytics for Advertiser
+- ⬜️ Basic Tournament Analytics for Advertiser
+
+- ⬜️ Basic Offer Analytics for Organizer
+- ⬜️ Basic Tournament Analytics for Organizer
 
 - ⬜️ Wallet Backend with Memo Math to avoid going over budget
 - ⬜️ Add/Remove Offer to Tournament (from affililate point of view. no whitelisting)

@@ -2,6 +2,7 @@ import type {
   ListConquestPreviewsResponse,
   QueryListConquestPreviewsArgs,
 } from '@/api/graphql/generated/types';
+import { useAdvertiserUser } from '@/components/AuthGuard/advertiserUserInfo';
 import { PageContainer } from '@ant-design/pro-components';
 import { useQuery } from '@apollo/client';
 import Spin from 'antd/lib/spin';
@@ -10,11 +11,13 @@ import { LIST_CONQUEST_PREVIEWS } from './api.gql';
 import styles from './index.less';
 
 const Template: React.FC = () => {
+  const { advertiserUser } = useAdvertiserUser();
+  const { id: advertiserID } = advertiserUser;
   const { data, loading, error } = useQuery<
     { listConquestPreviews: ListConquestPreviewsResponse },
     QueryListConquestPreviewsArgs
   >(LIST_CONQUEST_PREVIEWS, {
-    variables: { advertiserID: 'p7BpSqP6U4n4NEanEcFt' },
+    variables: { advertiserID },
     onCompleted: (data) => {
       if (data?.listConquestPreviews.__typename === 'ListConquestPreviewsResponseSuccess') {
         const conquests = data.listConquestPreviews.conquests;

@@ -30,8 +30,6 @@ import { $Horizontal, $Vertical } from '@/components/generics';
 import { Link } from '@umijs/max';
 import AdSetToOfferPicker from './AdSetToOfferPicker';
 
-const advertiserID = 'p7BpSqP6U4n4NEanEcFt';
-
 export type CreateAdSetFormProps = {
   adSet?: {
     id: AdSetID;
