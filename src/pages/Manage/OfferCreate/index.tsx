@@ -17,10 +17,14 @@ import { history } from '@umijs/max';
 import { CREATE_OFFER } from './api.gql';
 import styles from './index.less';
 import { LIST_CREATED_OFFERS } from '../OffersPage/api.gql';
-
-const advertiserID = 'p7BpSqP6U4n4NEanEcFt';
+import { AdvertiserID } from '@wormgraph/helpers';
+import { useAdvertiserUser } from '@/components/AuthGuard/advertiserUserInfo';
 
 const OfferCreate: React.FC = () => {
+  // get the advertiser user
+  const { advertiserUser } = useAdvertiserUser();
+  const { id: advertiserID } = advertiserUser;
+  // do the rest
   const [createOfferMutation] = useMutation<
     { createOffer: ResponseError | CreateOfferResponseSuccess },
     MutationCreateOfferArgs
@@ -52,13 +56,19 @@ const OfferCreate: React.FC = () => {
       // @ts-ignore
       throw new Error(res?.data?.createOffer?.error?.message || words.anErrorOccured);
     }
-    history.push('/manage/offers');
+    if (res?.data?.createOffer?.__typename === 'CreateOfferResponseSuccess') {
+      history.push(`/manage/offers/id/${res?.data?.createOffer?.offer?.id}`);
+    }
   };
 
   return (
     <PageContainer>
       <div className={styles.content}>
-        <CreateOfferForm onSubmit={createOffer} mode="create" />
+        <CreateOfferForm
+          onSubmit={createOffer}
+          mode="create"
+          advertiserID={advertiserID as AdvertiserID}
+        />
       </div>
     </PageContainer>
   );

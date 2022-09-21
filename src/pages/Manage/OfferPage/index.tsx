@@ -28,10 +28,13 @@ import type { ActivationID, AdvertiserID, OfferID } from '@wormgraph/helpers';
 import CreateActivationFormModal from '@/components/CreateActivationFormModal';
 import { CaretDownOutlined, CaretUpOutlined } from '@ant-design/icons';
 import { LIST_CREATED_OFFERS } from '../OffersPage/api.gql';
-
-const advertiserID = 'p7BpSqP6U4n4NEanEcFt' as AdvertiserID;
+import { useAdvertiserUser } from '@/components/AuthGuard/advertiserUserInfo';
 
 const OfferPage: React.FC = () => {
+  // get the advertiser user
+  const { advertiserUser } = useAdvertiserUser();
+  const { id: advertiserID } = advertiserUser;
+  // do the rest
   const { offerID } = useParams();
   const [offer, setOffer] = useState<Offer>();
 
@@ -251,7 +254,8 @@ const OfferPage: React.FC = () => {
                 title: offer.title,
                 description: offer.description || '',
                 image: offer.image || '',
-                advertiserID: (offer.advertiserID as AdvertiserID) || advertiserID,
+                advertiserID:
+                  (offer.advertiserID as AdvertiserID) || (advertiserID as AdvertiserID),
                 maxBudget: offer.maxBudget || 0,
                 startDate: offer.startDate,
                 endDate: offer.endDate,
@@ -259,7 +263,7 @@ const OfferPage: React.FC = () => {
                 affiliateBaseLink: offer.affiliateBaseLink || '',
                 mmp: offer.mmp,
               }}
-              advertiserID={advertiserID}
+              advertiserID={advertiserID as AdvertiserID}
               onSubmit={editOffer}
               mode="view-edit"
             />

@@ -143,7 +143,7 @@ const Welcome: React.FC = () => {
             />
             <InfoCard
               index={3}
-              title="Load up your Wallet"
+              title="Increase Global Sales"
               href="https://procomponents.ant.design"
               desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
             />

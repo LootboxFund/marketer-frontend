@@ -18,6 +18,11 @@ export default [
         path: '/user/login',
         component: './User/Login',
       },
+      {
+        name: 'logout',
+        path: '/user/logout',
+        component: './User/Logout',
+      },
     ],
   },
   {
@@ -103,21 +108,39 @@ export default [
         component: './Manage/OfferCreate',
       },
       {
-        name: 'Ads',
+        name: 'Ad Sets',
         path: '/manage/adsets',
-        component: './Welcome',
+        component: './Manage/AdSetsPage',
       },
       {
         name: 'Ad Set',
         path: '/manage/adsets/id/:adSetID',
         hideInMenu: true,
-        component: './Welcome',
+        component: './Manage/AdSetPage',
       },
       {
-        name: 'Ad',
+        name: 'Create Ad Set',
+        path: '/manage/adsets/create',
+        hideInMenu: true,
+        component: './Manage/AdSetCreate',
+      },
+      {
+        name: 'Creatives',
+        path: '/manage/ads',
+        hideInMenu: true,
+        component: './Manage/AdsPage',
+      },
+      {
+        name: 'Creative',
         path: '/manage/ads/id/:adID',
         hideInMenu: true,
-        component: './Welcome',
+        component: './Manage/AdPage',
+      },
+      {
+        name: 'New Creative',
+        path: '/manage/ads/create',
+        hideInMenu: true,
+        component: './Manage/AdCreate',
       },
     ],
   },
@@ -129,7 +152,7 @@ export default [
       {
         name: 'Account',
         path: '/company/account',
-        component: './Welcome',
+        component: './Company/AccountPage',
       },
       {
         name: 'Billing',

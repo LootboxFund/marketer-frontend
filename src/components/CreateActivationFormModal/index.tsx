@@ -26,8 +26,6 @@ import type {
   EditActivationPayload,
 } from '../../api/graphql/generated/types';
 
-const advertiserID = 'p7BpSqP6U4n4NEanEcFt';
-
 export type CreateActivationFormModalProps = {
   activationToEdit: Activation | null;
   mode: 'create' | 'view-edit';

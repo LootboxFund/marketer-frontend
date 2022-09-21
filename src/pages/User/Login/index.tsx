@@ -1,24 +1,21 @@
+import { useAuth } from '@/api/firebase/useAuth';
 import Footer from '@/components/Footer';
-import { login } from '@/services/ant-design-pro/api';
-import { getFakeCaptcha } from '@/services/ant-design-pro/login';
-import {
-  AlipayCircleOutlined,
-  LockOutlined,
-  MobileOutlined,
-  TaobaoCircleOutlined,
-  UserOutlined,
-  WeiboCircleOutlined,
-} from '@ant-design/icons';
+import client from '@/api/graphql/client';
+
+import { LockOutlined, MobileOutlined, UserOutlined } from '@ant-design/icons';
+import { browserLocalPersistence, browserSessionPersistence, setPersistence } from 'firebase/auth';
 import {
   LoginForm,
   ProFormCaptcha,
   ProFormCheckbox,
   ProFormText,
 } from '@ant-design/pro-components';
-import { FormattedMessage, history, SelectLang, useIntl, useModel } from '@umijs/max';
+import { ApolloProvider } from '@apollo/client';
+import { FormattedMessage, history, SelectLang } from '@umijs/max';
 import { Alert, message, Tabs } from 'antd';
-import React, { useState } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import styles from './index.less';
+import { auth } from '@/api/firebase/app';
 
 const LoginMessage: React.FC<{
   content: string;
@@ -35,50 +32,76 @@ const LoginMessage: React.FC<{
   );
 };
 
+type BullshitAntProAuthType = {
+  username?: string;
+  password?: string;
+  captcha: string;
+  mobile: string;
+};
+
 const Login: React.FC = () => {
-  const [userLoginState, setUserLoginState] = useState<API.LoginResult>({});
+  const [userLoginState, setUserLoginState] = useState<any>({});
   const [type, setType] = useState<string>('account');
-  const { initialState, setInitialState } = useModel('@@initialState');
+  const persistence: 'session' | 'local' = (localStorage.getItem('auth.persistence') ||
+    'session') as 'session' | 'local';
+  const [persistenceChecked, setPersistenceChecked] = useState(persistence === 'local');
 
-  const intl = useIntl();
+  const { signInWithEmailAndPassword, sendPhoneVerification, signInPhoneWithCode } = useAuth();
 
-  const fetchUserInfo = async () => {
-    const userInfo = await initialState?.fetchUserInfo?.();
-    if (userInfo) {
-      await setInitialState((s) => ({
-        ...s,
-        currentUser: userInfo,
-      }));
+  const [hackyBugFixPhoneInput, setHackyBugFixPhoneInput] = useState<string>('');
+
+  const handleVerificationRequest = async (phone: string) => {
+    try {
+      await sendPhoneVerification(`+1${phone}`);
+      message.success('SMS verification sent to phone. May take up to 30 seconds to arrive');
+    } catch (err: any) {
+      message.error(err?.message);
     }
   };
 
-  const handleSubmit = async (values: API.LoginParams) => {
-    try {
-      // 登录
-      const msg = await login({ ...values, type });
-      if (msg.status === 'ok') {
-        const defaultLoginSuccessMessage = intl.formatMessage({
-          id: 'pages.login.success',
-          defaultMessage: '登录成功！',
-        });
-        message.success(defaultLoginSuccessMessage);
-        await fetchUserInfo();
+  const handleSubmit = async (values: BullshitAntProAuthType) => {
+    console.log(values);
+    if (values.mobile && values.captcha) {
+      try {
+        setPersistence(auth, browserLocalPersistence);
+        const user = await signInPhoneWithCode(values.captcha);
+        message.success('Phone login successful');
         const urlParams = new URL(window.location.href).searchParams;
         history.push(urlParams.get('redirect') || '/');
         return;
+      } catch (err: any) {
+        message.error(err?.message || 'Phone Login has failed');
       }
-      console.log(msg);
-      // 如果失败去设置用户错误信息
-      setUserLoginState(msg);
-    } catch (error) {
-      const defaultLoginFailureMessage = intl.formatMessage({
-        id: 'pages.login.failure',
-        defaultMessage: '登录失败，请重试！',
-      });
-      console.log(error);
-      message.error(defaultLoginFailureMessage);
+    } else if (values.username && values.password) {
+      try {
+        setPersistence(auth, browserLocalPersistence);
+        await signInWithEmailAndPassword(values.username, values.password);
+        message.success('Email login successful');
+        const urlParams = new URL(window.location.href).searchParams;
+        history.push(urlParams.get('redirect') || '/');
+        return;
+      } catch (err: any) {
+        message.error(err?.message || 'Email Login has failed');
+      }
+    } else {
+      message.error('Please fill in login details');
     }
   };
+
+  const clickRememberMe = (e: ChangeEvent<HTMLInputElement>) => {
+    const newPersistenceChecked = e.target.checked;
+    setPersistenceChecked(newPersistenceChecked);
+    if (newPersistenceChecked) {
+      setPersistence(auth, browserLocalPersistence);
+      localStorage.setItem('auth.persistence', 'local');
+      return;
+    } else {
+      setPersistence(auth, browserSessionPersistence);
+      localStorage.setItem('auth.persistence', 'session');
+      return;
+    }
+  };
+
   const { status, type: loginType } = userLoginState;
 
   return (
@@ -88,51 +111,30 @@ const Login: React.FC = () => {
       </div>
       <div className={styles.content}>
         <LoginForm
+          // @ts-ignore
           title={
             <h1 style={{ fontWeight: 900, color: '#26A6EF', fontSize: '2rem' }}>🎁 LOOTBOX</h1>
           }
-          subTitle={intl.formatMessage({ id: 'pages.layouts.userLayout.title' })}
+          subTitle={'Advertiser Dashboard'}
           initialValues={{
             autoLogin: true,
           }}
-          actions={[
-            <FormattedMessage
-              key="loginWith"
-              id="pages.login.loginWith"
-              defaultMessage="其他登录方式"
-            />,
-            <AlipayCircleOutlined key="AlipayCircleOutlined" className={styles.icon} />,
-            <TaobaoCircleOutlined key="TaobaoCircleOutlined" className={styles.icon} />,
-            <WeiboCircleOutlined key="WeiboCircleOutlined" className={styles.icon} />,
-          ]}
-          onFinish={async (values) => {
-            await handleSubmit(values as API.LoginParams);
+          onChange={(e: any) => {
+            if (e.target.id === 'mobile') {
+              setHackyBugFixPhoneInput(e.target.value);
+            }
+          }}
+          onFinish={async (values: BullshitAntProAuthType) => {
+            await handleSubmit(values);
           }}
         >
           <Tabs activeKey={type} onChange={setType} centered>
-            <Tabs.TabPane
-              key="account"
-              tab={intl.formatMessage({
-                id: 'pages.login.accountLogin.tab',
-                defaultMessage: '账户密码登录',
-              })}
-            />
-            <Tabs.TabPane
-              key="mobile"
-              tab={intl.formatMessage({
-                id: 'pages.login.phoneLogin.tab',
-                defaultMessage: '手机号登录',
-              })}
-            />
+            <Tabs.TabPane key="account" tab={'Email Login'} />
+            <Tabs.TabPane key="mobile" tab={'Phone Login'} />
           </Tabs>
 
           {status === 'error' && loginType === 'account' && (
-            <LoginMessage
-              content={intl.formatMessage({
-                id: 'pages.login.accountLogin.errorMessage',
-                defaultMessage: '账户或密码错误(admin/ant.design)',
-              })}
-            />
+            <LoginMessage content={'Email or password was incorrect'} />
           )}
           {type === 'account' && (
             <>
@@ -142,17 +144,14 @@ const Login: React.FC = () => {
                   size: 'large',
                   prefix: <UserOutlined className={styles.prefixIcon} />,
                 }}
-                placeholder={intl.formatMessage({
-                  id: 'pages.login.username.placeholder',
-                  defaultMessage: '用户名: admin or user',
-                })}
+                placeholder={'Email'}
                 rules={[
                   {
                     required: true,
                     message: (
                       <FormattedMessage
                         id="pages.login.username.required"
-                        defaultMessage="请输入用户名!"
+                        defaultMessage="Email is required"
                       />
                     ),
                   },
@@ -164,17 +163,14 @@ const Login: React.FC = () => {
                   size: 'large',
                   prefix: <LockOutlined className={styles.prefixIcon} />,
                 }}
-                placeholder={intl.formatMessage({
-                  id: 'pages.login.password.placeholder',
-                  defaultMessage: '密码: ant.design',
-                })}
+                placeholder={'Password'}
                 rules={[
                   {
                     required: true,
                     message: (
                       <FormattedMessage
                         id="pages.login.password.required"
-                        defaultMessage="请输入密码！"
+                        defaultMessage="Password is required"
                       />
                     ),
                   },
@@ -192,10 +188,7 @@ const Login: React.FC = () => {
                   prefix: <MobileOutlined className={styles.prefixIcon} />,
                 }}
                 name="mobile"
-                placeholder={intl.formatMessage({
-                  id: 'pages.login.phoneNumber.placeholder',
-                  defaultMessage: '手机号',
-                })}
+                placeholder={'Phone Number'}
                 rules={[
                   {
                     required: true,
@@ -225,21 +218,12 @@ const Login: React.FC = () => {
                 captchaProps={{
                   size: 'large',
                 }}
-                placeholder={intl.formatMessage({
-                  id: 'pages.login.captcha.placeholder',
-                  defaultMessage: '请输入验证码',
-                })}
+                placeholder={'SMS Code'}
                 captchaTextRender={(timing, count) => {
                   if (timing) {
-                    return `${count} ${intl.formatMessage({
-                      id: 'pages.getCaptchaSecondText',
-                      defaultMessage: '获取验证码',
-                    })}`;
+                    return `${count} ${'sec'}`;
                   }
-                  return intl.formatMessage({
-                    id: 'pages.login.phoneLogin.getVerificationCode',
-                    defaultMessage: '获取验证码',
-                  });
+                  return 'Get Code';
                 }}
                 name="captcha"
                 rules={[
@@ -248,19 +232,14 @@ const Login: React.FC = () => {
                     message: (
                       <FormattedMessage
                         id="pages.login.captcha.required"
-                        defaultMessage="请输入验证码！"
+                        defaultMessage="Enter verification code"
                       />
                     ),
                   },
                 ]}
                 onGetCaptcha={async (phone) => {
-                  const result = await getFakeCaptcha({
-                    phone,
-                  });
-                  if (result === false) {
-                    return;
-                  }
-                  message.success('获取验证码成功！验证码为：1234');
+                  console.log(`phone = ${hackyBugFixPhoneInput}`);
+                  await handleVerificationRequest(hackyBugFixPhoneInput);
                 }}
               />
             </>
@@ -271,21 +250,31 @@ const Login: React.FC = () => {
             }}
           >
             <ProFormCheckbox noStyle name="autoLogin">
-              <FormattedMessage id="pages.login.rememberMe" defaultMessage="自动登录" />
+              <FormattedMessage id="pages.login.rememberMe" defaultMessage="Remember Me" />
             </ProFormCheckbox>
             <a
               style={{
                 float: 'right',
               }}
+              href="https://lootbox.fund/profile"
             >
-              <FormattedMessage id="pages.login.forgotPassword" defaultMessage="忘记密码" />
+              <FormattedMessage id="pages.login.forgotPassword" defaultMessage="Forgot Password" />
             </a>
           </div>
         </LoginForm>
       </div>
       <Footer />
+      <div id="recaptcha-container" />
     </div>
   );
 };
 
-export default Login;
+const WrappedLogin: React.FC = () => {
+  return (
+    <ApolloProvider client={client}>
+      <Login />
+    </ApolloProvider>
+  );
+};
+
+export default WrappedLogin;

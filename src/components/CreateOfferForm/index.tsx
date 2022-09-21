@@ -15,8 +15,6 @@ import { Rule } from 'antd/lib/form';
 import { DateView } from '../AntFormBuilder';
 import { AdvertiserStorageFolder } from '@/api/firebase/storage';
 
-const advertiserID = 'p7BpSqP6U4n4NEanEcFt';
-
 export type CreateOfferFormProps = {
   offer?: {
     title: string;
@@ -53,7 +51,7 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
   mode,
   advertiserID,
 }) => {
-  const newImageDestination = useRef('');
+  const newMediaDestination = useRef('');
   const [form] = Form.useForm();
   const [viewMode, setViewMode] = useState(true);
   const [pending, setPending] = useState(false);
@@ -110,8 +108,8 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
     if (values.endDate) {
       payload.endDate = values.endDate;
     }
-    if (newImageDestination.current) {
-      payload.image = newImageDestination.current;
+    if (newMediaDestination.current) {
+      payload.image = newMediaDestination.current;
     }
     setPending(true);
     try {
@@ -205,7 +203,8 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
           <AntUploadFile
             advertiserID={advertiserID}
             folderName={AdvertiserStorageFolder.OFFER_IMAGE}
-            newImageDestination={newImageDestination}
+            newMediaDestination={newMediaDestination}
+            acceptedFileTypes={'image/*'}
           />
         ),
       });

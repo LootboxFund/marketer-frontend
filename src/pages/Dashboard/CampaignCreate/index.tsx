@@ -16,12 +16,13 @@ import { history } from '@umijs/max';
 import { CREATE_CONQUEST } from './api.gql';
 import styles from './index.less';
 import { AdvertiserID } from '@wormgraph/helpers';
-
-const advertiserID = 'p7BpSqP6U4n4NEanEcFt';
+import { useAdvertiserUser } from '@/components/AuthGuard/advertiserUserInfo';
 
 const CampaignCreate: React.FC = () => {
+  const { advertiserUser } = useAdvertiserUser();
+  const { id: advertiserID } = advertiserUser;
   const [createConquestMutation] = useMutation<
-    { updateConquest: ResponseError | CreateConquestResponseSuccess },
+    { createConquest: ResponseError | CreateConquestResponseSuccess },
     MutationCreateConquestArgs
   >(CREATE_CONQUEST, {
     refetchQueries: [{ query: LIST_CONQUEST_PREVIEWS, variables: { advertiserID } }],
@@ -36,11 +37,13 @@ const CampaignCreate: React.FC = () => {
         },
       },
     });
-    if (!res?.data || res?.data?.updateConquest?.__typename === 'ResponseError') {
+    if (!res?.data || res?.data?.createConquest?.__typename === 'ResponseError') {
       // @ts-ignore
-      throw new Error(res?.data?.updateConquest?.error?.message || words.anErrorOccured);
+      throw new Error(res?.data?.createConquest?.error?.message || words.anErrorOccured);
     }
-    history.push('/dashboard/campaigns');
+    if (res?.data?.createConquest?.__typename === 'CreateConquestResponseSuccess') {
+      history.push(`/dashboard/campaigns/id/${res?.data?.createConquest?.conquest?.id}`);
+    }
   };
 
   return (
