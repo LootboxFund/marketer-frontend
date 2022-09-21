@@ -1,3 +1,4 @@
+import { UserAdvertiserFE } from '@/app';
 import { useModel, useRequest } from '@umijs/max';
 import { message, Tag } from 'antd';
 import { groupBy } from 'lodash';
@@ -69,8 +70,8 @@ const getUnreadData = (noticeData: Record<string, API.NoticeIconItem[]>) => {
 };
 
 const NoticeIconView: React.FC = () => {
-  const { initialState } = useModel('@@initialState');
-  const { currentUser } = initialState || {};
+  const { initialState }: { initialState: any } = useModel('@@initialState');
+  const { currentUser }: { currentUser: UserAdvertiserFE } = initialState;
   const [notices, setNotices] = useState<API.NoticeIconItem[]>([]);
   // const { data } = useRequest(getNotices);
 

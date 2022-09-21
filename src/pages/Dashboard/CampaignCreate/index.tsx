@@ -16,10 +16,11 @@ import { history } from '@umijs/max';
 import { CREATE_CONQUEST } from './api.gql';
 import styles from './index.less';
 import { AdvertiserID } from '@wormgraph/helpers';
-
-const advertiserID = 'p7BpSqP6U4n4NEanEcFt';
+import { useAdvertiserUser } from '@/components/AuthGuard/advertiserUserInfo';
 
 const CampaignCreate: React.FC = () => {
+  const { advertiserUser } = useAdvertiserUser();
+  const { id: advertiserID } = advertiserUser;
   const [createConquestMutation] = useMutation<
     { createConquest: ResponseError | CreateConquestResponseSuccess },
     MutationCreateConquestArgs

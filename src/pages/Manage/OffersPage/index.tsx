@@ -13,15 +13,20 @@ import styles from './index.less';
 import { Button, Card, Input } from 'antd';
 import Meta from 'antd/lib/card/Meta';
 import { $Horizontal, $Vertical } from '@/components/generics';
+import { useAdvertiserUser } from '@/components/AuthGuard/advertiserUserInfo';
 
 const OffersPage: React.FC = () => {
+  // get the advertiser user
+  const { advertiserUser } = useAdvertiserUser();
+  const { id: advertiserID } = advertiserUser;
+  // do the rest
   const [searchString, setSearchString] = useState('');
   const [offers, setOffers] = useState<OfferPreview[]>([]);
   const { data, loading, error } = useQuery<
     { listCreatedOffers: ListCreatedOffersResponse },
     QueryListCreatedOffersArgs
   >(LIST_CREATED_OFFERS, {
-    variables: { advertiserID: 'p7BpSqP6U4n4NEanEcFt' },
+    variables: { advertiserID },
     onCompleted: (data) => {
       if (data?.listCreatedOffers.__typename === 'ListCreatedOffersResponseSuccess') {
         const offers = data.listCreatedOffers.offers;

@@ -18,10 +18,13 @@ import { CREATE_OFFER } from './api.gql';
 import styles from './index.less';
 import { LIST_CREATED_OFFERS } from '../OffersPage/api.gql';
 import { AdvertiserID } from '@wormgraph/helpers';
-
-const advertiserID = 'p7BpSqP6U4n4NEanEcFt';
+import { useAdvertiserUser } from '@/components/AuthGuard/advertiserUserInfo';
 
 const OfferCreate: React.FC = () => {
+  // get the advertiser user
+  const { advertiserUser } = useAdvertiserUser();
+  const { id: advertiserID } = advertiserUser;
+  // do the rest
   const [createOfferMutation] = useMutation<
     { createOffer: ResponseError | CreateOfferResponseSuccess },
     MutationCreateOfferArgs

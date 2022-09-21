@@ -14,6 +14,7 @@ import type {
   ResponseError,
   EditAdSetPayload,
 } from '@/api/graphql/generated/types';
+import { useAdvertiserUser } from '@/components/AuthGuard/advertiserUserInfo';
 import BreadCrumbDynamic from '@/components/BreadCrumbDynamic';
 import CreateAdSetForm from '@/components/CreateAdSetForm';
 import { $Vertical } from '@/components/generics';
@@ -29,9 +30,11 @@ import { LIST_CREATED_OFFERS } from '../OffersPage/api.gql';
 import { EDIT_AD_SET, VIEW_AD_SET } from './api.gql';
 import styles from './index.less';
 
-const advertiserID = 'p7BpSqP6U4n4NEanEcFt' as AdvertiserID;
-
 const AdSetPage: React.FC = () => {
+  // get the advertiser user
+  const { advertiserUser } = useAdvertiserUser();
+  const { id: advertiserID } = advertiserUser;
+  // do the rest
   const { adSetID } = useParams();
   const [adSet, setAdSet] = useState<AdSet>();
   // GET AD SET
@@ -156,7 +159,8 @@ const AdSetPage: React.FC = () => {
                 ...adSet,
                 id: adSet.id as AdSetID,
                 description: adSet.description || '',
-                advertiserID: (adSet.advertiserID as AdvertiserID) || advertiserID,
+                advertiserID:
+                  (adSet.advertiserID as AdvertiserID) || (advertiserID as AdvertiserID),
                 adIDs: adSet.adIDs as AdID[],
                 offerIDs: adSet.offerIDs as OfferID[],
               }}

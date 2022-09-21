@@ -11,20 +11,22 @@
 - ✅ CRUD Ad Sets
 - ✅ Add/Remove Ad to Ad Set
 - ✅ Add/Remove Tournament to Conquest
+- ✅ Add auth permissions on CRUD
+
+- 🔵 Deploy to Staging
+- ⬜️ Refactor widgets to new graphql
+
+- ⬜️ Lootbox Pixel on Google Tag Manager
+- ⬜️ Verify that the entire event tracking flow works
+
 - 🔵 View Historical Tournaments
 - 🔵 View Historical Partners
 
-- ⬜️ Lootbox Pixel on Google Tag Manager
 - ⬜️ Basic Offer Analytics
 - ⬜️ Basic Event Analytics
 - ⬜️ Basic Organizer Analytics
 
-- ⬜️ Add counts to firestore
-- ⬜️ Add auth permissions on CRUD
-- ⬜️ Add pagination
-
 - ⬜️ Wallet Backend with Memo Math to avoid going over budget
-
 - ⬜️ Add/Remove Offer to Tournament (from affililate point of view. no whitelisting)
 
 ## Unknowns
@@ -36,3 +38,8 @@
 - 🟨 How to handle anti-fraud
 - 🟨 How to enable a marketplace
 - 🟨 How to better serve ads
+
+# Backlog
+
+- ⬜️ Add counts to firestore
+- ⬜️ Add pagination

@@ -3,6 +3,7 @@ import type {
   ListAdSetsOfAdvertiserResponse,
   QueryListAdSetsOfAdvertiserArgs,
 } from '@/api/graphql/generated/types';
+import { useAdvertiserUser } from '@/components/AuthGuard/advertiserUserInfo';
 import { $Horizontal, $Vertical, placeholderImage, $ColumnGap } from '@/components/generics';
 import { PageContainer } from '@ant-design/pro-components';
 import { useQuery } from '@apollo/client';
@@ -14,9 +15,11 @@ import { Link } from 'umi';
 import { LIST_ADSETS_PREVIEWS } from './api.gql';
 import styles from './index.less';
 
-const advertiserID = 'p7BpSqP6U4n4NEanEcFt';
-
 const AdSetsPage: React.FC = () => {
+  // get the advertiser user
+  const { advertiserUser } = useAdvertiserUser();
+  const { id: advertiserID } = advertiserUser;
+  // do the rest
   const [adSets, setAdSets] = React.useState<AdSet[]>([]);
   const [searchString, setSearchString] = useState('');
   const { data, loading, error } = useQuery<

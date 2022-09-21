@@ -22,10 +22,13 @@ import CreateAdForm, { AdSampleCallToActions } from '@/components/CreateAdForm';
 import { $ColumnGap, $Horizontal } from '@/components/generics';
 import { LIST_ADS_PREVIEWS } from '../AdsPage/api.gql';
 import DeviceSimulator from '@/components/DeviceSimulator';
-
-const advertiserID = 'p7BpSqP6U4n4NEanEcFt' as AdvertiserID;
+import { useAdvertiserUser } from '@/components/AuthGuard/advertiserUserInfo';
 
 const AdPage: React.FC = () => {
+  // get the advertiser user
+  const { advertiserUser } = useAdvertiserUser();
+  const { id: advertiserID } = advertiserUser;
+  // do the rest
   const { adID } = useParams();
   const [ad, setAd] = useState<Ad>();
   // VIEW AD
@@ -91,7 +94,7 @@ const AdPage: React.FC = () => {
               <CreateAdForm
                 ad={{
                   id: ad.id,
-                  advertiserID: advertiserID,
+                  advertiserID: advertiserID as AdvertiserID,
                   name: ad.name,
                   description: ad.description || '',
                   status: ad.status,
@@ -107,7 +110,7 @@ const AdPage: React.FC = () => {
                     themeColor: ad.creative.themeColor,
                   },
                 }}
-                advertiserID={advertiserID}
+                advertiserID={advertiserID as AdvertiserID}
                 mode="view-edit"
                 onSubmitEdit={editAd}
               />

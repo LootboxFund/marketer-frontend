@@ -14,12 +14,14 @@ import styles from './index.less';
 import { $Horizontal, $Vertical } from '@/components/generics';
 import { Button, Input } from 'antd';
 import { Link } from 'umi';
-
-const advertiserID = 'p7BpSqP6U4n4NEanEcFt';
+import { useAdvertiserUser } from '@/components/AuthGuard/advertiserUserInfo';
 
 const CampaignsPage: React.FC = () => {
   const [searchString, setSearchString] = useState('');
   const [conquests, setConquests] = useState<ConquestPreview[]>([]);
+
+  const { advertiserUser } = useAdvertiserUser();
+  const { id: advertiserID } = advertiserUser;
 
   const { data, loading, error } = useQuery<
     { listConquestPreviews: ListConquestPreviewsResponse },

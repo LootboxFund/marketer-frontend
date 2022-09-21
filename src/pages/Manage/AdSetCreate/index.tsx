@@ -25,10 +25,13 @@ import CreateAdSetForm from '@/components/CreateAdSetForm';
 import { $Vertical } from '@/components/generics';
 import { LIST_ADS_PREVIEWS } from '../AdsPage/api.gql';
 import { LIST_CREATED_OFFERS } from '../OffersPage/api.gql';
-
-const advertiserID = 'p7BpSqP6U4n4NEanEcFt' as AdvertiserID;
+import { useAdvertiserUser } from '@/components/AuthGuard/advertiserUserInfo';
 
 const AdSetCreate: React.FC = () => {
+  // get the advertiser user
+  const { advertiserUser } = useAdvertiserUser();
+  const { id: advertiserID } = advertiserUser;
+  // do the rest
   // CREATE AD SET
   const [createAdSetMutation] = useMutation<
     { createAdSet: ResponseError | CreateAdSetResponseSuccess },

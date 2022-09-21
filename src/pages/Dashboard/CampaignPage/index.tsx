@@ -24,12 +24,13 @@ import { LIST_CONQUEST_PREVIEWS } from '../CampaignsPage/api.gql';
 import { GET_CONQUEST, GET_TOURNAMENT, UPDATE_CONQUEST } from './api.gql';
 import styles from './index.less';
 import { Tournament } from '../../../api/graphql/generated/types';
-
-const advertiserID = 'p7BpSqP6U4n4NEanEcFt';
+import { useAdvertiserUser } from '@/components/AuthGuard/advertiserUserInfo';
 
 const CampaignPage: React.FC = () => {
   const { campaignID } = useParams();
 
+  const { advertiserUser } = useAdvertiserUser();
+  const { id: advertiserID } = advertiserUser;
   const [conquest, setConquest] = useState<Conquest>();
   const [tournamentPreviews, setTournamentPreviews] = useState<TournamentPreview[]>([]);
 

@@ -36,15 +36,15 @@ import { Button, Menu } from 'antd';
 export default () => {
   const menuHeaderDropdown = (
     <Menu selectedKeys={[]}>
-      <Menu.Item key="center">个人中心</Menu.Item>
-      <Menu.Item key="settings">个人设置</Menu.Item>
+      <Menu.Item key="center">Center</Menu.Item>
+      <Menu.Item key="settings">Settings</Menu.Item>
       <Menu.Divider />
-      <Menu.Item key="logout">退出登录</Menu.Item>
+      <Menu.Item key="logout">Logout</Menu.Item>
     </Menu>
   );
   return (
     <HeaderDropdown overlay={menuHeaderDropdown}>
-      <Button>hover 展示菜单</Button>
+      <Button>hover show menu</Button>
     </HeaderDropdown>
   );
 };

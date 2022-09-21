@@ -121,14 +121,14 @@ export const useAuth = () => {
       throw new Error("Please include a country code +1, +44, etc. Don't forget the +");
     }
 
+    const el = document.getElementById('recaptcha-container');
     if (!recaptchaVerifier) {
       console.error('no captcha verifier');
       throw new Error('no captcha verifier');
+    } else {
+      const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, recaptchaVerifier);
+      setPhoneConfirmationResult(confirmationResult);
     }
-
-    const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, recaptchaVerifier);
-
-    setPhoneConfirmationResult(confirmationResult);
   };
 
   const signInPhoneWithCode = async (code: string, email?: string) => {

@@ -18,10 +18,13 @@ import { CREATE_AD } from './api.gql';
 import styles from './index.less';
 import { $ColumnGap } from '@/components/generics';
 import { LIST_ADS_PREVIEWS } from '../AdsPage/api.gql';
-
-const advertiserID = 'p7BpSqP6U4n4NEanEcFt';
+import { useAdvertiserUser } from '@/components/AuthGuard/advertiserUserInfo';
 
 const AdCreate: React.FC = () => {
+  // get the advertiser user
+  const { advertiserUser } = useAdvertiserUser();
+  const { id: advertiserID } = advertiserUser;
+  // do the rest
   const [createAdMutation] = useMutation<
     { createAd: ResponseError | CreateAdResponseSuccess },
     MutationCreateAdArgs
