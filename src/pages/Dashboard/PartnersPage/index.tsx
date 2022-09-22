@@ -72,7 +72,7 @@ const PartnersPage: React.FC = () => {
           <br />
           <div className={styles.content}>
             {partners.filter(filterBySearchString).map((affiliate) => (
-              <Link key={affiliate.id} to={`/dashboard/partner/id/${affiliate.id}`}>
+              <Link key={affiliate.id} to={`/dashboard/partners/id/${affiliate.id}`}>
                 <Card
                   hoverable
                   className={styles.card}
