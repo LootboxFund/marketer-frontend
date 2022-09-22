@@ -17,9 +17,8 @@
 - ✅ Basic Tournament Analytics for Advertiser (Backend)
 - ✅ Basic Offer Analytics for Organizer (Backend)
 - ✅ Basic Tournament Analytics for Organizer (Backend)
-
-- 🔵 Advertiser - View Historical Tournaments
-- 🔵 Advertiser - View Historical Partners
+- ✅ Advertiser - View Historical Tournaments
+- ✅ Advertiser - View Historical Partners
 
 - ⬜️ Organizer AntPro - View Historical Tournaments
 - ⬜️ Organizer AntPro - View Tournament

@@ -22,7 +22,7 @@ const PartnerPage: React.FC = () => {
     { affiliatePublicView: AffiliatePublicViewResponse },
     QueryAffiliatePublicViewArgs
   >(GET_PARTNER, {
-    variables: { affiliateID: partnerID },
+    variables: { affiliateID: partnerID || '' },
     onCompleted: (data) => {
       if (data?.affiliatePublicView.__typename === 'AffiliatePublicViewResponseSuccess') {
         const partner = data.affiliatePublicView.affiliate;

@@ -25,7 +25,7 @@ const EventPage: React.FC = () => {
     { tournament: TournamentResponse },
     QueryTournamentArgs
   >(VIEW_TOURNAMENT, {
-    variables: { id: eventID },
+    variables: { id: eventID || '' },
     onCompleted: (data) => {
       if (data?.tournament.__typename === 'TournamentResponseSuccess') {
         const tournament = data.tournament.tournament;
