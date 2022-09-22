@@ -38,6 +38,7 @@ export type CreateAdSetFormProps = {
     status: AdSetStatus;
     advertiserID: AdvertiserID;
     placement: Placement;
+    thumbnail: string;
     offerIDs: OfferID[];
     adIDs: AdID[];
   };
@@ -53,6 +54,7 @@ const AD_SET_INFO = {
   id: '',
   name: '',
   description: '',
+  thumbnail: '',
   status: AdSetStatus.Active,
   advertiserID: '' as AdvertiserID,
   placement: Placement.AfterTicketClaim,
@@ -68,6 +70,7 @@ const CreateAdSetForm: React.FC<CreateAdSetFormProps> = ({
   listOfAds,
   listOfOffers,
 }) => {
+  const newMediaDestination = useRef('');
   const chosenAdSets = useRef([] as AdID[]);
   const chosenOffers = useRef([] as OfferID[]);
 
@@ -92,6 +95,7 @@ const CreateAdSetForm: React.FC<CreateAdSetFormProps> = ({
         description: adSet.description,
         status: adSet.status,
         advertiserID: adSet.advertiserID,
+        thumbnail: adSet.thumbnail,
         placement: adSet.placement,
         offerIDs: adSet.offerIDs,
         adIDs: adSet.adIDs,
@@ -124,6 +128,9 @@ const CreateAdSetForm: React.FC<CreateAdSetFormProps> = ({
     }
     if (chosenOffers.current && chosenOffers.current.length > 0) {
       payload.offerIDs = chosenOffers.current;
+    }
+    if (newMediaDestination.current) {
+      payload.thumbnail = newMediaDestination.current;
     }
     setPending(true);
     try {
@@ -169,6 +176,12 @@ const CreateAdSetForm: React.FC<CreateAdSetFormProps> = ({
     if (chosenOffers.current && chosenOffers.current.length > 0) {
       payload.offerIDs = chosenOffers.current;
     }
+    if (newMediaDestination.current) {
+      payload.thumbnail = newMediaDestination.current;
+    }
+    console.log(newMediaDestination.current);
+    console.log(`Sending out payload..`);
+    console.log(payload);
     setPending(true);
     try {
       await onSubmitEdit(payload);
@@ -266,6 +279,18 @@ const CreateAdSetForm: React.FC<CreateAdSetFormProps> = ({
         { key: 'name', label: 'Name', required: true },
 
         { key: 'description', label: 'Description', widget: 'textarea' },
+        {
+          key: 'image',
+          label: 'Image',
+          widget: () => (
+            <AntUploadFile
+              advertiserID={advertiserID}
+              folderName={AdvertiserStorageFolder.ADSET_IMAGE}
+              newMediaDestination={newMediaDestination}
+              acceptedFileTypes={'image/*'}
+            />
+          ),
+        },
         {
           key: 'status',
           label: 'Status',

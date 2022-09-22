@@ -28,6 +28,13 @@ export const GET_OFFER = gql`
             offerID
             order
           }
+          adSetPreviews {
+            id
+            name
+            status
+            placement
+            thumbnail
+          }
         }
       }
       ... on ResponseError {

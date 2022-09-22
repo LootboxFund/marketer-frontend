@@ -75,7 +75,8 @@ const AdSetsPage: React.FC = () => {
           <br />
           <div className={styles.content}>
             {adSets.filter(filterBySearchString).map((adSet) => {
-              const imageToDisplay = (adSet.ads || [])[0]?.creative?.thumbnail || placeholderImage;
+              const imageToDisplay =
+                adSet.thumbnail || (adSet.ads || [])[0]?.creative?.thumbnail || placeholderImage;
               return (
                 <Link key={adSet.id} to={`/manage/adsets/id/${adSet.id}`}>
                   <Card

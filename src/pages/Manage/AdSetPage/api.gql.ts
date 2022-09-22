@@ -11,6 +11,7 @@ export const VIEW_AD_SET = gql`
           status
           advertiserID
           placement
+          thumbnail
           offerIDs
           adIDs
           ads {
