@@ -17,12 +17,13 @@ import type {
 import { useAdvertiserUser } from '@/components/AuthGuard/advertiserUserInfo';
 import BreadCrumbDynamic from '@/components/BreadCrumbDynamic';
 import CreateAdSetForm from '@/components/CreateAdSetForm';
-import { $Vertical } from '@/components/generics';
+import { $Vertical, $Horizontal, $ColumnGap } from '@/components/generics';
 import { PageContainer } from '@ant-design/pro-components';
 import { useMutation, useQuery } from '@apollo/client';
 import { useParams } from '@umijs/max';
 import { AdID, AdSetID, AdvertiserID, OfferID } from '@wormgraph/helpers';
 import Spin from 'antd/lib/spin';
+import { Image } from 'antd';
 import React, { useState } from 'react';
 import { LIST_ADSETS_PREVIEWS } from '../AdSetsPage/api.gql';
 import { LIST_ADS_PREVIEWS } from '../AdsPage/api.gql';
@@ -120,6 +121,8 @@ const AdSetPage: React.FC = () => {
 
   const editAdSet = async (payload: Omit<EditAdSetPayload, 'id'>) => {
     if (!adSet) return;
+    console.log(`Got a fat ad set...`);
+    console.log(payload);
     const res = await editAdSetMutation({
       variables: {
         payload: {
@@ -151,7 +154,7 @@ const AdSetPage: React.FC = () => {
           <BreadCrumbDynamic breadLine={breadLine} />
           <h1>{adSet.name}</h1>
           <br />
-          <$Vertical style={{ width: '800px', maxWidth: '800px' }}>
+          <$Horizontal>
             <CreateAdSetForm
               onSubmitEdit={editAdSet}
               mode="view-edit"
@@ -163,12 +166,15 @@ const AdSetPage: React.FC = () => {
                   (adSet.advertiserID as AdvertiserID) || (advertiserID as AdvertiserID),
                 adIDs: adSet.adIDs as AdID[],
                 offerIDs: adSet.offerIDs as OfferID[],
+                thumbnail: adSet.thumbnail || '',
               }}
               advertiserID={advertiserID as AdvertiserID}
               listOfAds={ads}
               listOfOffers={offers}
             />
-          </$Vertical>
+            <$ColumnGap />
+            <Image width={200} src={adSet.thumbnail || ''} />
+          </$Horizontal>
         </div>
       )}
     </div>

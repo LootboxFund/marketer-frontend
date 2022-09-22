@@ -13,6 +13,7 @@ export const LIST_ADSETS_PREVIEWS = gql`
           placement
           offerIDs
           adIDs
+          thumbnail
           ads {
             id
             advertiserID

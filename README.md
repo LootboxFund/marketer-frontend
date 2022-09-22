@@ -12,21 +12,29 @@
 - ✅ Add/Remove Ad to Ad Set
 - ✅ Add/Remove Tournament to Conquest
 - ✅ Add auth permissions on CRUD
-
 - ✅ Deploy to Staging
+- ✅ Basic Offer Analytics for Advertiser (Backend)
+- ✅ Basic Tournament Analytics for Advertiser (Backend)
+- ✅ Basic Offer Analytics for Organizer (Backend)
+- ✅ Basic Tournament Analytics for Organizer (Backend)
+- ✅ Advertiser - View Historical Tournaments
+- ✅ Advertiser - View Historical Partners
+
+- ⬜️ Organizer AntPro - View Historical Tournaments
+- ⬜️ Organizer AntPro - View Tournament
+- ⬜️ Organizer AntPro - Add/Remove Offer AdSets to Tournament
+
 - ⬜️ Refactor widgets to new graphql
 
 - ⬜️ Lootbox Pixel on Google Tag Manager
 - ⬜️ Verify that the entire event tracking flow works
 
-- 🔵 View Historical Tournaments
-- 🔵 View Historical Partners
+<!-- Display Analytics -->
 
-- ⬜️ Basic Offer Analytics for Advertiser
-- ⬜️ Basic Tournament Analytics for Advertiser
-
-- ⬜️ Basic Offer Analytics for Organizer
-- ⬜️ Basic Tournament Analytics for Organizer
+- ⬜️ Basic Offer Analytics for Advertiser (Frontend)
+- ⬜️ Basic Tournament Analytics for Advertiser (Frontend)
+- ⬜️ Basic Offer Analytics for Organizer (Frontend)
+- ⬜️ Basic Tournament Analytics for Organizer (Frontend)
 
 - ⬜️ Wallet Backend with Memo Math to avoid going over budget
 - ⬜️ Add/Remove Offer to Tournament (from affililate point of view. no whitelisting)

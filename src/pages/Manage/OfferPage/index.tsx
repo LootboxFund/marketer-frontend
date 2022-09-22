@@ -22,13 +22,16 @@ import { CREATE_ACTIVATION, EDIT_OFFER, GET_OFFER, EDIT_ACTIVATION } from './api
 import styles from './index.less';
 import { useParams } from 'react-router-dom';
 import BreadCrumbDynamic from '@/components/BreadCrumbDynamic';
-import { $ColumnGap, $Horizontal, $Vertical } from '@/components/generics';
+import { $ColumnGap, $Horizontal, $Vertical, placeholderImage } from '@/components/generics';
 import CreateOfferForm from '@/components/CreateOfferForm';
 import type { ActivationID, AdvertiserID, OfferID } from '@wormgraph/helpers';
 import CreateActivationFormModal from '@/components/CreateActivationFormModal';
 import { CaretDownOutlined, CaretUpOutlined } from '@ant-design/icons';
 import { LIST_CREATED_OFFERS } from '../OffersPage/api.gql';
 import { useAdvertiserUser } from '@/components/AuthGuard/advertiserUserInfo';
+import { AdSetStatus } from '../../../api/graphql/generated/types';
+import { Link } from '@umijs/max';
+import Meta from 'antd/lib/card/Meta';
 
 const OfferPage: React.FC = () => {
   // get the advertiser user
@@ -237,6 +240,10 @@ const OfferPage: React.FC = () => {
     .slice()
     .sort((a, b) => a.order - b.order)
     .sort((a, b) => (a.status === ActivationStatus.Active ? -1 : 1));
+  const adSetPreviewsSorted = (offer?.adSetPreviews || [])
+    .slice()
+    .sort((a, b) => (a.status === AdSetStatus.Active ? -1 : 1));
+
   return (
     <div style={{ maxWidth }}>
       {loading || !offer ? (
@@ -246,6 +253,7 @@ const OfferPage: React.FC = () => {
       ) : (
         <div className={styles.content}>
           <BreadCrumbDynamic breadLine={breadLine} />
+
           <h1>{offer.title}</h1>
           <br />
           <$Horizontal>
@@ -284,7 +292,6 @@ const OfferPage: React.FC = () => {
               Add Activation
             </Button>
           </$Horizontal>
-
           <br />
           <Card>
             {activationsSorted.map((activation, i) => {
@@ -355,6 +362,26 @@ const OfferPage: React.FC = () => {
               );
             })}
           </Card>
+          <br />
+          <br />
+          <h2>Ad Sets</h2>
+          <br />
+          <div className={styles.adSetGrid}>
+            {adSetPreviewsSorted.map((adSet) => {
+              const imageToDisplay = adSet.thumbnail || placeholderImage;
+              return (
+                <Link key={adSet.id} to={`/manage/adsets/id/${adSet.id}`}>
+                  <Card
+                    hoverable
+                    className={styles.card}
+                    cover={<img alt="example" src={imageToDisplay} className={styles.cardImage} />}
+                  >
+                    <Meta title={adSet.name} />
+                  </Card>
+                </Link>
+              );
+            })}
+          </div>
           {activationModalType && (
             <CreateActivationFormModal
               activationModalVisible={activationModalVisible}

@@ -60,18 +60,24 @@ export default [
       {
         name: 'Events',
         path: '/dashboard/events',
-        component: './Welcome',
+        component: './Dashboard/EventsPage',
       },
       {
         name: 'Event',
-        path: '/dashboard/events/id/:eventID',
+        path: '/dashboard/event/id/:eventID',
         hideInMenu: true,
-        component: './Dashboard/CampaignPage',
+        component: './Dashboard/EventPage',
       },
       {
         name: 'Partners',
         path: '/dashboard/partners',
-        component: './Welcome',
+        component: './Dashboard/PartnersPage',
+      },
+      {
+        name: 'Partner',
+        hideInMenu: true,
+        path: '/dashboard/partner/id/:partnerID',
+        component: './Dashboard/PartnerPage',
       },
     ],
   },
