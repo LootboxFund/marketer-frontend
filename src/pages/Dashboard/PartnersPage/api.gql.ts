@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 export const LIST_PARTNERS = gql`
-  query ListPartnersOfAdvertiser($advertiserId: ID!) {
-    listPartnersOfAdvertiser(advertiserID: $advertiserId) {
+  query ListPartnersOfAdvertiser($advertiserID: ID!) {
+    listPartnersOfAdvertiser(advertiserID: $advertiserID) {
       ... on ListPartnersOfAdvertiserResponseSuccess {
         partners {
           id

@@ -17,7 +17,7 @@ import { Button, Card, Input, message } from 'antd';
 import { Link } from '@umijs/max';
 import Meta from 'antd/lib/card/Meta';
 
-const Template: React.FC = () => {
+const PartnersPage: React.FC = () => {
   const [searchString, setSearchString] = useState('');
   const { advertiserUser } = useAdvertiserUser();
   const { id: advertiserID } = advertiserUser;
@@ -72,7 +72,7 @@ const Template: React.FC = () => {
           <br />
           <div className={styles.content}>
             {partners.filter(filterBySearchString).map((affiliate) => (
-              <Link key={affiliate.id} to={`/dashboard/partners/id/${affiliate.id}`}>
+              <Link key={affiliate.id} to={`/dashboard/partner/id/${affiliate.id}`}>
                 <Card
                   hoverable
                   className={styles.card}
@@ -91,4 +91,4 @@ const Template: React.FC = () => {
   );
 };
 
-export default Template;
+export default PartnersPage;

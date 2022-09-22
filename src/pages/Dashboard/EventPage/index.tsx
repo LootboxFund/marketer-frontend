@@ -12,29 +12,31 @@ import { VIEW_TOURNAMENT } from './api.gql';
 import styles from './index.less';
 import { useParams } from '@umijs/max';
 import BreadCrumbDynamic from '@/components/BreadCrumbDynamic';
+import { TournamentID } from '@wormgraph/helpers';
 
 const EventPage: React.FC = () => {
-  const { tournamentID } = useParams();
+  const { eventID } = useParams();
+  console.log(`eventID`);
+  console.log(eventID);
   const { advertiserUser } = useAdvertiserUser();
   const { id: advertiserID } = advertiserUser;
   const [tournament, setTournament] = useState<Tournament>();
   const { data, loading, error } = useQuery<
-    { viewTournament: TournamentResponse },
+    { tournament: TournamentResponse },
     QueryTournamentArgs
   >(VIEW_TOURNAMENT, {
-    variables: { id: tournamentID },
+    variables: { id: eventID },
     onCompleted: (data) => {
-      if (data?.viewTournament.__typename === 'TournamentResponseSuccess') {
-        const tournament = data.viewTournament.tournament;
-        console.log(tournament);
+      if (data?.tournament.__typename === 'TournamentResponseSuccess') {
+        const tournament = data.tournament.tournament;
         setTournament(tournament);
       }
     },
   });
   if (error) {
     return <span>{error?.message || ''}</span>;
-  } else if (data?.viewTournament.__typename === 'ResponseError') {
-    return <span>{data?.viewTournament.error?.message || ''}</span>;
+  } else if (data?.tournament.__typename === 'ResponseError') {
+    return <span>{data?.tournament.error?.message || ''}</span>;
   }
   const breadLine = [
     { title: 'Dashboard', route: '/dashboard' },
@@ -43,7 +45,7 @@ const EventPage: React.FC = () => {
   ];
 
   return (
-    <PageContainer>
+    <div>
       {loading || !tournament ? (
         <div className={styles.loading_container}>
           <Spin />
@@ -53,9 +55,10 @@ const EventPage: React.FC = () => {
           <BreadCrumbDynamic breadLine={breadLine} />
           <h1>{tournament.title}</h1>
           <br />
+          <p>{JSON.stringify(tournament, null, '\t')}</p>
         </div>
       )}
-    </PageContainer>
+    </div>
   );
 };
 

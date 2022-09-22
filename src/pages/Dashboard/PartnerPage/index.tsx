@@ -43,7 +43,7 @@ const PartnerPage: React.FC = () => {
   ];
 
   return (
-    <PageContainer>
+    <div>
       {loading || !partner ? (
         <div className={styles.loading_container}>
           <Spin />
@@ -53,9 +53,10 @@ const PartnerPage: React.FC = () => {
           <BreadCrumbDynamic breadLine={breadLine} />
           <h1>{partner.name}</h1>
           <br />
+          <p>{JSON.stringify(partner, null, 2)}</p>
         </div>
       )}
-    </PageContainer>
+    </div>
   );
 };
 

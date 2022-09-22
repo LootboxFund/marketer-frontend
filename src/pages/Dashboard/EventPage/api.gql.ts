@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 export const VIEW_TOURNAMENT = gql`
-  query Tournament($tournamentID: ID!) {
-    tournament(id: $tournamentID) {
+  query Tournament($id: ID!) {
+    tournament(id: $id) {
       ... on TournamentResponseSuccess {
         tournament {
           id
