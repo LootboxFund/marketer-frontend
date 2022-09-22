@@ -72,17 +72,18 @@ const PartnersPage: React.FC = () => {
           <br />
           <div className={styles.content}>
             {partners.filter(filterBySearchString).map((affiliate) => (
-              <Link key={affiliate.id} to={`/dashboard/partners/id/${affiliate.id}`}>
-                <Card
-                  hoverable
-                  className={styles.card}
-                  cover={
-                    <img alt="example" src={affiliate.avatar || ''} className={styles.cardImage} />
-                  }
-                >
-                  <Meta title={affiliate.name} />
-                </Card>
-              </Link>
+              // <Link key={affiliate.id} to={`/dashboard/partners/id/${affiliate.id}`}>
+              <Card
+                key={affiliate.id}
+                hoverable
+                className={styles.card}
+                cover={
+                  <img alt="example" src={affiliate.avatar || ''} className={styles.cardImage} />
+                }
+              >
+                <Meta title={affiliate.name} />
+              </Card>
+              // </Link>
             ))}
           </div>
         </$Vertical>

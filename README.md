@@ -20,9 +20,14 @@
 - ✅ Advertiser - View Historical Tournaments
 - ✅ Advertiser - View Historical Partners
 
-- ⬜️ Organizer AntPro - View Historical Tournaments
-- ⬜️ Organizer AntPro - View Tournament
+- ⬜️ Advertiser can whitelist an affiliate to an offer
+
+- ⬜️ Affiliate can view offers available to them
 - ⬜️ Organizer AntPro - Add/Remove Offer AdSets to Tournament
+- ⬜️ Organizer AntPro - Add/Remove Promoters to Tournament with rate cards
+
+- ✅ Organizer AntPro - View Historical Tournaments
+- ✅ Organizer AntPro - View Tournament
 
 - ⬜️ Refactor widgets to new graphql
 

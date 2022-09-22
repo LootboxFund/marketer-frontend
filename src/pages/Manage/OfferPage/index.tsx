@@ -1,4 +1,4 @@
-import type {
+import {
   ViewCreatedOfferResponse,
   QueryViewCreatedOfferArgs,
   Offer,
@@ -13,12 +13,30 @@ import type {
   MutationCreateActivationArgs,
   MutationEditActivationArgs,
   EditActivationInput,
+  WhitelistAffiliateToOfferResponse,
+  MutationWhitelistAffiliateToOfferArgs,
+  QueryListWhitelistedAffiliatesToOfferArgs,
+  ListWhitelistedAffiliatesToOfferResponse,
+  OrganizerOfferWhitelist,
+  OrganizerOfferWhitelistWithProfile,
+  OrganizerOfferWhitelistStatus,
+  EditWhitelistAffiliateToOfferResponse,
+  MutationEditWhitelistAffiliateToOfferArgs,
 } from '@/api/graphql/generated/types';
 import { ActivationStatus } from '@/api/graphql/generated/types';
-import { useMutation, useQuery } from '@apollo/client';
-import { Spin, Image, Row, Col, Card, Button } from 'antd';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import { Spin, Image, Row, Col, Card, Button, Modal, Input, Switch } from 'antd';
 import React, { useCallback, useState } from 'react';
-import { CREATE_ACTIVATION, EDIT_OFFER, GET_OFFER, EDIT_ACTIVATION } from './api.gql';
+import {
+  CREATE_ACTIVATION,
+  EDIT_OFFER,
+  GET_OFFER,
+  EDIT_ACTIVATION,
+  GET_AFFILIATE,
+  WHITELIST_AFFILIATE,
+  LIST_WHITELISTED_AFFILIATES,
+  EDIT_WHITELIST_AFFILIATE,
+} from './api.gql';
 import styles from './index.less';
 import { useParams } from 'react-router-dom';
 import BreadCrumbDynamic from '@/components/BreadCrumbDynamic';
@@ -32,6 +50,7 @@ import { useAdvertiserUser } from '@/components/AuthGuard/advertiserUserInfo';
 import { AdSetStatus } from '../../../api/graphql/generated/types';
 import { Link } from '@umijs/max';
 import Meta from 'antd/lib/card/Meta';
+import { LIST_PARTNERS } from '@/pages/Dashboard/PartnersPage/api.gql';
 
 const OfferPage: React.FC = () => {
   // get the advertiser user
@@ -51,6 +70,13 @@ const OfferPage: React.FC = () => {
     null,
   );
   const [activationToEdit, setActivationToEdit] = useState<Activation | null>(null);
+
+  const [whitelistedPartners, setWhitelistedPartners] = useState<
+    OrganizerOfferWhitelistWithProfile[]
+  >([]);
+  const [addPartnerModalVisible, setAddPartnerModalVisible] = useState(false);
+  const [addPartnerPending, setAddPartnerPending] = useState(false);
+  const [updatingWhitelist, setUpdatingWhitelist] = useState<string | null>(null);
 
   // GET OFFER
   const { data, loading, error } = useQuery<
@@ -95,6 +121,51 @@ const OfferPage: React.FC = () => {
     { editActivation: ResponseError | EditActivationResponseSuccess },
     MutationEditActivationArgs
   >(EDIT_ACTIVATION);
+  // LIST PARTNERS OF OFFER
+  const {
+    data: listOfWhitelistedPartnersData,
+    loading: loadingListOfWhitelistedPartners,
+    error: errorListOfWhitelistedPartners,
+  } = useQuery<
+    { listWhitelistedAffiliatesToOffer: ListWhitelistedAffiliatesToOfferResponse },
+    QueryListWhitelistedAffiliatesToOfferArgs
+  >(LIST_WHITELISTED_AFFILIATES, {
+    variables: { payload: { offerID: offerID || '' } },
+    onCompleted: (data) => {
+      console.log(`---- data`);
+      console.log(data);
+      if (
+        data?.listWhitelistedAffiliatesToOffer.__typename ===
+        'ListWhitelistedAffiliatesToOfferResponseSuccess'
+      ) {
+        const whitelistedPartners = data.listWhitelistedAffiliatesToOffer.whitelists;
+        console.log(whitelistedPartners);
+        setWhitelistedPartners(whitelistedPartners);
+      }
+    },
+  });
+  // LAZY GET PARTNER
+  const [getPartner, { loading: loadingPartner, error: errorPartner, data: dataPartner }] =
+    useLazyQuery(GET_AFFILIATE);
+  // WHITELIST PARTNER
+  const [whitelistAffiliate] = useMutation<
+    { whitelistAffiliateToOffer: ResponseError | WhitelistAffiliateToOfferResponse },
+    MutationWhitelistAffiliateToOfferArgs
+  >(WHITELIST_AFFILIATE, {
+    refetchQueries: [
+      { query: LIST_WHITELISTED_AFFILIATES, variables: { payload: { offerID: offerID || '' } } },
+      { query: LIST_PARTNERS, variables: { advertiserID: advertiserID || '' } },
+    ],
+  });
+  // UPDATE WHITELIST
+  const [updateWhitelist] = useMutation<
+    { updatedWhitelistedAffiliate: ResponseError | EditWhitelistAffiliateToOfferResponse },
+    MutationEditWhitelistAffiliateToOfferArgs
+  >(EDIT_WHITELIST_AFFILIATE, {
+    refetchQueries: [
+      { query: LIST_WHITELISTED_AFFILIATES, variables: { payload: { offerID: offerID || '' } } },
+    ],
+  });
 
   if (!offerID) {
     return <div>Offer ID not found</div>;
@@ -103,6 +174,17 @@ const OfferPage: React.FC = () => {
     return <span>{error?.message || ''}</span>;
   } else if (data?.viewCreatedOffer.__typename === 'ResponseError') {
     return <span>{data?.viewCreatedOffer.error?.message || ''}</span>;
+  }
+  if (errorListOfWhitelistedPartners) {
+    return <span>{errorListOfWhitelistedPartners?.message || ''}</span>;
+  } else if (
+    listOfWhitelistedPartnersData?.listWhitelistedAffiliatesToOffer?.__typename === 'ResponseError'
+  ) {
+    return (
+      <span>
+        {listOfWhitelistedPartnersData?.listWhitelistedAffiliatesToOffer?.error?.message || ''}
+      </span>
+    );
   }
   const editOffer = async (payload: Omit<EditOfferPayload, 'id'>) => {
     const res = await editOfferMutation({
@@ -235,6 +317,7 @@ const OfferPage: React.FC = () => {
   const gridStyle: React.CSSProperties = {
     flex: '100%',
   };
+  const searchedPartner = dataPartner?.affiliatePublicView?.affiliate;
   const maxWidth = '1000px';
   const activationsSorted = (offer?.activations || [])
     .slice()
@@ -364,6 +447,76 @@ const OfferPage: React.FC = () => {
           </Card>
           <br />
           <br />
+          <$Horizontal justifyContent="space-between">
+            <h2>Allowed Partners</h2>
+            <Button
+              type="link"
+              onClick={() => {
+                setAddPartnerModalVisible(true);
+              }}
+              style={{ alignSelf: 'flex-end' }}
+            >
+              Add Partner
+            </Button>
+          </$Horizontal>
+          <br />
+          <div className={styles.whitelistedPartnersGrid}>
+            {whitelistedPartners.map((whitelist) => (
+              <Link
+                key={whitelist.whitelist.id}
+                to={`/dashboard/partners/id/${whitelist.organizer.id}`}
+              >
+                <Card
+                  hoverable
+                  className={styles.card}
+                  cover={
+                    <img
+                      alt="example"
+                      src={whitelist.organizer.avatar || ''}
+                      className={styles.cardImage}
+                    />
+                  }
+                  actions={[
+                    <$Horizontal
+                      key={`switch-${whitelist.whitelist.id}`}
+                      onClick={(e) => e.preventDefault()}
+                      justifyContent="space-around"
+                      width="100%"
+                    >
+                      <span>{whitelist.whitelist.status}</span>
+                      <Switch
+                        checked={
+                          whitelist.whitelist.status === OrganizerOfferWhitelistStatus.Active
+                        }
+                        loading={updatingWhitelist === whitelist.whitelist.id}
+                        onChange={async (checked) => {
+                          setUpdatingWhitelist(whitelist.whitelist.id);
+                          await updateWhitelist({
+                            variables: {
+                              payload: {
+                                id: whitelist.whitelist.id,
+                                status: checked
+                                  ? OrganizerOfferWhitelistStatus.Active
+                                  : OrganizerOfferWhitelistStatus.Inactive,
+                                advertiserID,
+                                affiliateID: whitelist.organizer.id,
+                                offerID: whitelist.whitelist.offerID,
+                              },
+                            },
+                          });
+                          setUpdatingWhitelist(null);
+                        }}
+                      />
+                    </$Horizontal>,
+                  ]}
+                >
+                  <Meta title={whitelist.organizer.name} />
+                </Card>
+              </Link>
+            ))}
+          </div>
+          <br />
+          <br />
           <h2>Ad Sets</h2>
           <br />
           <div className={styles.adSetGrid}>
@@ -382,6 +535,8 @@ const OfferPage: React.FC = () => {
               );
             })}
           </div>
+          <br />
+          <br />
           {activationModalType && (
             <CreateActivationFormModal
               activationModalVisible={activationModalVisible}
@@ -395,6 +550,76 @@ const OfferPage: React.FC = () => {
               activationToEdit={activationToEdit}
             />
           )}
+
+          <Modal
+            title="Whitelist Partner to Offer"
+            open={addPartnerModalVisible}
+            onOk={() => setAddPartnerModalVisible(false)}
+            onCancel={() => setAddPartnerModalVisible(false)}
+            footer={[
+              <Button key="back" onClick={() => setAddPartnerModalVisible(false)}>
+                Cancel
+              </Button>,
+            ]}
+          >
+            <Input.Search
+              placeholder="Search Partner by ID"
+              onSearch={(value: string) => {
+                getPartner({ variables: { affiliateID: value } });
+              }}
+              style={{ width: '100%' }}
+              enterButton="Search"
+            />
+            <br />
+            <$Horizontal verticalCenter style={{ margin: '20px 0px' }}>
+              {loadingPartner && <Spin style={{ margin: 'auto' }} />}
+              {!errorPartner && searchedPartner && (
+                <div>
+                  <Card
+                    key={searchedPartner.id}
+                    hoverable
+                    style={{ flex: 1, maxWidth: '250px' }}
+                    cover={
+                      <img
+                        alt="example"
+                        src={searchedPartner.avatar || ''}
+                        style={{ width: '250px', height: '150px', objectFit: 'cover' }}
+                      />
+                    }
+                    actions={[
+                      <Button
+                        type="primary"
+                        onClick={async () => {
+                          setAddPartnerPending(true);
+                          await whitelistAffiliate({
+                            variables: {
+                              payload: {
+                                affiliateID: searchedPartner?.id,
+                                offerID,
+                                advertiserID,
+                                status: OrganizerOfferWhitelistStatus.Active,
+                              },
+                            },
+                          });
+                          setAddPartnerPending(false);
+                          setAddPartnerModalVisible(false);
+                        }}
+                        key={`view-${searchedPartner.id}`}
+                        style={{ width: '80%' }}
+                      >
+                        {addPartnerPending ? <Spin /> : 'Add'}
+                      </Button>,
+                    ]}
+                  >
+                    <Meta
+                      title={searchedPartner.title}
+                      style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}
+                    />
+                  </Card>
+                </div>
+              )}
+            </$Horizontal>
+          </Modal>
         </div>
       )}
     </div>

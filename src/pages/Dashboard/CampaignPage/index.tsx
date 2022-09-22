@@ -134,10 +134,10 @@ const CampaignPage: React.FC = () => {
           </$Horizontal>
           <br />
           <br />
-          <h2>Tournaments</h2>
+          <h2>Events</h2>
           <$Horizontal justifyContent="space-between" style={{ maxWidth }}>
             <Input.Search
-              placeholder="Find Tournament"
+              placeholder="Filter Events"
               allowClear
               onChange={(e) => setSearchString(e.target.value)}
               onSearch={setSearchString}
@@ -150,7 +150,7 @@ const CampaignPage: React.FC = () => {
               }}
               style={{ alignSelf: 'flex-end' }}
             >
-              Add Tournament
+              Add Event
             </Button>
           </$Horizontal>
           <br />
@@ -207,7 +207,7 @@ const CampaignPage: React.FC = () => {
         </div>
       )}
       <Modal
-        title="Add Tournament to Campaign"
+        title="Add Event to Campaign"
         open={addTournamentModalVisible}
         onOk={() => setAddTournamentModalVisible(false)}
         onCancel={() => setAddTournamentModalVisible(false)}
@@ -218,7 +218,7 @@ const CampaignPage: React.FC = () => {
         ]}
       >
         <Input.Search
-          placeholder="Search Tournament by ID"
+          placeholder="Search Event by ID"
           onSearch={(value: string) => {
             getTournament({ variables: { tournamentID: value } });
           }}
