@@ -39,7 +39,7 @@ const PartnerPage: React.FC = () => {
   const breadLine = [
     { title: 'Dashboard', route: '/dashboard' },
     { title: 'Partners', route: '/dashboard/partners' },
-    { title: partner?.name || '', route: `/dashboard/partner/id/${partner?.id}` },
+    { title: partner?.name || '', route: `/dashboard/partners/id/${partner?.id}` },
   ];
 
   return (

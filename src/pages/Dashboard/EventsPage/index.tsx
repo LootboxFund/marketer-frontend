@@ -69,7 +69,7 @@ const EventsPage: React.FC = () => {
           <br />
           <div className={styles.content}>
             {tournaments.filter(filterBySearchString).map((tournament) => (
-              <Link key={tournament.id} to={`/dashboard/event/id/${tournament.id}`}>
+              <Link key={tournament.id} to={`/dashboard/events/id/${tournament.id}`}>
                 <Card
                   hoverable
                   className={styles.card}

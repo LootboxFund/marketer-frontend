@@ -126,3 +126,100 @@ export const EDIT_ACTIVATION = gql`
     }
   }
 `;
+
+export const GET_AFFILIATE = gql`
+  query AffiliatePublicView($affiliateID: ID!) {
+    affiliatePublicView(affiliateID: $affiliateID) {
+      ... on AffiliatePublicViewResponseSuccess {
+        affiliate {
+          id
+          userID
+          name
+          avatar
+        }
+      }
+      ... on ResponseError {
+        error {
+          code
+          message
+        }
+      }
+    }
+  }
+`;
+
+export const WHITELIST_AFFILIATE = gql`
+  mutation WhitelistAffiliateToOffer($payload: WhitelistAffiliateToOfferPayload!) {
+    whitelistAffiliateToOffer(payload: $payload) {
+      ... on WhitelistAffiliateToOfferResponseSuccess {
+        whitelist {
+          id
+          organizerID
+          offerID
+          advertiserID
+          timestamp
+          status
+        }
+      }
+      ... on ResponseError {
+        error {
+          code
+          message
+        }
+      }
+    }
+  }
+`;
+
+export const LIST_WHITELISTED_AFFILIATES = gql`
+  query ListWhitelistedAffiliatesToOffer($payload: ListWhitelistedAffiliatesToOfferPayload!) {
+    listWhitelistedAffiliatesToOffer(payload: $payload) {
+      ... on ListWhitelistedAffiliatesToOfferResponseSuccess {
+        whitelists {
+          whitelist {
+            id
+            organizerID
+            offerID
+            advertiserID
+            timestamp
+            status
+          }
+          organizer {
+            id
+            name
+            avatar
+          }
+        }
+      }
+      ... on ResponseError {
+        error {
+          code
+          message
+        }
+      }
+    }
+  }
+`;
+
+export const EDIT_WHITELIST_AFFILIATE = gql`
+  mutation EditWhitelistAffiliateToOffer($payload: EditWhitelistAffiliateToOfferPayload!) {
+    editWhitelistAffiliateToOffer(payload: $payload) {
+      ... on EditWhitelistAffiliateToOfferResponseSuccess {
+        whitelist {
+          id
+          organizerID
+          offerID
+          advertiserID
+          timestamp
+          status
+        }
+      }
+      ... on ResponseError {
+        error {
+          code
+          message
+        }
+      }
+    }
+  }
+`;

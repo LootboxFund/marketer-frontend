@@ -64,7 +64,7 @@ export default [
       },
       {
         name: 'Event',
-        path: '/dashboard/event/id/:eventID',
+        path: '/dashboard/events/id/:eventID',
         hideInMenu: true,
         component: './Dashboard/EventPage',
       },
@@ -76,7 +76,7 @@ export default [
       {
         name: 'Partner',
         hideInMenu: true,
-        path: '/dashboard/partner/id/:partnerID',
+        path: '/dashboard/partners/id/:partnerID',
         component: './Dashboard/PartnerPage',
       },
     ],

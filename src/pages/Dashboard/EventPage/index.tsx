@@ -41,7 +41,7 @@ const EventPage: React.FC = () => {
   const breadLine = [
     { title: 'Dashboard', route: '/dashboard' },
     { title: 'Events', route: '/dashboard/events' },
-    { title: tournament?.title || '', route: `/dashboard/event/id/${tournament?.id}` },
+    { title: tournament?.title || '', route: `/dashboard/events/id/${tournament?.id}` },
   ];
 
   return (
