@@ -20,11 +20,12 @@
 - ✅ Advertiser - View Historical Tournaments
 - ✅ Advertiser - View Historical Partners
 
-- ⬜️ Advertiser can whitelist an affiliate to an offer
+- ✅ Advertiser can whitelist an affiliate to an offer
+- ✅ Affiliate can list offers available to them
+- ✅ Affiliate can view details of a specific offer available to them
 
-- ⬜️ Affiliate can view offers available to them
-- ⬜️ Organizer AntPro - Add/Remove Offer AdSets to Tournament
-- ⬜️ Organizer AntPro - Add/Remove Promoters to Tournament with rate cards
+- ⬜️ Affiliate can Add/Remove Offer AdSets to Tournament
+- ⬜️ Affiliate can Add/Remove Promoters to Tournament with rate cards
 
 - ✅ Organizer AntPro - View Historical Tournaments
 - ✅ Organizer AntPro - View Tournament
