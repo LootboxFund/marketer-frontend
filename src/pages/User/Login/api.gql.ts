@@ -8,6 +8,8 @@ export const GET_ADVERTISER = gql`
         userID
         name
         description
+        avatar
+        publicContactEmail
       }
       ... on ResponseError {
         error {

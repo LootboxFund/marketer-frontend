@@ -100,7 +100,7 @@ const PartnersPage: React.FC = () => {
                   </Popconfirm>,
                 ]}
               >
-                <Meta title={affiliate.name} />
+                <Meta title={affiliate.name} description={affiliate.publicContactEmail} />
               </Card>
               // </Link>
             ))}

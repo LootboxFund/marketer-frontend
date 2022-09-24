@@ -178,6 +178,11 @@ export default [
     name: 'Company',
     routes: [
       {
+        hideInMenu: true,
+        path: '/company',
+        redirect: '/company/account',
+      },
+      {
         name: 'Account',
         path: '/company/account',
         component: './Company/AccountPage',
@@ -186,11 +191,6 @@ export default [
         name: 'Billing',
         path: '/company/billing',
         component: './Welcome',
-      },
-      {
-        name: 'Template',
-        path: '/company/template',
-        component: './Template',
       },
     ],
   },

@@ -32,9 +32,9 @@
 - ✅ Remove hardcoded affiliate ID
 - ✅ Show read-only list of offers & promoters to affiliates in marketplace tab
 - ✅ Show read-only list of organizers to advertisers in marketplace tab
+- ✅ Update advertiser details
 
 - ⬜️ Update organizer details
-- ⬜️ Update advertiser details
 - ⬜️ Organizer backend auth permissions
 - ⬜️ Add GraphQL server side caching
 
