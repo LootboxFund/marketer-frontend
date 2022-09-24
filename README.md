@@ -36,8 +36,11 @@
 - ✅ Update organizer details
 - ✅ Organizer backend auth permissions
 - ✅ Add GraphQL server side caching
+- ✅ Ad Creative Device Simulator shows a preview of the media for advertisers
+- ✅ Ad Creative Device Simulator shows a preview of the media for affiliates
+
 - ⬜️ Add descriptions to page
-- ⬜️ Ad Creative Device Simulator shows a preview of the media
+- ⬜️ Fix bug where re-adding an adset to a tournament doesn't add back rate quotes (removing is fine)
 
 - ⬜️ Deploy to staging
 - ⬜️ Refactor widgets to new graphql
