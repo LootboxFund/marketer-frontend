@@ -12,6 +12,8 @@ export const useAdvertiserUser = () => {
     GET_ADVERTISER,
     {
       onCompleted: (data) => {
+        console.log(`--- GET ADVERTISER`);
+        console.log(data);
         if (data?.advertiserAdminView.__typename === 'AdvertiserAdminViewResponseSuccess') {
           const advertiser = data.advertiserAdminView;
           setAdvertiserUser(advertiser);

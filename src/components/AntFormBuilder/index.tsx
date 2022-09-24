@@ -15,7 +15,8 @@ interface AntUploadFileProps {
   conquestID?: ConquestID;
   newMediaDestination: React.MutableRefObject<string>;
   folderName: AdvertiserStorageFolder;
-  acceptedFileTypes: 'image/*,video/*' | 'image/*' | 'video/*';
+  acceptedFileTypes: 'image/*,video/mp4' | 'image/*' | 'video/mp4';
+  forceRefresh?: () => void;
 }
 export const AntUploadFile: React.FC<AntUploadFileProps> = ({
   advertiserID,
@@ -23,6 +24,7 @@ export const AntUploadFile: React.FC<AntUploadFileProps> = ({
   newMediaDestination,
   folderName,
   acceptedFileTypes,
+  forceRefresh,
 }) => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const customUploadImage = async ({ file, onSuccess }: any) => {
@@ -33,12 +35,12 @@ export const AntUploadFile: React.FC<AntUploadFileProps> = ({
       advertiserID,
     });
     newMediaDestination.current = destination;
-
     onSuccess('ok');
+    if (forceRefresh) {
+      forceRefresh();
+    }
   };
   const handleChange: UploadProps['onChange'] = async (info: any) => {
-    console.log(info);
-
     if (info.file.status === 'done') {
       message.success(`${info.file.name} file uploaded successfully`);
     } else if (info.file.status === 'error') {
@@ -58,7 +60,7 @@ export const AntUploadFile: React.FC<AntUploadFileProps> = ({
       }
       return file;
     });
-    console.log(newFileList);
+
     setFileList(newFileList);
   };
   const props = {

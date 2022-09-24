@@ -37,7 +37,7 @@ const AdPage: React.FC = () => {
     onCompleted: (data) => {
       if (data?.viewAd.__typename === 'ViewAdResponseSuccess') {
         const ad = data.viewAd.ad;
-        console.log(ad);
+
         setAd(ad);
       }
     },
@@ -53,7 +53,6 @@ const AdPage: React.FC = () => {
     ],
   });
   const editAd = async (payload: Omit<EditAdPayload, 'id'>) => {
-    console.log(payload);
     const res = await editAdMutation({
       variables: {
         payload: {
@@ -89,35 +88,32 @@ const AdPage: React.FC = () => {
           <BreadCrumbDynamic breadLine={breadLine} />
           <h1>{ad.name}</h1>
           <br />
-          <$Horizontal>
-            <div style={{ minWidth: '600px', maxWidth: '800px' }}>
-              <CreateAdForm
-                ad={{
-                  id: ad.id,
-                  advertiserID: advertiserID as AdvertiserID,
-                  name: ad.name,
-                  description: ad.description || '',
-                  status: ad.status,
-                  placement: ad.placement,
-                  publicInfo: ad.publicInfo,
-                  creative: {
-                    creativeType: ad.creative.creativeType,
-                    creativeLinks: ad.creative.creativeLinks,
-                    callToAction: ad.creative.callToAction as AdSampleCallToActions,
-                    thumbnail: ad.creative.thumbnail,
-                    infographicLink: ad.creative.infographicLink || '',
-                    aspectRatio: ad.creative.aspectRatio,
-                    themeColor: ad.creative.themeColor,
-                  },
-                }}
-                advertiserID={advertiserID as AdvertiserID}
-                mode="view-edit"
-                onSubmitEdit={editAd}
-              />
-            </div>
-            <$ColumnGap width="30px" />
-            <DeviceSimulator mode="iframe" />
-          </$Horizontal>
+
+          <div style={{ minWidth: '1000px', maxWidth: '1000px' }}>
+            <CreateAdForm
+              ad={{
+                id: ad.id,
+                advertiserID: advertiserID as AdvertiserID,
+                name: ad.name,
+                description: ad.description || '',
+                status: ad.status,
+                placement: ad.placement,
+                publicInfo: ad.publicInfo,
+                creative: {
+                  creativeType: ad.creative.creativeType,
+                  creativeLinks: ad.creative.creativeLinks,
+                  callToAction: ad.creative.callToAction as AdSampleCallToActions,
+                  thumbnail: ad.creative.thumbnail,
+                  infographicLink: ad.creative.infographicLink || '',
+                  aspectRatio: ad.creative.aspectRatio,
+                  themeColor: ad.creative.themeColor,
+                },
+              }}
+              advertiserID={advertiserID as AdvertiserID}
+              mode="view-edit"
+              onSubmitEdit={editAd}
+            />
+          </div>
         </div>
       )}
     </div>

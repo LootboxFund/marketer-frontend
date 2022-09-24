@@ -33,11 +33,16 @@
 - ✅ Show read-only list of offers & promoters to affiliates in marketplace tab
 - ✅ Show read-only list of organizers to advertisers in marketplace tab
 - ✅ Update advertiser details
+- ✅ Update organizer details
+- ✅ Organizer backend auth permissions
+- ✅ Add GraphQL server side caching
+- ✅ Ad Creative Device Simulator shows a preview of the media for advertisers
+- ✅ Ad Creative Device Simulator shows a preview of the media for affiliates
 
-- ⬜️ Update organizer details
-- ⬜️ Organizer backend auth permissions
-- ⬜️ Add GraphQL server side caching
+- ⬜️ Add descriptions to page
+- ⬜️ Fix bug where re-adding an adset to a tournament doesn't add back rate quotes (removing is fine)
 
+- ⬜️ Deploy to staging
 - ⬜️ Refactor widgets to new graphql
 
 - ⬜️ Lootbox Pixel on Google Tag Manager
