@@ -68,22 +68,33 @@ export default [
         hideInMenu: true,
         component: './Dashboard/EventPage',
       },
+    ],
+  },
+  {
+    path: '/marketplace',
+    icon: 'ShoppingOutlined',
+    name: 'Marketplace',
+    routes: [
       {
-        name: 'Partners',
-        path: '/dashboard/partners',
-        component: './Dashboard/PartnersPage',
+        hideInMenu: true,
+        path: '/marketplace',
+        redirect: '/marketplace/Welcome',
       },
       {
-        name: 'Partner',
-        hideInMenu: true,
-        path: '/dashboard/partners/id/:partnerID',
-        component: './Dashboard/PartnerPage',
+        name: 'Welcome',
+        path: '/marketplace/welcome',
+        component: './Marketplace/Welcome',
+      },
+      {
+        name: 'Outsource',
+        path: '/marketplace/outsource',
+        component: './Marketplace/OutsourcePage',
       },
     ],
   },
   {
     path: '/manage',
-    icon: 'ShoppingOutlined',
+    icon: 'TagsOutlined',
     name: 'Manage',
     routes: [
       {
@@ -148,6 +159,17 @@ export default [
         hideInMenu: true,
         component: './Manage/AdCreate',
       },
+      {
+        name: 'Partners',
+        path: '/manage/partners',
+        component: './Manage/PartnersPage',
+      },
+      {
+        name: 'Partner',
+        hideInMenu: true,
+        path: '/manage/partners/id/:partnerID',
+        component: './Manage/PartnerPage',
+      },
     ],
   },
   {
@@ -155,6 +177,11 @@ export default [
     icon: 'ShopOutlined',
     name: 'Company',
     routes: [
+      {
+        hideInMenu: true,
+        path: '/company',
+        redirect: '/company/account',
+      },
       {
         name: 'Account',
         path: '/company/account',
@@ -164,11 +191,6 @@ export default [
         name: 'Billing',
         path: '/company/billing',
         component: './Welcome',
-      },
-      {
-        name: 'Template',
-        path: '/company/template',
-        component: './Template',
       },
     ],
   },

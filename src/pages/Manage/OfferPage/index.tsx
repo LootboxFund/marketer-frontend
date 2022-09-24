@@ -50,7 +50,7 @@ import { useAdvertiserUser } from '@/components/AuthGuard/advertiserUserInfo';
 import { AdSetStatus } from '../../../api/graphql/generated/types';
 import { Link } from '@umijs/max';
 import Meta from 'antd/lib/card/Meta';
-import { LIST_PARTNERS } from '@/pages/Dashboard/PartnersPage/api.gql';
+import { LIST_PARTNERS } from '../PartnersPage/api.gql';
 
 const OfferPage: React.FC = () => {
   // get the advertiser user
@@ -87,7 +87,7 @@ const OfferPage: React.FC = () => {
     onCompleted: (data) => {
       if (data?.viewCreatedOffer.__typename === 'ViewCreatedOfferResponseSuccess') {
         const offer = data.viewCreatedOffer.offer;
-        console.log(offer);
+
         setOffer(offer);
       }
     },
@@ -132,14 +132,12 @@ const OfferPage: React.FC = () => {
   >(LIST_WHITELISTED_AFFILIATES, {
     variables: { payload: { offerID: offerID || '' } },
     onCompleted: (data) => {
-      console.log(`---- data`);
-      console.log(data);
       if (
         data?.listWhitelistedAffiliatesToOffer.__typename ===
         'ListWhitelistedAffiliatesToOfferResponseSuccess'
       ) {
         const whitelistedPartners = data.listWhitelistedAffiliatesToOffer.whitelists;
-        console.log(whitelistedPartners);
+
         setWhitelistedPartners(whitelistedPartners);
       }
     },
@@ -265,8 +263,6 @@ const OfferPage: React.FC = () => {
     oldLow: Activation;
     oldHigh: Activation;
   }) => {
-    console.log(oldLow);
-    console.log(oldHigh);
     const newHigherPosition = oldLow.order === oldHigh.order ? oldHigh.order + 1 : oldHigh.order;
     const newLowerPosition = oldLow.order === oldHigh.order ? oldLow.order - 1 : oldLow.order;
     if (offer && offer.activations) {
@@ -464,7 +460,7 @@ const OfferPage: React.FC = () => {
             {whitelistedPartners.map((whitelist) => (
               <Link
                 key={whitelist.whitelist.id}
-                to={`/dashboard/partners/id/${whitelist.organizer.id}`}
+                to={`/manage/partners/id/${whitelist.organizer.id}`}
               >
                 <Card
                   hoverable
@@ -612,7 +608,7 @@ const OfferPage: React.FC = () => {
                     ]}
                   >
                     <Meta
-                      title={searchedPartner.title}
+                      title={searchedPartner.name}
                       style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}
                     />
                   </Card>

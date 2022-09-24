@@ -11,6 +11,7 @@ export enum AdvertiserStorageFolder {
   ADSET_IMAGE = 'adset-image',
   AD_IMAGE = 'ad-image',
   AD_VIDEO = 'ad-video',
+  AVATAR = 'avatar',
 }
 
 /**
