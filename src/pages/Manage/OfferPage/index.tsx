@@ -87,7 +87,7 @@ const OfferPage: React.FC = () => {
     onCompleted: (data) => {
       if (data?.viewCreatedOffer.__typename === 'ViewCreatedOfferResponseSuccess') {
         const offer = data.viewCreatedOffer.offer;
-        console.log(offer);
+
         setOffer(offer);
       }
     },
@@ -132,14 +132,12 @@ const OfferPage: React.FC = () => {
   >(LIST_WHITELISTED_AFFILIATES, {
     variables: { payload: { offerID: offerID || '' } },
     onCompleted: (data) => {
-      console.log(`---- data`);
-      console.log(data);
       if (
         data?.listWhitelistedAffiliatesToOffer.__typename ===
         'ListWhitelistedAffiliatesToOfferResponseSuccess'
       ) {
         const whitelistedPartners = data.listWhitelistedAffiliatesToOffer.whitelists;
-        console.log(whitelistedPartners);
+
         setWhitelistedPartners(whitelistedPartners);
       }
     },
@@ -265,8 +263,6 @@ const OfferPage: React.FC = () => {
     oldLow: Activation;
     oldHigh: Activation;
   }) => {
-    console.log(oldLow);
-    console.log(oldHigh);
     const newHigherPosition = oldLow.order === oldHigh.order ? oldHigh.order + 1 : oldHigh.order;
     const newLowerPosition = oldLow.order === oldHigh.order ? oldLow.order - 1 : oldLow.order;
     if (offer && offer.activations) {
@@ -612,7 +608,7 @@ const OfferPage: React.FC = () => {
                     ]}
                   >
                     <Meta
-                      title={searchedPartner.title}
+                      title={searchedPartner.name}
                       style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}
                     />
                   </Card>

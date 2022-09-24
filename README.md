@@ -19,16 +19,22 @@
 - ✅ Basic Tournament Analytics for Organizer (Backend)
 - ✅ Advertiser - View Historical Tournaments
 - ✅ Advertiser - View Historical Partners
-
 - ✅ Advertiser can whitelist an affiliate to an offer
+
 - ✅ Affiliate can list offers available to them
 - ✅ Affiliate can view details of a specific offer available to them
+- ✅ Affiliate can View Historical Tournaments
 
-- ⬜️ Affiliate can Add/Remove Offer AdSets to Tournament
-- ⬜️ Affiliate can Add/Remove Promoters to Tournament with rate cards
+- ✅ TabView for Offer+Affiliate+RateQuote+AdSet
+- ✅ Controls for Managing Affiliate Rate Quotes
 
-- ✅ Organizer AntPro - View Historical Tournaments
-- ✅ Organizer AntPro - View Tournament
+- ✅ Affiliate can Add/Remove Offer AdSets to Tournament
+- ✅ Affiliate can Add/Remove Promoters to Tournament with rate cards
+- ✅ Affiliate can View Basic Tournament with AdSets & Offers
+
+- ⬜️ Remove hardcoded affiliate ID
+- ⬜️ Show read-only list of offers to affiliates in marketplace tab
+- ⬜️ Show read-only list of organizer to advertisers in marketplace tab
 
 - ⬜️ Refactor widgets to new graphql
 
