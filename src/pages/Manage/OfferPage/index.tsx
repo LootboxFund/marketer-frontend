@@ -50,7 +50,7 @@ import { useAdvertiserUser } from '@/components/AuthGuard/advertiserUserInfo';
 import { AdSetStatus } from '../../../api/graphql/generated/types';
 import { Link } from '@umijs/max';
 import Meta from 'antd/lib/card/Meta';
-import { LIST_PARTNERS } from '@/pages/Dashboard/PartnersPage/api.gql';
+import { LIST_PARTNERS } from '../PartnersPage/api.gql';
 
 const OfferPage: React.FC = () => {
   // get the advertiser user
@@ -460,7 +460,7 @@ const OfferPage: React.FC = () => {
             {whitelistedPartners.map((whitelist) => (
               <Link
                 key={whitelist.whitelist.id}
-                to={`/dashboard/partners/id/${whitelist.organizer.id}`}
+                to={`/manage/partners/id/${whitelist.organizer.id}`}
               >
                 <Card
                   hoverable

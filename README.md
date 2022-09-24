@@ -20,21 +20,23 @@
 - ✅ Advertiser - View Historical Tournaments
 - ✅ Advertiser - View Historical Partners
 - ✅ Advertiser can whitelist an affiliate to an offer
-
 - ✅ Affiliate can list offers available to them
 - ✅ Affiliate can view details of a specific offer available to them
 - ✅ Affiliate can View Historical Tournaments
-
 - ✅ TabView for Offer+Affiliate+RateQuote+AdSet
 - ✅ Controls for Managing Affiliate Rate Quotes
-
 - ✅ Affiliate can Add/Remove Offer AdSets to Tournament
 - ✅ Affiliate can Add/Remove Promoters to Tournament with rate cards
 - ✅ Affiliate can View Basic Tournament with AdSets & Offers
+- ✅ Remove adset from tournament
+- ✅ Remove hardcoded affiliate ID
+- ✅ Show read-only list of offers & promoters to affiliates in marketplace tab
+- ✅ Show read-only list of organizers to advertisers in marketplace tab
 
-- ⬜️ Remove hardcoded affiliate ID
-- ⬜️ Show read-only list of offers to affiliates in marketplace tab
-- ⬜️ Show read-only list of organizer to advertisers in marketplace tab
+- ⬜️ Update organizer details
+- ⬜️ Update advertiser details
+- ⬜️ Organizer backend auth permissions
+- ⬜️ Add GraphQL server side caching
 
 - ⬜️ Refactor widgets to new graphql
 

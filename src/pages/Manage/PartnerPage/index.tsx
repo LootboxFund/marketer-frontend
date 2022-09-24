@@ -37,9 +37,9 @@ const PartnerPage: React.FC = () => {
     return <span>{data?.affiliatePublicView.error?.message || ''}</span>;
   }
   const breadLine = [
-    { title: 'Dashboard', route: '/dashboard' },
-    { title: 'Partners', route: '/dashboard/partners' },
-    { title: partner?.name || '', route: `/dashboard/partners/id/${partner?.id}` },
+    { title: 'Manage', route: '/manage' },
+    { title: 'Partners', route: '/manage/partners' },
+    { title: partner?.name || '', route: `/manage/partners/id/${partner?.id}` },
   ];
 
   return (
