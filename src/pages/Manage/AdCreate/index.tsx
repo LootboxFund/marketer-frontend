@@ -1,6 +1,7 @@
-import type {
+import {
   CreateAdPayload,
   CreateAdResponseSuccess,
+  CreativeType,
   ListConquestPreviewsResponse,
   MutationCreateAdArgs,
   QueryListConquestPreviewsArgs,
@@ -11,19 +12,29 @@ import DeviceSimulator from '@/components/DeviceSimulator';
 import { PageContainer } from '@ant-design/pro-components';
 import { history } from '@umijs/max';
 import { useMutation, useQuery } from '@apollo/client';
-import { AdvertiserID } from '@wormgraph/helpers';
+import { AdvertiserID, AspectRatio } from '@wormgraph/helpers';
 import Spin from 'antd/lib/spin';
-import React from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { CREATE_AD } from './api.gql';
 import styles from './index.less';
-import { $ColumnGap } from '@/components/generics';
+import { $ColumnGap, placeholderImage } from '@/components/generics';
 import { LIST_ADS_PREVIEWS } from '../AdsPage/api.gql';
 import { useAdvertiserUser } from '@/components/AuthGuard/advertiserUserInfo';
+
+const AD_PREVIEW = {
+  themeColor: '#000000',
+  callToAction: 'Learn More',
+  creativeType: CreativeType.Image,
+  creativeLinks: [placeholderImage],
+  aspectRatio: AspectRatio.Portrait9x16,
+};
 
 const AdCreate: React.FC = () => {
   // get the advertiser user
   const { advertiserUser } = useAdvertiserUser();
   const { id: advertiserID } = advertiserUser;
+  console.log(advertiserUser);
+  console.log(advertiserID);
   // do the rest
   const [createAdMutation] = useMutation<
     { createAd: ResponseError | CreateAdResponseSuccess },
@@ -33,12 +44,10 @@ const AdCreate: React.FC = () => {
   });
 
   const createAd = async (payload: CreateAdPayload) => {
-    console.log(`createAd - payload`);
-    console.log(payload);
     const res = await createAdMutation({
       variables: {
         payload: {
-          advertiserID,
+          advertiserID: payload.advertiserID,
           description: payload.description,
           name: payload.name,
           placement: payload.placement,
@@ -60,15 +69,13 @@ const AdCreate: React.FC = () => {
   return (
     <PageContainer>
       <div className={styles.content}>
-        <div style={{ width: '800px', maxWidth: '650px' }}>
+        <div style={{ width: '1000px', maxWidth: '1000px' }}>
           <CreateAdForm
             onSubmitCreate={createAd}
             mode="create"
             advertiserID={advertiserID as AdvertiserID}
           />
         </div>
-        <$ColumnGap width="30px" />
-        <DeviceSimulator mode="iframe" />
       </div>
     </PageContainer>
   );

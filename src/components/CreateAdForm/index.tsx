@@ -21,7 +21,9 @@ import { AntColorPicker, AntUploadFile, PriceInput, PriceView } from '../AntForm
 import { Rule } from 'antd/lib/form';
 import { DateView } from '../AntFormBuilder';
 import { AdvertiserStorageFolder } from '@/api/firebase/storage';
-import { $Horizontal } from '@/components/generics';
+import { $Horizontal, $ColumnGap, placeholderVideoThumbnail } from '@/components/generics';
+import DeviceSimulator from '../DeviceSimulator';
+import { placeholderGif, placeholderVideo } from '../generics';
 
 export enum AdSampleCallToActions {
   'Custom' = 'Custom',
@@ -88,13 +90,13 @@ const AD_INFO = {
   publicInfo: '',
   placement: Placement.AfterTicketClaim,
   creative: {
-    creativeType: CreativeType.Video,
-    creativeLinks: [] as string[],
-    callToAction: AdSampleCallToActions['Get Offer'],
+    creativeType: CreativeType.Image,
+    creativeLinks: [placeholderGif, placeholderVideo],
+    callToAction: AdSampleCallToActions['Download Game'],
     thumbnail: '',
     infographicLink: '',
     aspectRatio: AspectRatio.Portrait2x3,
-    themeColor: '#ff821c',
+    themeColor: '#000000',
   },
 };
 const CreateAdForm: React.FC<CreateAdFormProps> = ({
@@ -105,9 +107,11 @@ const CreateAdForm: React.FC<CreateAdFormProps> = ({
   advertiserID,
 }) => {
   const newMediaDestination = useRef('');
-  const [previewImage, setPreviewImage] = useState('');
-  const [previewVideo, setPreviewVideo] = useState('');
+  const newThemeColor = useRef<string>();
+  const [previewMedias, setPreviewMedias] = useState<string[]>([]);
   const [form] = Form.useForm();
+  // @ts-ignore
+  const forceUpdate = FormBuilder.useForceUpdate();
   const [viewMode, setViewMode] = useState(true);
   const [pending, setPending] = useState(false);
   const [adInfo, setAdInfo] = useState(AD_INFO);
@@ -142,7 +146,7 @@ const CreateAdForm: React.FC<CreateAdFormProps> = ({
   }, [ad]);
   const handleCreateFinish = useCallback(async (values) => {
     if (!onSubmitCreate) return;
-    console.log('Submit: ', values);
+
     const payload = {
       creative: {},
     } as CreateAdPayload;
@@ -161,28 +165,34 @@ const CreateAdForm: React.FC<CreateAdFormProps> = ({
     if (values.publicInfo) {
       payload.publicInfo = values.publicInfo;
     }
-    if (values.creative.creativeType) {
-      payload.creative.creativeType = values.creative.creativeType;
+    if (values.creative_creativeType) {
+      payload.creative.creativeType = values.creative_creativeType;
     }
-    if (values.creative.creativeLinks) {
-      payload.creative.creativeLinks = values.creative.creativeLinks;
+    if (values.creative_creativeLinks) {
+      payload.creative.creativeLinks = values.creative_creativeLinks;
     }
-    if (values.creative.callToAction) {
-      payload.creative.callToAction = values.customCTA || values.creative.callToAction;
+    if (values.creative_callToAction) {
+      payload.creative.callToAction = values.customCTA || values.creative_callToAction;
     }
-    if (values.creative.aspectRatio) {
-      payload.creative.aspectRatio = values.creative.aspectRatio;
+    if (values.creative_aspectRatio) {
+      payload.creative.aspectRatio = values.creative_aspectRatio;
     }
-    if (values.creative.themeColor) {
-      payload.creative.themeColor = adInfo.creative.themeColor;
+    // if (payload.creative && adInfo.creative.themeColor) {
+    //   payload.creative.themeColor = adInfo.creative.themeColor;
+    // }
+    if (payload.creative && newThemeColor.current) {
+      payload.creative.themeColor = newThemeColor.current;
     }
     if (newMediaDestination.current) {
       payload.creative.creativeLinks = [newMediaDestination.current];
     }
     if (newMediaDestination.current) {
-      payload.creative.thumbnail = newMediaDestination.current;
+      payload.creative.thumbnail =
+        values.creative_creativeType === CreativeType.Video
+          ? placeholderVideoThumbnail
+          : newMediaDestination.current;
     }
-    console.log(adInfo);
+    payload.advertiserID = advertiserID;
     setPending(true);
     try {
       await onSubmitCreate(payload);
@@ -204,8 +214,11 @@ const CreateAdForm: React.FC<CreateAdFormProps> = ({
     }
   }, []);
   const handleEditFinish = useCallback(async (values) => {
+    console.log(`values = `, values);
+    console.log(`adInfo = `, adInfo);
+    console.log(`newThemeColor = `, newThemeColor.current);
+    console.log(`newMediaDestination = `, newMediaDestination.current);
     if (!onSubmitEdit) return;
-    console.log('Submit: ', values);
     const payload = {
       creative: {},
     } as EditAdPayload;
@@ -227,26 +240,32 @@ const CreateAdForm: React.FC<CreateAdFormProps> = ({
     if (values.publicInfo) {
       payload.publicInfo = values.publicInfo;
     }
-    if (payload.creative && values.creative.creativeType) {
-      payload.creative.creativeType = values.creative.creativeType;
+    if (payload.creative && values.creative_creativeType) {
+      payload.creative.creativeType = values.creative_creativeType;
     }
-    if (payload.creative && values.creative.creativeLinks) {
-      payload.creative.creativeLinks = values.creative.creativeLinks;
+    if (payload.creative && values.creative_creativeLinks) {
+      payload.creative.creativeLinks = values.creative_creativeLinks;
     }
-    if (payload.creative && values.creative.callToAction) {
-      payload.creative.callToAction = values.customCTA || values.creative.callToAction;
+    if (payload.creative && values.creative_callToAction) {
+      payload.creative.callToAction = values.customCTA || values.creative_callToAction;
     }
-    if (payload.creative && values.creative.aspectRatio) {
-      payload.creative.aspectRatio = values.creative.aspectRatio;
+    if (payload.creative && values.creative_aspectRatio) {
+      payload.creative.aspectRatio = values.creative_aspectRatio;
     }
-    if (payload.creative && adInfo.creative.themeColor) {
-      payload.creative.themeColor = adInfo.creative.themeColor;
+    // if (payload.creative && adInfo.creative.themeColor) {
+    //   payload.creative.themeColor = adInfo.creative.themeColor;
+    // }
+    if (payload.creative && newThemeColor.current) {
+      payload.creative.themeColor = newThemeColor.current;
     }
     if (payload.creative && newMediaDestination.current) {
       payload.creative.creativeLinks = [newMediaDestination.current];
     }
     if (payload.creative && newMediaDestination.current) {
-      payload.creative.thumbnail = newMediaDestination.current;
+      payload.creative.thumbnail =
+        values.creative_creativeType === CreativeType.Video
+          ? placeholderVideoThumbnail
+          : newMediaDestination.current;
     }
     setPending(true);
     try {
@@ -282,24 +301,24 @@ const CreateAdForm: React.FC<CreateAdFormProps> = ({
           tooltip: 'This determines where your ad is shown',
           required: true,
           initialValue: adInfo.placement,
-          options: [Placement.AfterPayout, Placement.BeforePayout, Placement.AfterTicketClaim],
+          options: [Placement.AfterTicketClaim],
         },
         {
-          key: 'creative.aspectRatio',
+          key: 'creative_aspectRatio',
           label: 'Aspect Ratio',
           widget: 'select',
           required: true,
           initialValue: adInfo.creative.aspectRatio,
           options: [
-            AspectRatio.Square1x1,
-            AspectRatio.Landscape16x9,
             AspectRatio.Portrait9x16,
             AspectRatio.Portrait2x3,
             AspectRatio.Tablet4x5,
+            AspectRatio.Square1x1,
+            AspectRatio.Landscape16x9,
           ],
         },
         {
-          key: 'creative.creativeType',
+          key: 'creative_creativeType',
           label: 'Media Type',
           widget: 'select',
           required: true,
@@ -311,7 +330,7 @@ const CreateAdForm: React.FC<CreateAdFormProps> = ({
     };
     if (!viewMode) {
       meta.fields.push({
-        key: 'creative.thumbnail',
+        key: 'creative_thumbnail',
         label: 'Media',
         rules: [
           {
@@ -319,7 +338,7 @@ const CreateAdForm: React.FC<CreateAdFormProps> = ({
               // Do async validation to check if username already exists
               // Use setTimeout to emulate api call
               return new Promise((resolve, reject) => {
-                if (!newMediaDestination.current) {
+                if (mode === 'create' && !newMediaDestination.current) {
                   reject(new Error(`Upload a file`));
                 } else {
                   resolve(newMediaDestination.current);
@@ -334,7 +353,8 @@ const CreateAdForm: React.FC<CreateAdFormProps> = ({
             advertiserID={advertiserID}
             folderName={AdvertiserStorageFolder.AD_VIDEO}
             newMediaDestination={newMediaDestination}
-            acceptedFileTypes={'image/*,video/*'}
+            forceRefresh={() => setPreviewMedias([newMediaDestination.current])}
+            acceptedFileTypes={'image/*,video/mp4'}
           />
         ),
       });
@@ -349,7 +369,7 @@ const CreateAdForm: React.FC<CreateAdFormProps> = ({
       fields: [
         { key: 'publicInfo', label: 'Public Info', widget: 'textarea', required: true },
         {
-          key: 'creative.callToAction',
+          key: 'creative_callToAction',
           label: 'Call To Action',
           widget: 'select',
           required: true,
@@ -359,11 +379,13 @@ const CreateAdForm: React.FC<CreateAdFormProps> = ({
       ],
     };
 
-    // @ts-ignore
-    meta.fields.push({
-      key: 'customCTA',
-      label: 'Custom CTA',
-    });
+    if (form.getFieldValue('creative_callToAction') === AdSampleCallToActions.Custom) {
+      // @ts-ignore
+      meta.fields.push({
+        key: 'customCTA',
+        label: 'Custom CTA',
+      });
+    }
 
     meta.fields.push({
       key: 'destination',
@@ -375,15 +397,17 @@ const CreateAdForm: React.FC<CreateAdFormProps> = ({
       viewWidget: () => <i style={{ color: 'gray' }}>{'Set By Offer'}</i>,
     });
     meta.fields.push({
-      key: 'creative.themeColor',
+      key: 'creative_themeColor',
       label: 'Theme Color',
-      required: true,
+      // @ts-ignore
+      viewWidget: () => <span>{adInfo.creative.themeColor}</span>,
       // @ts-ignore
       widget: () => (
         <AntColorPicker
           initialColor={adInfo.creative.themeColor}
           updateColor={(hex: string) => {
-            console.log(`hhhhh = ${hex}`);
+            console.log('setting color...');
+            newThemeColor.current = hex;
             setAdInfo({
               ...adInfo,
               creative: {
@@ -404,7 +428,6 @@ const CreateAdForm: React.FC<CreateAdFormProps> = ({
       initialValues: adInfo,
       fields: [
         { key: 'name', label: 'Name', required: true },
-        { key: 'description', label: 'Private Notes', widget: 'textarea' },
         {
           key: 'status',
           label: 'Status',
@@ -412,85 +435,93 @@ const CreateAdForm: React.FC<CreateAdFormProps> = ({
           widget: 'radio-group',
           options: [AdStatus.Active, AdStatus.Inactive, AdStatus.Planned, AdStatus.Archived],
         },
+        { key: 'description', label: 'Private Notes', widget: 'textarea' },
       ],
     };
   };
   return (
     <Card style={{ flex: 1 }}>
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
-        {viewMode && !lockedToEdit && (
-          <Button type="link" onClick={() => setViewMode(false)} style={{ alignSelf: 'flex-end' }}>
-            Edit
-          </Button>
-        )}
-        <Form
-          layout="horizontal"
-          form={form}
-          onFinish={mode === 'create' ? handleCreateFinish : handleEditFinish}
-        >
-          <fieldset>
-            <legend>{`Media Upload`}</legend>
-            <FormBuilder form={form} meta={meta1()} viewMode={viewMode} />
-            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
-              {previewImage && (
-                <Image
-                  width={200}
-                  src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
-                  style={{ marginBottom: '50px' }}
-                />
-              )}
-              {previewVideo && (
-                <video width="320" height="240" controls>
-                  <source src="movie.mp4" type="video/mp4" />
-                  <source src="movie.ogg" type="video/ogg" />
-                  Your browser does not support the video tag.
-                </video>
-              )}
-            </div>
-          </fieldset>
-          <fieldset>
-            <legend>{`Public Details`}</legend>
-            <FormBuilder form={form} meta={meta2()} viewMode={viewMode} />
-          </fieldset>
-          <fieldset>
-            <legend>{`Private Details`}</legend>
-            <FormBuilder form={form} meta={meta3()} viewMode={viewMode} />
-          </fieldset>
-          {!viewMode && (
-            <fieldset>
-              <legend>{`Submit`}</legend>
-              <$Horizontal justifyContent="flex-end">
-                <Form.Item className="form-footer" style={{ width: 'auto' }}>
-                  <Button
-                    onClick={() => {
-                      form.resetFields();
-                      if (!lockedToEdit) {
-                        setViewMode(true);
-                      }
-                      if (mode === 'create') {
-                        history.back();
-                      }
-                    }}
-                    style={{ marginRight: '15px' }}
-                  >
-                    Cancel
-                  </Button>
-
-                  {mode === 'create' ? (
-                    <Button htmlType="submit" type="primary" disabled={pending}>
-                      {pending ? 'Creating...' : 'Create'}
-                    </Button>
-                  ) : (
-                    <Button htmlType="submit" type="primary" disabled={pending}>
-                      {pending ? 'Updating...' : 'Update'}
-                    </Button>
-                  )}
-                </Form.Item>
-              </$Horizontal>
-            </fieldset>
+      <$Horizontal justifyContent="flex-start">
+        <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+          {viewMode && !lockedToEdit && (
+            <Button
+              type="link"
+              onClick={() => setViewMode(false)}
+              style={{ alignSelf: 'flex-end' }}
+            >
+              Edit
+            </Button>
           )}
-        </Form>
-      </div>
+          <Form
+            layout="horizontal"
+            form={form}
+            onFinish={mode === 'create' ? handleCreateFinish : handleEditFinish}
+            onValuesChange={forceUpdate}
+          >
+            <fieldset>
+              <legend>{`Media Upload`}</legend>
+              <FormBuilder form={form} meta={meta1()} viewMode={viewMode} />
+            </fieldset>
+            <fieldset>
+              <legend>{`Public Details`}</legend>
+              <FormBuilder form={form} meta={meta2()} viewMode={viewMode} />
+            </fieldset>
+            <fieldset>
+              <legend>{`Private Details`}</legend>
+              <FormBuilder form={form} meta={meta3()} viewMode={viewMode} />
+            </fieldset>
+            {!viewMode && (
+              <fieldset>
+                <legend>{`Submit`}</legend>
+                <$Horizontal justifyContent="flex-end">
+                  <Form.Item className="form-footer" style={{ width: 'auto' }}>
+                    <Button
+                      onClick={() => {
+                        form.resetFields();
+                        if (!lockedToEdit) {
+                          setViewMode(true);
+                        }
+                        if (mode === 'create') {
+                          history.back();
+                        }
+                      }}
+                      style={{ marginRight: '15px' }}
+                    >
+                      Cancel
+                    </Button>
+
+                    {mode === 'create' ? (
+                      <Button htmlType="submit" type="primary" disabled={pending}>
+                        {pending ? 'Creating...' : 'Create'}
+                      </Button>
+                    ) : (
+                      <Button htmlType="submit" type="primary" disabled={pending}>
+                        {pending ? 'Updating...' : 'Update'}
+                      </Button>
+                    )}
+                  </Form.Item>
+                </$Horizontal>
+              </fieldset>
+            )}
+          </Form>
+        </div>
+        <$ColumnGap width="50px" />
+        <DeviceSimulator
+          creative={{
+            themeColor: newThemeColor.current ? newThemeColor.current : adInfo.creative.themeColor,
+            callToAction:
+              form.getFieldValue('creative_callToAction') === AdSampleCallToActions.Custom
+                ? form.getFieldValue('customCTA') || adInfo.creative.callToAction
+                : form.getFieldValue('creative_callToAction') || adInfo.creative.callToAction,
+            creativeType:
+              form.getFieldValue('creative_creativeType') || adInfo.creative.creativeType,
+            creativeLinks: newMediaDestination.current
+              ? [newMediaDestination.current]
+              : adInfo.creative.creativeLinks,
+            aspectRatio: form.getFieldValue('creative_aspectRatio') || adInfo.creative.aspectRatio,
+          }}
+        />
+      </$Horizontal>
     </Card>
   );
 };
