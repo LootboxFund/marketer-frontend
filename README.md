@@ -41,6 +41,7 @@
 
 - ⬜️ Add descriptions to page
 - ⬜️ Fix bug where re-adding an adset to a tournament doesn't add back rate quotes (removing is fine)
+- ⬜️ Kicking out promoter should only kick them out of the specific offer, not all offers
 
 - ⬜️ Deploy to staging
 - ⬜️ Refactor widgets to new graphql

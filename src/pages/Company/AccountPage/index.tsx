@@ -61,6 +61,7 @@ const AccountPage: React.FC = () => {
           description: payload.description,
           avatar: payload.avatar,
           publicContactEmail: payload.publicContactEmail,
+          website: payload.website,
         },
         advertiserID: advertiserID,
       },
@@ -103,6 +104,7 @@ const AccountPage: React.FC = () => {
                 description: advertiser.description || '',
                 avatar: advertiser.avatar,
                 publicContactEmail: advertiser.publicContactEmail || '',
+                website: advertiser.website || '',
               }}
               onSubmit={updateAdvertiser}
               mode="view-edit"

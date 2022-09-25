@@ -16,6 +16,7 @@ import Spin from 'antd/lib/spin';
 import React, { useState } from 'react';
 import { BROWSE_ALL_AFFILIATES } from './api.gql';
 import styles from './index.less';
+import { formatBigNumber } from '@wormgraph/helpers';
 
 const OutsourcePage: React.FC = () => {
   const { advertiserUser } = useAdvertiserUser();
@@ -84,9 +85,18 @@ const OutsourcePage: React.FC = () => {
                         Invite
                       </Button>
                     </Popconfirm>,
+
+                    <Button key={`view-${affiliate.id}`} disabled={!affiliate.website}>
+                      <a href={affiliate.website || ''} target="_blank" rel="noreferrer">
+                        View Socials
+                      </a>
+                    </Button>,
                   ]}
                 >
-                  <Meta title={affiliate.name} />
+                  <Meta
+                    title={affiliate.name}
+                    description={`${formatBigNumber(affiliate.audienceSize || 0, 1)} Audience`}
+                  />
                 </Card>
               );
             })}

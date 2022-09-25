@@ -192,6 +192,11 @@ export default [
         path: '/company/billing',
         component: './Welcome',
       },
+      {
+        name: 'Tiers',
+        path: '/company/tiers',
+        component: './Company/TierRankPage',
+      },
     ],
   },
   {

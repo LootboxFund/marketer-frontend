@@ -11,6 +11,7 @@ export const UPDATE_ADVERTISER = gql`
           description
           avatar
           publicContactEmail
+          website
         }
       }
       ... on ResponseError {

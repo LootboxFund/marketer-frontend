@@ -9,6 +9,8 @@ export const LIST_PARTNERS = gql`
           userID
           name
           avatar
+          website
+          audienceSize
         }
       }
       ... on ResponseError {

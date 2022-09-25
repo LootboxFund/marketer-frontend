@@ -75,5 +75,5 @@ export default {
   'menu.Marketplace.Outsource': 'Outsource',
   'menu.Company.Account': 'Account',
   'menu.Company.Billing': 'Billing',
-  'menu.Company.Template': 'Template',
+  'menu.Company.Tier': 'Tier',
 };

@@ -16,6 +16,7 @@ export type EditAdvertiserFormProps = {
     description?: string;
     avatar?: string;
     publicContactEmail?: string;
+    website?: string;
   };
   onSubmit: (payload: UpdateAdvertiserDetailsPayload) => void;
   mode: 'view-edit' | 'view-only';
@@ -26,6 +27,7 @@ const ADVERTISER_INFO = {
   description: '',
   avatar: '',
   publicContactEmail: '',
+  website: '',
 };
 
 const EditAdvertiserForm: React.FC<EditAdvertiserFormProps> = ({ advertiser, onSubmit, mode }) => {
@@ -40,6 +42,7 @@ const EditAdvertiserForm: React.FC<EditAdvertiserFormProps> = ({ advertiser, onS
       description: advertiser.description || '',
       avatar: advertiser.avatar || '',
       publicContactEmail: advertiser.publicContactEmail || '',
+      website: advertiser.website || '',
     });
   }, [advertiser]);
   const handleFinish = useCallback(async (values) => {
@@ -55,6 +58,9 @@ const EditAdvertiserForm: React.FC<EditAdvertiserFormProps> = ({ advertiser, onS
     }
     if (values.publicContactEmail) {
       payload.publicContactEmail = values.publicContactEmail;
+    }
+    if (values.website) {
+      payload.website = values.website;
     }
     setPending(true);
     try {
@@ -85,6 +91,7 @@ const EditAdvertiserForm: React.FC<EditAdvertiserFormProps> = ({ advertiser, onS
           label: 'Description',
           widget: 'textarea',
         },
+        { key: 'website', label: 'Website' },
       ],
     };
     if (!viewMode) {
