@@ -10,6 +10,7 @@ export const GET_ADVERTISER = gql`
         description
         avatar
         publicContactEmail
+        website
       }
       ... on ResponseError {
         error {

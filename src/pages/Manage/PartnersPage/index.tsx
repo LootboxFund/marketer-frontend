@@ -16,6 +16,7 @@ import { Affiliate } from '../../../api/graphql/generated/types';
 import { $Horizontal, $Vertical } from '@/components/generics';
 import { Button, Card, Input, message, Popconfirm } from 'antd';
 import Meta from 'antd/lib/card/Meta';
+import { formatBigNumber } from '@wormgraph/helpers';
 
 const PartnersPage: React.FC = () => {
   const [searchString, setSearchString] = useState('');
@@ -98,9 +99,17 @@ const PartnersPage: React.FC = () => {
                       Invite
                     </Button>
                   </Popconfirm>,
+                  <Button key={`view-${affiliate.id}`} disabled={!affiliate.website}>
+                    <a href={affiliate.website || ''} target="_blank" rel="noreferrer">
+                      View Socials{' '}
+                    </a>
+                  </Button>,
                 ]}
               >
-                <Meta title={affiliate.name} description={affiliate.publicContactEmail} />
+                <Meta
+                  title={affiliate.name}
+                  description={`${formatBigNumber(affiliate.audienceSize || 0, 1)} Audience`}
+                />
               </Card>
               // </Link>
             ))}
