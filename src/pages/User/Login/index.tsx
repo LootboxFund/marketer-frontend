@@ -16,6 +16,7 @@ import { Alert, message, Tabs } from 'antd';
 import React, { ChangeEvent, useState } from 'react';
 import styles from './index.less';
 import { auth } from '@/api/firebase/app';
+import RegisterAccount from '@/components/RegisterAccount';
 
 const LoginMessage: React.FC<{
   content: string;
@@ -47,7 +48,7 @@ const Login: React.FC = () => {
   const [persistenceChecked, setPersistenceChecked] = useState(persistence === 'local');
 
   const { signInWithEmailAndPassword, sendPhoneVerification, signInPhoneWithCode } = useAuth();
-
+  const [registrationModal, setRegistrationModal] = useState(false);
   const [hackyBugFixPhoneInput, setHackyBugFixPhoneInput] = useState<string>('');
 
   const handleVerificationRequest = async (phone: string) => {
@@ -261,10 +262,14 @@ const Login: React.FC = () => {
               <FormattedMessage id="pages.login.forgotPassword" defaultMessage="Forgot Password" />
             </a>
           </div>
+          <a onClick={() => setRegistrationModal(true)} style={{ marginBottom: '10px' }}>
+            Register
+          </a>
         </LoginForm>
       </div>
       <Footer />
       <div id="recaptcha-container" />
+      <RegisterAccount isModalOpen={registrationModal} setIsModalOpen={setRegistrationModal} />
     </div>
   );
 };
