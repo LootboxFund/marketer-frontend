@@ -17,7 +17,7 @@ import Spin from 'antd/lib/spin';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { CREATE_AD } from './api.gql';
 import styles from './index.less';
-import { $ColumnGap, placeholderImage } from '@/components/generics';
+import { $ColumnGap, $InfoDescription, placeholderImage } from '@/components/generics';
 import { LIST_ADS_PREVIEWS } from '../AdsPage/api.gql';
 import { useAdvertiserUser } from '@/components/AuthGuard/advertiserUserInfo';
 
@@ -65,17 +65,24 @@ const AdCreate: React.FC = () => {
       history.push(`/manage/ads/id/${res?.data?.createAd?.ad?.id}`);
     }
   };
-
+  const renderHelpText = () => {
+    return (
+      <$InfoDescription>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+        laboris nisi ut aliquip ex ea commodo consequat.
+      </$InfoDescription>
+    );
+  };
   return (
     <PageContainer>
-      <div className={styles.content}>
-        <div style={{ width: '1000px', maxWidth: '1000px' }}>
-          <CreateAdForm
-            onSubmitCreate={createAd}
-            mode="create"
-            advertiserID={advertiserID as AdvertiserID}
-          />
-        </div>
+      {renderHelpText()}
+      <div style={{ width: '1000px', maxWidth: '1000px' }}>
+        <CreateAdForm
+          onSubmitCreate={createAd}
+          mode="create"
+          advertiserID={advertiserID as AdvertiserID}
+        />
       </div>
     </PageContainer>
   );

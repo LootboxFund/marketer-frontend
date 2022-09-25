@@ -4,7 +4,13 @@ import type {
   QueryListAdSetsOfAdvertiserArgs,
 } from '@/api/graphql/generated/types';
 import { useAdvertiserUser } from '@/components/AuthGuard/advertiserUserInfo';
-import { $Horizontal, $Vertical, placeholderImage, $ColumnGap } from '@/components/generics';
+import {
+  $Horizontal,
+  $Vertical,
+  placeholderImage,
+  $ColumnGap,
+  $InfoDescription,
+} from '@/components/generics';
 import { PageContainer } from '@ant-design/pro-components';
 import { useQuery } from '@apollo/client';
 import { Button, Card, Input } from 'antd';
@@ -46,6 +52,17 @@ const AdSetsPage: React.FC = () => {
       adSet.name.toLowerCase().indexOf(searchString.toLowerCase()) > -1
     );
   };
+
+  const renderHelpText = () => {
+    return (
+      <$InfoDescription>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+        laboris nisi ut aliquip ex ea commodo consequat.
+      </$InfoDescription>
+    );
+  };
+
   return (
     <PageContainer>
       {loading ? (
@@ -54,6 +71,7 @@ const AdSetsPage: React.FC = () => {
         </div>
       ) : (
         <$Vertical>
+          {renderHelpText()}
           <$Horizontal justifyContent="space-between">
             <Input.Search
               placeholder="Find Ad Sets"

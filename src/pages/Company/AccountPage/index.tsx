@@ -15,7 +15,7 @@ import {
   UpdateAdvertiserDetailsResponseSuccess,
 } from '@/api/graphql/generated/types';
 import { GET_ADVERTISER } from '@/pages/User/Login/api.gql';
-import { $Horizontal } from '@/components/generics';
+import { $Horizontal, $InfoDescription } from '@/components/generics';
 import EditAdvertiserForm from '../../../components/EditAdvertiserForm/index';
 import { AdvertiserAdminViewResponseSuccess } from '../../../api/graphql/generated/types';
 import { AdvertiserID } from '@wormgraph/helpers';
@@ -87,6 +87,15 @@ const AccountPage: React.FC = () => {
       });
     }
   };
+  const renderHelpText = () => {
+    return (
+      <$InfoDescription>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+        laboris nisi ut aliquip ex ea commodo consequat.
+      </$InfoDescription>
+    );
+  };
   const maxWidth = '1000px';
   return (
     <PageContainer>
@@ -96,6 +105,7 @@ const AccountPage: React.FC = () => {
         </div>
       ) : (
         <div className={styles.content}>
+          {renderHelpText()}
           <$Horizontal style={{ maxWidth }}>
             <EditAdvertiserForm
               advertiser={{

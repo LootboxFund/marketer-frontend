@@ -17,7 +17,7 @@ import type {
 import { useAdvertiserUser } from '@/components/AuthGuard/advertiserUserInfo';
 import BreadCrumbDynamic from '@/components/BreadCrumbDynamic';
 import CreateAdSetForm from '@/components/CreateAdSetForm';
-import { $Vertical, $Horizontal, $ColumnGap } from '@/components/generics';
+import { $Vertical, $Horizontal, $ColumnGap, $InfoDescription } from '@/components/generics';
 import { PageContainer } from '@ant-design/pro-components';
 import { useMutation, useQuery } from '@apollo/client';
 import { useParams } from '@umijs/max';
@@ -143,6 +143,15 @@ const AdSetPage: React.FC = () => {
     { title: adSet?.name || '', route: `/manage/adsets/id/${adSet?.id}` },
   ];
   const maxWidth = '1000px';
+  const renderHelpText = () => {
+    return (
+      <$InfoDescription>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+        laboris nisi ut aliquip ex ea commodo consequat.
+      </$InfoDescription>
+    );
+  };
   return (
     <div style={{ maxWidth }}>
       {loading || !adSet ? (
@@ -154,6 +163,7 @@ const AdSetPage: React.FC = () => {
           <BreadCrumbDynamic breadLine={breadLine} />
           <h1>{adSet.name}</h1>
           <br />
+          {renderHelpText()}
           <$Horizontal>
             <CreateAdSetForm
               onSubmitEdit={editAdSet}

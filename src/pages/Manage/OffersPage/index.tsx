@@ -12,7 +12,7 @@ import { LIST_CREATED_OFFERS } from './api.gql';
 import styles from './index.less';
 import { Button, Card, Input } from 'antd';
 import Meta from 'antd/lib/card/Meta';
-import { $Horizontal, $Vertical } from '@/components/generics';
+import { $Horizontal, $InfoDescription, $Vertical } from '@/components/generics';
 import { useAdvertiserUser } from '@/components/AuthGuard/advertiserUserInfo';
 
 const OffersPage: React.FC = () => {
@@ -47,6 +47,16 @@ const OffersPage: React.FC = () => {
       offer.title.toLowerCase().indexOf(searchString.toLowerCase()) > -1
     );
   };
+
+  const renderHelpText = () => {
+    return (
+      <$InfoDescription>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+        laboris nisi ut aliquip ex ea commodo consequat.
+      </$InfoDescription>
+    );
+  };
   return (
     <PageContainer>
       {loading ? (
@@ -55,6 +65,7 @@ const OffersPage: React.FC = () => {
         </div>
       ) : (
         <$Vertical>
+          {renderHelpText()}
           <$Horizontal justifyContent="space-between">
             <Input.Search
               placeholder="Find Offer"

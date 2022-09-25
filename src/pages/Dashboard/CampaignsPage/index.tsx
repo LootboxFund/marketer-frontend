@@ -11,7 +11,7 @@ import Spin from 'antd/lib/spin';
 import React, { useState } from 'react';
 import { LIST_CONQUEST_PREVIEWS } from './api.gql';
 import styles from './index.less';
-import { $Horizontal, $Vertical } from '@/components/generics';
+import { $Horizontal, $InfoDescription, $Vertical } from '@/components/generics';
 import { Button, Input } from 'antd';
 import { Link } from 'umi';
 import { useAdvertiserUser } from '@/components/AuthGuard/advertiserUserInfo';
@@ -49,6 +49,16 @@ const CampaignsPage: React.FC = () => {
     );
   };
 
+  const renderHelpText = () => {
+    return (
+      <$InfoDescription>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+        laboris nisi ut aliquip ex ea commodo consequat.
+      </$InfoDescription>
+    );
+  };
+
   return (
     <PageContainer>
       {loading ? (
@@ -57,6 +67,7 @@ const CampaignsPage: React.FC = () => {
         </div>
       ) : (
         <$Vertical>
+          {renderHelpText()}
           <$Horizontal justifyContent="space-between">
             <Input.Search
               placeholder="Find Campaign"

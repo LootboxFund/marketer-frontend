@@ -10,7 +10,7 @@ import React, { useState } from 'react';
 import { LIST_HISTORICAL_EVENTS } from './api.gql';
 import styles from './index.less';
 import { TournamentPreview } from '../../../api/graphql/generated/types';
-import { $Horizontal, $Vertical } from '@/components/generics';
+import { $Horizontal, $InfoDescription, $Vertical } from '@/components/generics';
 import { Button, Card, Input, message } from 'antd';
 import { Link } from '@umijs/max';
 import Meta from 'antd/lib/card/Meta';
@@ -46,6 +46,16 @@ const EventsPage: React.FC = () => {
     );
   };
 
+  const renderHelpText = () => {
+    return (
+      <$InfoDescription>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+        laboris nisi ut aliquip ex ea commodo consequat.
+      </$InfoDescription>
+    );
+  };
+
   return (
     <PageContainer>
       {loading ? (
@@ -54,6 +64,7 @@ const EventsPage: React.FC = () => {
         </div>
       ) : (
         <$Vertical>
+          {renderHelpText()}
           <$Horizontal justifyContent="space-between">
             <Input.Search
               placeholder="Find Event"

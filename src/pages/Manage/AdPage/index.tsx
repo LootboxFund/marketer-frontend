@@ -19,7 +19,7 @@ import { useParams } from 'react-router-dom';
 import { AdID, AdvertiserID } from '@wormgraph/helpers';
 import BreadCrumbDynamic from '@/components/BreadCrumbDynamic';
 import CreateAdForm, { AdSampleCallToActions } from '@/components/CreateAdForm';
-import { $ColumnGap, $Horizontal } from '@/components/generics';
+import { $ColumnGap, $Horizontal, $InfoDescription } from '@/components/generics';
 import { LIST_ADS_PREVIEWS } from '../AdsPage/api.gql';
 import DeviceSimulator from '@/components/DeviceSimulator';
 import { useAdvertiserUser } from '@/components/AuthGuard/advertiserUserInfo';
@@ -77,6 +77,16 @@ const AdPage: React.FC = () => {
     { title: 'Creatives', route: '/manage/ads' },
     { title: ad?.name || '', route: `/manage/ads/id/${ad?.id}` },
   ];
+
+  const renderHelpText = () => {
+    return (
+      <$InfoDescription>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+        laboris nisi ut aliquip ex ea commodo consequat.
+      </$InfoDescription>
+    );
+  };
   return (
     <div>
       {loading || !ad ? (
@@ -88,7 +98,7 @@ const AdPage: React.FC = () => {
           <BreadCrumbDynamic breadLine={breadLine} />
           <h1>{ad.name}</h1>
           <br />
-
+          {renderHelpText()}
           <div style={{ minWidth: '1000px', maxWidth: '1000px' }}>
             <CreateAdForm
               ad={{

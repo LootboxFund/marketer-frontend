@@ -12,6 +12,7 @@ import { GET_ADVERTISER } from './pages/User/Login/api.gql';
 import { AdvertiserAdminViewResponse } from './api/graphql/generated/types';
 import { AdvertiserID, UserID } from '@wormgraph/helpers';
 import AuthGuard from './components/AuthGuard';
+import { CookiesProvider } from 'react-cookie';
 
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
@@ -33,37 +34,37 @@ export async function getInitialState(): Promise<{
   // loading?: boolean;
   // fetchUserInfo?: () => Promise<UserAdvertiserFE | undefined>;
 }> {
-  const fetchUserInfo = async () => {
-    try {
-      const response = await client.query<any>({
-        query: GET_ADVERTISER,
-      });
-      console.log(response.data.advertiserAdminView);
-      if (response.data.__typename === 'AdvertiserAdminViewResponseSuccess') {
-        const userAdvertiserFE = {
-          id: response.data.advertiserAdminView.id,
-          userID: response.data.advertiserAdminView.userID,
-          name: response.data.advertiserAdminView.name,
-          description: response.data.advertiserAdminView.description,
-          avatar: response.data.advertiserAdminView.avatar,
-        } as UserAdvertiserFE;
-        console.log(`
+  // const fetchUserInfo = async () => {
+  //   try {
+  //     const response = await client.query<any>({
+  //       query: GET_ADVERTISER,
+  //     });
+  //     console.log(response.data.advertiserAdminView);
+  //     if (response.data.__typename === 'AdvertiserAdminViewResponseSuccess') {
+  //       const userAdvertiserFE = {
+  //         id: response.data.advertiserAdminView.id,
+  //         userID: response.data.advertiserAdminView.userID,
+  //         name: response.data.advertiserAdminView.name,
+  //         description: response.data.advertiserAdminView.description,
+  //         avatar: response.data.advertiserAdminView.avatar,
+  //       } as UserAdvertiserFE;
+  //       console.log(`
 
-        ---- here we go:
+  //       ---- here we go:
 
-        `);
-        console.log(userAdvertiserFE);
-        return userAdvertiserFE;
-      }
-      // console.log(response.data.advertiserAdminView);
-      return response.data.advertiserAdminView;
-    } catch (error) {
-      history.push(loginPath);
-      return undefined;
-    }
-  };
-  const x = await fetchUserInfo();
-  console.log(x);
+  //       `);
+  //       console.log(userAdvertiserFE);
+  //       return userAdvertiserFE;
+  //     }
+  //     // console.log(response.data.advertiserAdminView);
+  //     return response.data.advertiserAdminView;
+  //   } catch (error) {
+  //     history.push(loginPath);
+  //     return undefined;
+  //   }
+  // };
+  // const x = await fetchUserInfo();
+  // console.log(x);
   // 如果不是登录页面，执行
   // if (window.location.pathname !== loginPath) {
   //   const currentUser = await fetchUserInfo();
@@ -137,22 +138,24 @@ export const layout: any = ({
       return (
         <>
           <ApolloProvider client={client}>
-            <AuthGuard>
-              {children}
-              {!props.location?.pathname?.includes('/login') && (
-                <SettingDrawer
-                  disableUrlParams
-                  enableDarkTheme
-                  settings={initialState?.settings}
-                  onSettingChange={(settings) => {
-                    setInitialState((preInitialState: any) => ({
-                      ...preInitialState,
-                      settings,
-                    }));
-                  }}
-                />
-              )}
-            </AuthGuard>
+            <CookiesProvider>
+              <AuthGuard>
+                {children}
+                {!props.location?.pathname?.includes('/login') && (
+                  <SettingDrawer
+                    disableUrlParams
+                    enableDarkTheme
+                    settings={initialState?.settings}
+                    onSettingChange={(settings) => {
+                      setInitialState((preInitialState: any) => ({
+                        ...preInitialState,
+                        settings,
+                      }));
+                    }}
+                  />
+                )}
+              </AuthGuard>
+            </CookiesProvider>
           </ApolloProvider>
         </>
       );

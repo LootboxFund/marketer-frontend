@@ -1,8 +1,8 @@
 {
-  "name": "advertiser-frontend",
+  "name": "marketer-frontend",
   "version": "0.1.0",
   "private": true,
-  "description": "Lootbox Advertiser Frontend",
+  "description": "Lootbox Marketer Frontend",
   "scripts": {
     "analyze": "cross-env ANALYZE=1 max build",
     "build": "max build",
