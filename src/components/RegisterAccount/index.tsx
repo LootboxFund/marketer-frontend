@@ -17,9 +17,9 @@ const RegisterAccount: React.FC<RegisterAccountProps> = ({ isModalOpen, setIsMod
     setLoading(true);
     try {
       await signUpWithEmailAndPassword(email, password, password);
-      message.success(
-        'Registered account! You must now request to be upgraded to an advertiser or affiliate.',
-      );
+      // message.success(
+      //   'Registered account! You must now request to be upgraded to an advertiser or affiliate.',
+      // );
     } catch (err: any) {
       message.error(err.message);
     } finally {
