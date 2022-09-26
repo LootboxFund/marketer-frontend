@@ -1,12 +1,14 @@
 import type {
   CreateUserResponse,
   MutationCreateUserWithPasswordArgs,
+  MutationUpgradeToAdvertiserArgs,
   ResponseError,
+  UpgradeToAdvertiserResponse,
 } from '../../graphql/generated/types';
 import { useEffect, useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { auth } from '../app';
-import { SIGN_UP_WITH_PASSWORD, CREATE_USER } from './api.gql';
+import { SIGN_UP_WITH_PASSWORD, CREATE_USER, UPGRADE_TO_ADVERTISER } from './api.gql';
 import {
   signInWithEmailAndPassword as signInWithEmailAndPasswordFirebase,
   sendEmailVerification,
@@ -82,11 +84,16 @@ export const useAuth = () => {
     MutationCreateUserWithPasswordArgs
   >(SIGN_UP_WITH_PASSWORD);
 
+  const [upgradeToAdvertiserMutation] = useMutation<
+    { upgradeToAdvertiser: UpgradeToAdvertiserResponse },
+    MutationUpgradeToAdvertiserArgs
+  >(UPGRADE_TO_ADVERTISER);
+
   const [createUserMutation] = useMutation<{ createUserRecord: CreateUserResponse }>(CREATE_USER);
 
   const setAuthPersistence = () => {
     const persistence: 'session' | 'local' = (localStorage.getItem('auth.persistence') ||
-      'session') as 'session' | 'local';
+      'local') as 'local' | 'session';
 
     if (persistence === 'local') {
       setPersistence(auth, browserLocalPersistence);
@@ -167,7 +174,6 @@ export const useAuth = () => {
     if (!!user.email && !user.emailVerified && !verificationEmailAlreadySent) {
       sendEmailVerification(user)
         .then(() => {
-          console.log('email verification sent');
           localStorage.setItem(EMAIL_VERIFICATION_COOKIE_NAME, 'true');
         })
         .catch((err) => console.log(err));
@@ -180,6 +186,7 @@ export const useAuth = () => {
     if (!email) {
       throw new Error('Email is required');
     }
+
     if (!password) {
       throw new Error('Password is required');
     }
@@ -194,7 +201,6 @@ export const useAuth = () => {
     if (!!user.email && !user.emailVerified && !verificationEmailAlreadySent) {
       sendEmailVerification(user)
         .then(() => {
-          console.log('email verification sent');
           localStorage.setItem(EMAIL_VERIFICATION_COOKIE_NAME, 'true');
         })
         .catch((err) => console.log(err));
@@ -205,7 +211,7 @@ export const useAuth = () => {
     email: string,
     password: string,
     passwordConfirmation: string,
-  ): Promise<void> => {
+  ): Promise<string> => {
     if (!email) {
       throw new Error('Email is required');
     }
@@ -227,6 +233,30 @@ export const useAuth = () => {
     } else if (data?.createUserWithPassword?.__typename === 'ResponseError') {
       throw new Error(data.createUserWithPassword.error.message);
     }
+    if (data.createUserWithPassword.__typename === 'CreateUserResponseSuccess') {
+      return data.createUserWithPassword.user.id;
+    }
+    return '';
+  };
+
+  const upgradeToAdvertiser = async (userID: UserID) => {
+    if (!userID) {
+      throw new Error('User ID is required');
+    }
+    const { data } = await upgradeToAdvertiserMutation({
+      variables: {
+        payload: {
+          userID,
+        },
+      },
+    });
+
+    if (!data) {
+      throw new Error('An error occurred');
+    } else if (data?.upgradeToAdvertiser?.__typename === 'ResponseError') {
+      throw new Error(data.upgradeToAdvertiser.error.message);
+    }
+    return data.upgradeToAdvertiser;
   };
 
   const logout = async (): Promise<void> => {
@@ -240,6 +270,7 @@ export const useAuth = () => {
     user,
     signInWithEmailAndPassword,
     signUpWithEmailAndPassword,
+    upgradeToAdvertiser,
     sendPhoneVerification,
     signInPhoneWithCode,
     logout,

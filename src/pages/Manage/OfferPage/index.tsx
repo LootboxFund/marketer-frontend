@@ -25,7 +25,7 @@ import {
 } from '@/api/graphql/generated/types';
 import { ActivationStatus } from '@/api/graphql/generated/types';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { Spin, Image, Row, Col, Card, Button, Modal, Input, Switch } from 'antd';
+import { Spin, Image, Row, Col, Card, Button, Modal, Input, Switch, Empty } from 'antd';
 import React, { useCallback, useState } from 'react';
 import {
   CREATE_ACTIVATION,
@@ -372,75 +372,100 @@ const OfferPage: React.FC = () => {
             </Button>
           </$Horizontal>
           <br />
-          <Card>
-            {activationsSorted.map((activation, i) => {
-              return (
-                <Card.Grid key={activation.id} style={gridStyle}>
-                  <Row
-                    style={activation.status !== ActivationStatus.Active ? { opacity: 0.2 } : {}}
-                  >
-                    <Col span={14} className={styles.verticalCenter}>
-                      {activation.name}{' '}
-                      {activation.status !== ActivationStatus.Active
-                        ? ` (${activation.status})`
-                        : ''}
-                    </Col>
-                    <Col
-                      span={4}
-                      className={styles.verticalCenter}
-                      style={{ alignItems: 'flex-end' }}
+          {activationsSorted && activationsSorted.length > 0 ? (
+            <Card>
+              {activationsSorted.map((activation, i) => {
+                return (
+                  <Card.Grid key={activation.id} style={gridStyle}>
+                    <Row
+                      style={activation.status !== ActivationStatus.Active ? { opacity: 0.2 } : {}}
                     >
-                      ${activation.pricing}
-                    </Col>
-                    <Col span={4} className={styles.verticalCenter}>
-                      <$Horizontal justifyContent="flex-end">
-                        <CaretUpOutlined
-                          onClick={() => {
-                            if (i - 1 >= 0) {
-                              const prev = activationsSorted[i - 1];
-                              const curr = activationsSorted[i];
-                              swapPositionsInFunnel({
-                                oldLow: prev,
-                                oldHigh: curr,
-                              });
-                            }
-                          }}
-                          style={{ cursor: 'pointer', fontSize: '1.2rem' }}
-                        />
-                        <$ColumnGap />
-                        <CaretDownOutlined
-                          onClick={() => {
-                            if (i + 1 < activationsSorted.length) {
-                              const curr = activationsSorted[i];
-                              const next = activationsSorted[i + 1];
-                              swapPositionsInFunnel({
-                                oldLow: curr,
-                                oldHigh: next,
-                              });
-                            }
-                          }}
-                          style={{ cursor: 'pointer', fontSize: '1.2rem' }}
-                        />
-                      </$Horizontal>
-                    </Col>
-                    <Col span={2} style={{ textAlign: 'right' }}>
-                      <Button
-                        type="link"
-                        onClick={() => {
-                          setActivationModalType('view-edit');
-                          setActivationModalVisible(true);
-                          setActivationToEdit(activation);
-                        }}
-                        style={{ alignSelf: 'flex-end' }}
+                      <Col span={14} className={styles.verticalCenter}>
+                        {activation.name}{' '}
+                        {activation.status !== ActivationStatus.Active
+                          ? ` (${activation.status})`
+                          : ''}
+                      </Col>
+                      <Col
+                        span={4}
+                        className={styles.verticalCenter}
+                        style={{ alignItems: 'flex-end' }}
                       >
-                        View
-                      </Button>
-                    </Col>
-                  </Row>
-                </Card.Grid>
-              );
-            })}
-          </Card>
+                        ${activation.pricing}
+                      </Col>
+                      <Col span={4} className={styles.verticalCenter}>
+                        <$Horizontal justifyContent="flex-end">
+                          <CaretUpOutlined
+                            onClick={() => {
+                              if (i - 1 >= 0) {
+                                const prev = activationsSorted[i - 1];
+                                const curr = activationsSorted[i];
+                                swapPositionsInFunnel({
+                                  oldLow: prev,
+                                  oldHigh: curr,
+                                });
+                              }
+                            }}
+                            style={{ cursor: 'pointer', fontSize: '1.2rem' }}
+                          />
+                          <$ColumnGap />
+                          <CaretDownOutlined
+                            onClick={() => {
+                              if (i + 1 < activationsSorted.length) {
+                                const curr = activationsSorted[i];
+                                const next = activationsSorted[i + 1];
+                                swapPositionsInFunnel({
+                                  oldLow: curr,
+                                  oldHigh: next,
+                                });
+                              }
+                            }}
+                            style={{ cursor: 'pointer', fontSize: '1.2rem' }}
+                          />
+                        </$Horizontal>
+                      </Col>
+                      <Col span={2} style={{ textAlign: 'right' }}>
+                        <Button
+                          type="link"
+                          onClick={() => {
+                            setActivationModalType('view-edit');
+                            setActivationModalVisible(true);
+                            setActivationToEdit(activation);
+                          }}
+                          style={{ alignSelf: 'flex-end' }}
+                        >
+                          View
+                        </Button>
+                      </Col>
+                    </Row>
+                  </Card.Grid>
+                );
+              })}
+            </Card>
+          ) : (
+            <Empty
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
+              imageStyle={{
+                height: 60,
+              }}
+              description={
+                <span style={{ maxWidth: '200px' }}>
+                  {`You have not added any activations to this offer yet. Add one now to get started!`}
+                </span>
+              }
+              style={{ border: '1px solid rgba(0,0,0,0.1)', padding: '50px' }}
+            >
+              <Button
+                onClick={() => {
+                  setActivationModalType('create');
+                  setActivationModalVisible(true);
+                }}
+              >
+                Add Activation
+              </Button>
+            </Empty>
+          )}
+
           <br />
           <br />
           <$Horizontal justifyContent="space-between">
@@ -452,85 +477,129 @@ const OfferPage: React.FC = () => {
               }}
               style={{ alignSelf: 'flex-end' }}
             >
-              Add Partner
+              Invite Partner
             </Button>
           </$Horizontal>
           <br />
-          <div className={styles.whitelistedPartnersGrid}>
-            {whitelistedPartners.map((whitelist) => (
-              <Link
-                key={whitelist.whitelist.id}
-                to={`/manage/partners/id/${whitelist.organizer.id}`}
-              >
-                <Card
-                  hoverable
-                  className={styles.card}
-                  cover={
-                    <img
-                      alt="example"
-                      src={whitelist.organizer.avatar || ''}
-                      className={styles.cardImage}
-                    />
-                  }
-                  actions={[
-                    <$Horizontal
-                      key={`switch-${whitelist.whitelist.id}`}
-                      onClick={(e) => e.preventDefault()}
-                      justifyContent="space-around"
-                      width="100%"
-                    >
-                      <span>{whitelist.whitelist.status}</span>
-                      <Switch
-                        checked={
-                          whitelist.whitelist.status === OrganizerOfferWhitelistStatus.Active
-                        }
-                        loading={updatingWhitelist === whitelist.whitelist.id}
-                        onChange={async (checked) => {
-                          setUpdatingWhitelist(whitelist.whitelist.id);
-                          await updateWhitelist({
-                            variables: {
-                              payload: {
-                                id: whitelist.whitelist.id,
-                                status: checked
-                                  ? OrganizerOfferWhitelistStatus.Active
-                                  : OrganizerOfferWhitelistStatus.Inactive,
-                                advertiserID,
-                                affiliateID: whitelist.organizer.id,
-                                offerID: whitelist.whitelist.offerID,
-                              },
-                            },
-                          });
-                          setUpdatingWhitelist(null);
-                        }}
-                      />
-                    </$Horizontal>,
-                  ]}
+          {whitelistedPartners.length > 0 ? (
+            <div className={styles.whitelistedPartnersGrid}>
+              {whitelistedPartners.map((whitelist) => (
+                <Link
+                  key={whitelist.whitelist.id}
+                  to={`/manage/partners/id/${whitelist.organizer.id}`}
                 >
-                  <Meta title={whitelist.organizer.name} />
-                </Card>
-              </Link>
-            ))}
-          </div>
+                  <Card
+                    hoverable
+                    className={styles.card}
+                    cover={
+                      <img
+                        alt="example"
+                        src={whitelist.organizer.avatar || ''}
+                        className={styles.cardImage}
+                      />
+                    }
+                    actions={[
+                      <$Horizontal
+                        key={`switch-${whitelist.whitelist.id}`}
+                        onClick={(e) => e.preventDefault()}
+                        justifyContent="space-around"
+                        width="100%"
+                      >
+                        <span>{whitelist.whitelist.status}</span>
+                        <Switch
+                          checked={
+                            whitelist.whitelist.status === OrganizerOfferWhitelistStatus.Active
+                          }
+                          loading={updatingWhitelist === whitelist.whitelist.id}
+                          onChange={async (checked) => {
+                            setUpdatingWhitelist(whitelist.whitelist.id);
+                            await updateWhitelist({
+                              variables: {
+                                payload: {
+                                  id: whitelist.whitelist.id,
+                                  status: checked
+                                    ? OrganizerOfferWhitelistStatus.Active
+                                    : OrganizerOfferWhitelistStatus.Inactive,
+                                  advertiserID,
+                                  affiliateID: whitelist.organizer.id,
+                                  offerID: whitelist.whitelist.offerID,
+                                },
+                              },
+                            });
+                            setUpdatingWhitelist(null);
+                          }}
+                        />
+                      </$Horizontal>,
+                    ]}
+                  >
+                    <Meta title={whitelist.organizer.name} />
+                  </Card>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <Empty
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
+              imageStyle={{
+                height: 60,
+              }}
+              description={
+                <span style={{ maxWidth: '200px' }}>
+                  {`You have not added any partners yet. Invite one now to get started!`}
+                </span>
+              }
+              style={{ border: '1px solid rgba(0,0,0,0.1)', padding: '50px' }}
+            >
+              <Button
+                onClick={() => {
+                  setAddPartnerModalVisible(true);
+                }}
+              >
+                Invite Partner
+              </Button>
+            </Empty>
+          )}
           <br />
           <br />
           <h2>Ad Sets</h2>
           <br />
-          <div className={styles.adSetGrid}>
-            {adSetPreviewsSorted.map((adSet) => {
-              const imageToDisplay = adSet.thumbnail || placeholderImage;
-              return (
-                <Link key={adSet.id} to={`/manage/adsets/id/${adSet.id}`}>
-                  <Card
-                    hoverable
-                    className={styles.card}
-                    cover={<img alt="example" src={imageToDisplay} className={styles.cardImage} />}
-                  >
-                    <Meta title={adSet.name} />
-                  </Card>
-                </Link>
-              );
-            })}
-          </div>
+          {adSetPreviewsSorted.length > 0 ? (
+            <div className={styles.adSetGrid}>
+              {adSetPreviewsSorted.map((adSet) => {
+                const imageToDisplay = adSet.thumbnail || placeholderImage;
+                return (
+                  <Link key={adSet.id} to={`/manage/adsets/id/${adSet.id}`}>
+                    <Card
+                      hoverable
+                      className={styles.card}
+                      cover={
+                        <img alt="example" src={imageToDisplay} className={styles.cardImage} />
+                      }
+                    >
+                      <Meta title={adSet.name} />
+                    </Card>
+                  </Link>
+                );
+              })}
+            </div>
+          ) : (
+            <Empty
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
+              imageStyle={{
+                height: 60,
+              }}
+              description={
+                <span style={{ maxWidth: '200px' }}>
+                  {`You have not included any Ads to this event yet. Go to your Ad Sets page to get started!`}
+                </span>
+              }
+              style={{ border: '1px solid rgba(0,0,0,0.1)', padding: '50px' }}
+            >
+              <Link to="/manage/adsets">
+                <Button>Include Ad</Button>
+              </Link>
+            </Empty>
+          )}
           <br />
           <br />
           {activationModalType && (

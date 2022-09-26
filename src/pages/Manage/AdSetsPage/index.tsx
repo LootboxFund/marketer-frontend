@@ -13,7 +13,7 @@ import {
 } from '@/components/generics';
 import { PageContainer } from '@ant-design/pro-components';
 import { useQuery } from '@apollo/client';
-import { Button, Card, Input } from 'antd';
+import { Button, Card, Empty, Input } from 'antd';
 import Meta from 'antd/lib/card/Meta';
 import Spin from 'antd/lib/spin';
 import React, { useState } from 'react';
@@ -91,6 +91,25 @@ const AdSetsPage: React.FC = () => {
             </$Horizontal>
           </$Horizontal>
           <br />
+          {!adSets || adSets.length === 0 ? (
+            <Empty
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
+              imageStyle={{
+                height: 60,
+              }}
+              description={
+                <span style={{ maxWidth: '200px' }}>
+                  {`You have not made any ad sets yet.
+                    Get started by creating one now!`}
+                </span>
+              }
+              style={{ border: '1px solid rgba(0,0,0,0.1)', padding: '50px' }}
+            >
+              <Link to="/manage/adsets/create">
+                <Button type="primary">Create Ad Set</Button>
+              </Link>
+            </Empty>
+          ) : null}
           <div className={styles.content}>
             {adSets.filter(filterBySearchString).map((adSet) => {
               const imageToDisplay =

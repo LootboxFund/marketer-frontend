@@ -14,7 +14,7 @@ import { LIST_PARTNERS } from './api.gql';
 import styles from './index.less';
 import { Affiliate } from '../../../api/graphql/generated/types';
 import { $Horizontal, $InfoDescription, $Vertical } from '@/components/generics';
-import { Button, Card, Input, message, Popconfirm } from 'antd';
+import { Button, Card, Empty, Input, message, Popconfirm } from 'antd';
 import Meta from 'antd/lib/card/Meta';
 import { formatBigNumber } from '@wormgraph/helpers';
 
@@ -87,6 +87,25 @@ const PartnersPage: React.FC = () => {
             </Popconfirm>
           </$Horizontal>
           <br />
+          {!partners || partners.length === 0 ? (
+            <Empty
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
+              imageStyle={{
+                height: 60,
+              }}
+              description={
+                <span style={{ maxWidth: '200px' }}>
+                  {`You do not have any partners yet.
+                    Visit the marketplace to start whitelisting partners to offers!`}
+                </span>
+              }
+              style={{ border: '1px solid rgba(0,0,0,0.1)', padding: '50px' }}
+            >
+              <Link to="/marketplace/outsource">
+                <Button type="primary">Visit Marketplace</Button>
+              </Link>
+            </Empty>
+          ) : null}
           <div className={styles.content}>
             {partners.filter(filterBySearchString).map((affiliate) => (
               // <Link key={affiliate.id} to={`/dashboard/partners/id/${affiliate.id}`}>

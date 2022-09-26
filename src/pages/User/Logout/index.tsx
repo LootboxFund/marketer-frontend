@@ -4,9 +4,6 @@ import Spin from 'antd/lib/spin';
 import React, { useEffect } from 'react';
 import { history, useModel } from '@umijs/max';
 import { stringify } from 'querystring';
-import { ApolloProvider } from '@apollo/client';
-import client from '@/api/graphql/client';
-import { CookiesProvider } from 'react-cookie';
 
 const Logout: React.FC = () => {
   const { logout } = useAuth();
@@ -38,14 +35,4 @@ const Logout: React.FC = () => {
   );
 };
 
-const WrappedLogout: React.FC = () => {
-  return (
-    <ApolloProvider client={client}>
-      <CookiesProvider>
-        <Logout />
-      </CookiesProvider>
-    </ApolloProvider>
-  );
-};
-
-export default WrappedLogout;
+export default Logout;

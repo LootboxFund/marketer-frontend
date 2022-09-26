@@ -43,8 +43,9 @@ type BullshitAntProAuthType = {
 const Login: React.FC = () => {
   const [userLoginState, setUserLoginState] = useState<any>({});
   const [type, setType] = useState<string>('account');
-  const persistence: 'session' | 'local' = (localStorage.getItem('auth.persistence') ||
-    'session') as 'session' | 'local';
+  const persistence: 'session' | 'local' = (localStorage.getItem('auth.persistence') || 'local') as
+    | 'local'
+    | 'session';
   const [persistenceChecked, setPersistenceChecked] = useState(persistence === 'local');
 
   const { signInWithEmailAndPassword, sendPhoneVerification, signInPhoneWithCode } = useAuth();
@@ -61,26 +62,25 @@ const Login: React.FC = () => {
   };
 
   const handleSubmit = async (values: BullshitAntProAuthType) => {
-    console.log(values);
     if (values.mobile && values.captcha) {
       try {
-        setPersistence(auth, browserLocalPersistence);
+        await setPersistence(auth, browserLocalPersistence);
         const user = await signInPhoneWithCode(values.captcha);
         message.success('Phone login successful');
         const urlParams = new URL(window.location.href).searchParams;
-        history.push(urlParams.get('redirect') || '/');
+        window.location.href = `${window.location.origin}/dashboard/getting-started`;
         return;
       } catch (err: any) {
         message.error(err?.message || 'Phone Login has failed');
       }
     } else if (values.username && values.password) {
       try {
-        setPersistence(auth, browserLocalPersistence);
+        await setPersistence(auth, browserLocalPersistence);
+
         await signInWithEmailAndPassword(values.username, values.password);
+
         message.success('Email login successful');
-        const urlParams = new URL(window.location.href).searchParams;
-        history.push(urlParams.get('redirect') || '/');
-        return;
+        window.location.href = `${window.location.origin}/dashboard/getting-started`;
       } catch (err: any) {
         message.error(err?.message || 'Email Login has failed');
       }
@@ -239,7 +239,6 @@ const Login: React.FC = () => {
                   },
                 ]}
                 onGetCaptcha={async (phone) => {
-                  console.log(`phone = ${hackyBugFixPhoneInput}`);
                   await handleVerificationRequest(hackyBugFixPhoneInput);
                 }}
               />
@@ -274,12 +273,4 @@ const Login: React.FC = () => {
   );
 };
 
-const WrappedLogin: React.FC = () => {
-  return (
-    <ApolloProvider client={client}>
-      <Login />
-    </ApolloProvider>
-  );
-};
-
-export default WrappedLogin;
+export default Login;

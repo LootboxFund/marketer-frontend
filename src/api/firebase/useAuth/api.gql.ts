@@ -89,3 +89,28 @@ export const CONNECT_WALLET = gql`
     }
   }
 `;
+
+export const UPGRADE_TO_ADVERTISER = gql`
+  mutation UpgradeToAdvertiser($payload: UpgradeToAdvertiserPayload!) {
+    upgradeToAdvertiser(payload: $payload) {
+      ... on UpgradeToAdvertiserResponseSuccess {
+        advertiser {
+          id
+          userID
+          name
+          description
+          website
+          offers
+          avatar
+          publicContactEmail
+        }
+      }
+      ... on ResponseError {
+        error {
+          code
+          message
+        }
+      }
+    }
+  }
+`;

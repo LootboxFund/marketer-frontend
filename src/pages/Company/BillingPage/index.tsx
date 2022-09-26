@@ -30,7 +30,7 @@ const BillingPage: React.FC = () => {
       <Empty
         image={Empty.PRESENTED_IMAGE_SIMPLE}
         description="Coming Soon"
-        style={{ padding: '100px' }}
+        style={{ padding: '100px', border: '1px solid rgba(0,0,0,0.1)' }}
       />
     </PageContainer>
   );

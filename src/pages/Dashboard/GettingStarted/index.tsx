@@ -79,7 +79,7 @@ const InfoCard: React.FC<{
   );
 };
 
-const Welcome: React.FC = () => {
+const GettingStarted: React.FC = () => {
   return (
     <PageContainer>
       <Card
@@ -177,4 +177,4 @@ const Welcome: React.FC = () => {
   );
 };
 
-export default Welcome;
+export default GettingStarted;

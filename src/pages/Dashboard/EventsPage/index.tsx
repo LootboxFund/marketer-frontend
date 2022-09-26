@@ -9,9 +9,10 @@ import Spin from 'antd/lib/spin';
 import React, { useState } from 'react';
 import { LIST_HISTORICAL_EVENTS } from './api.gql';
 import styles from './index.less';
+import { history, useModel } from '@umijs/max';
 import { TournamentPreview } from '../../../api/graphql/generated/types';
 import { $Horizontal, $InfoDescription, $Vertical } from '@/components/generics';
-import { Button, Card, Input, message } from 'antd';
+import { Button, Card, Empty, Input, message, Popconfirm } from 'antd';
 import { Link } from '@umijs/max';
 import Meta from 'antd/lib/card/Meta';
 
@@ -73,11 +74,37 @@ const EventsPage: React.FC = () => {
               onSearch={setSearchString}
               style={{ width: 200 }}
             />
-            <Button onClick={() => message.info('Add events from the Campaigns Page')}>
-              Add Event
-            </Button>
+            <Popconfirm
+              title="Events must first be added to a campaign. Select a campaign from the campaigns page to get started."
+              onConfirm={() => {
+                history.push('/dashboard/campaigns');
+              }}
+              okText="Go to Campaigns"
+              cancelText="Cancel"
+            >
+              <Button>Add Event</Button>
+            </Popconfirm>
           </$Horizontal>
           <br />
+          {!tournaments || tournaments.length === 0 ? (
+            <Empty
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
+              imageStyle={{
+                height: 60,
+              }}
+              description={
+                <span style={{ maxWidth: '200px' }}>
+                  {`You do not have any events yet.
+                    Add your first event from the campaigns page!`}
+                </span>
+              }
+              style={{ border: '1px solid rgba(0,0,0,0.1)', padding: '50px' }}
+            >
+              <Link to="/dashboard/campaigns">
+                <Button type="primary">Go To Campaigns</Button>
+              </Link>
+            </Empty>
+          ) : null}
           <div className={styles.content}>
             {tournaments.filter(filterBySearchString).map((tournament) => (
               <Link key={tournament.id} to={`/dashboard/events/id/${tournament.id}`}>

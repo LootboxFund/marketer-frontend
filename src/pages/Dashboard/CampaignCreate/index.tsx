@@ -23,7 +23,7 @@ const CampaignCreate: React.FC = () => {
   const { advertiserUser } = useAdvertiserUser();
   const { id: advertiserID } = advertiserUser;
   const [createConquestMutation] = useMutation<
-    { createConquest: ResponseError | CreateConquestResponseSuccess },
+    { createConquest: ResponseError | CreateTournamentResponseSuccess },
     MutationCreateConquestArgs
   >(CREATE_CONQUEST, {
     refetchQueries: [{ query: LIST_CONQUEST_PREVIEWS, variables: { advertiserID } }],

@@ -13,6 +13,7 @@ import { AdvertiserAdminViewResponse } from './api/graphql/generated/types';
 import { AdvertiserID, UserID } from '@wormgraph/helpers';
 import AuthGuard from './components/AuthGuard';
 import { CookiesProvider } from 'react-cookie';
+import React from 'react';
 
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
@@ -34,48 +35,6 @@ export async function getInitialState(): Promise<{
   // loading?: boolean;
   // fetchUserInfo?: () => Promise<UserAdvertiserFE | undefined>;
 }> {
-  // const fetchUserInfo = async () => {
-  //   try {
-  //     const response = await client.query<any>({
-  //       query: GET_ADVERTISER,
-  //     });
-  //     console.log(response.data.advertiserAdminView);
-  //     if (response.data.__typename === 'AdvertiserAdminViewResponseSuccess') {
-  //       const userAdvertiserFE = {
-  //         id: response.data.advertiserAdminView.id,
-  //         userID: response.data.advertiserAdminView.userID,
-  //         name: response.data.advertiserAdminView.name,
-  //         description: response.data.advertiserAdminView.description,
-  //         avatar: response.data.advertiserAdminView.avatar,
-  //       } as UserAdvertiserFE;
-  //       console.log(`
-
-  //       ---- here we go:
-
-  //       `);
-  //       console.log(userAdvertiserFE);
-  //       return userAdvertiserFE;
-  //     }
-  //     // console.log(response.data.advertiserAdminView);
-  //     return response.data.advertiserAdminView;
-  //   } catch (error) {
-  //     history.push(loginPath);
-  //     return undefined;
-  //   }
-  // };
-  // const x = await fetchUserInfo();
-  // console.log(x);
-  // 如果不是登录页面，执行
-  // if (window.location.pathname !== loginPath) {
-  //   const currentUser = await fetchUserInfo();
-  //   console.log(`Current User...`);
-  //   console.log(currentUser);
-  //   return {
-  //     fetchUserInfo,
-  //     currentUser,
-  //     settings: defaultSettings,
-  //   };
-  // }
   return {
     settings: defaultSettings,
   };
@@ -89,7 +48,6 @@ export const layout: any = ({
   initialState: any;
   setInitialState: any;
 }) => {
-  // console.log(initialState?.settings);
   return {
     rightContentRender: () => <RightContent />,
     waterMarkProps: {},
@@ -123,10 +81,10 @@ export const layout: any = ({
     ],
     links: isDev
       ? [
-          <Link key="openapi" to="/umi/plugin/openapi" target="_blank">
+          <a key="referral" href="https://lootbox.fund" target="_blank" rel="noreferrer">
             <LinkOutlined />
             <span>Referral Program</span>
-          </Link>,
+          </a>,
         ]
       : [],
     menuHeaderRender: undefined,
@@ -134,35 +92,49 @@ export const layout: any = ({
     // unAccessible: <div>unAccessible</div>,
     // 增加一个 loading 的状态
     childrenRender: (children: any, props: any) => {
-      // if (initialState?.loading) return <PageLoading />;
+      if (initialState?.loading) return <PageLoading />;
+
       return (
         <>
-          <ApolloProvider client={client}>
-            <CookiesProvider>
-              <AuthGuard>
-                {children}
-                {!props.location?.pathname?.includes('/login') && (
-                  <SettingDrawer
-                    disableUrlParams
-                    enableDarkTheme
-                    settings={initialState?.settings}
-                    onSettingChange={(settings) => {
-                      setInitialState((preInitialState: any) => ({
-                        ...preInitialState,
-                        settings,
-                      }));
-                    }}
-                  />
-                )}
-              </AuthGuard>
-            </CookiesProvider>
-          </ApolloProvider>
+          {children}
+          {!props.location?.pathname?.includes('/login') && (
+            <SettingDrawer
+              disableUrlParams
+              enableDarkTheme
+              settings={initialState?.settings}
+              onSettingChange={(settings) => {
+                setInitialState((preInitialState: any) => ({
+                  ...preInitialState,
+                  settings,
+                }));
+              }}
+            />
+          )}
         </>
       );
     },
     ...initialState?.settings,
   };
 };
+
+const RootProvider = ({ children, routes }: any) => {
+  const newChildren = React.cloneElement(children, {
+    ...children.props,
+    routes,
+  });
+
+  return (
+    <ApolloProvider client={client}>
+      <CookiesProvider>
+        <AuthGuard>{newChildren}</AuthGuard>
+      </CookiesProvider>
+    </ApolloProvider>
+  );
+};
+
+export function rootContainer(container: any) {
+  return React.createElement(RootProvider, null, container);
+}
 
 /**
  * @name request 配置，可以配置错误处理
