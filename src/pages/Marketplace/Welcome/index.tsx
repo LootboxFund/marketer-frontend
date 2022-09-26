@@ -106,7 +106,7 @@ const Welcome: React.FC = () => {
               color: '#1A1A1A',
             }}
           >
-            Grow Your Community
+            Welcome to the Marketplace
           </div>
           <p
             style={{
@@ -132,18 +132,18 @@ const Welcome: React.FC = () => {
             <InfoCard
               index={1}
               href="https://umijs.org/docs/introduce/introduce"
-              title="Plan an Esports Tournament"
+              title="Find Affiliate Partners"
               desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
             />
             <InfoCard
               index={2}
-              title="Partner with an Affiliate"
+              title="Outsource Your Events"
               href="https://ant.design"
               desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
             />
             <InfoCard
               index={3}
-              title="Grow Your Community"
+              title="Track Your Success"
               href="https://procomponents.ant.design"
               desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
             />

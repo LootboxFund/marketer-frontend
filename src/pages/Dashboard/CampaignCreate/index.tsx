@@ -17,12 +17,13 @@ import { CREATE_CONQUEST } from './api.gql';
 import styles from './index.less';
 import { AdvertiserID } from '@wormgraph/helpers';
 import { useAdvertiserUser } from '@/components/AuthGuard/advertiserUserInfo';
+import { $InfoDescription } from '@/components/generics';
 
 const CampaignCreate: React.FC = () => {
   const { advertiserUser } = useAdvertiserUser();
   const { id: advertiserID } = advertiserUser;
   const [createConquestMutation] = useMutation<
-    { createConquest: ResponseError | CreateConquestResponseSuccess },
+    { createConquest: ResponseError | CreateTournamentResponseSuccess },
     MutationCreateConquestArgs
   >(CREATE_CONQUEST, {
     refetchQueries: [{ query: LIST_CONQUEST_PREVIEWS, variables: { advertiserID } }],
@@ -46,16 +47,24 @@ const CampaignCreate: React.FC = () => {
     }
   };
 
+  const renderHelpText = () => {
+    return (
+      <$InfoDescription>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+        laboris nisi ut aliquip ex ea commodo consequat.
+      </$InfoDescription>
+    );
+  };
   return (
     <PageContainer>
-      <div className={styles.content}>
-        <div style={{ maxWidth: '800px' }}>
-          <CreateCampaignForm
-            onSubmit={createConquest}
-            mode="create"
-            advertiserID={advertiserID as AdvertiserID}
-          />
-        </div>
+      {renderHelpText()}
+      <div style={{ maxWidth: '800px' }}>
+        <CreateCampaignForm
+          onSubmit={createConquest}
+          mode="create"
+          advertiserID={advertiserID as AdvertiserID}
+        />
       </div>
     </PageContainer>
   );

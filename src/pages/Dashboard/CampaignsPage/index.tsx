@@ -11,8 +11,8 @@ import Spin from 'antd/lib/spin';
 import React, { useState } from 'react';
 import { LIST_CONQUEST_PREVIEWS } from './api.gql';
 import styles from './index.less';
-import { $Horizontal, $Vertical } from '@/components/generics';
-import { Button, Input } from 'antd';
+import { $Horizontal, $InfoDescription, $Vertical } from '@/components/generics';
+import { Button, Empty, Input } from 'antd';
 import { Link } from 'umi';
 import { useAdvertiserUser } from '@/components/AuthGuard/advertiserUserInfo';
 
@@ -49,6 +49,16 @@ const CampaignsPage: React.FC = () => {
     );
   };
 
+  const renderHelpText = () => {
+    return (
+      <$InfoDescription>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+        laboris nisi ut aliquip ex ea commodo consequat.
+      </$InfoDescription>
+    );
+  };
+
   return (
     <PageContainer>
       {loading ? (
@@ -57,6 +67,7 @@ const CampaignsPage: React.FC = () => {
         </div>
       ) : (
         <$Vertical>
+          {renderHelpText()}
           <$Horizontal justifyContent="space-between">
             <Input.Search
               placeholder="Find Campaign"
@@ -69,6 +80,25 @@ const CampaignsPage: React.FC = () => {
               <Link to="/dashboard/campaigns/create">Create Campaign</Link>
             </Button>
           </$Horizontal>
+          {!conquests || conquests.length === 0 ? (
+            <Empty
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
+              imageStyle={{
+                height: 60,
+              }}
+              description={
+                <span style={{ maxWidth: '200px' }}>
+                  {`You have not created any campaigns yet.
+                    Create your first campaign now!`}
+                </span>
+              }
+              style={{ border: '1px solid rgba(0,0,0,0.1)', padding: '50px' }}
+            >
+              <Link to="/dashboard/campaigns/create">
+                <Button type="primary">Create Campaign</Button>
+              </Link>
+            </Empty>
+          ) : null}
           <div className={styles.content}>
             {conquests.filter(filterBySearchString).map((conquest) => (
               <Link key={conquest.id} to={`/dashboard/campaigns/id/${conquest.id}`}>

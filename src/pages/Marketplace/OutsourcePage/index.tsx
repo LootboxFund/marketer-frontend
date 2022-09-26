@@ -6,7 +6,7 @@ import type {
 } from '@/api/graphql/generated/types';
 import { history } from '@umijs/max';
 import { useAdvertiserUser } from '@/components/AuthGuard/advertiserUserInfo';
-import { $Vertical } from '@/components/generics';
+import { $InfoDescription, $Vertical } from '@/components/generics';
 import { PageContainer } from '@ant-design/pro-components';
 import { useQuery } from '@apollo/client';
 import { Link } from '@umijs/max';
@@ -46,6 +46,15 @@ const OutsourcePage: React.FC = () => {
       affiliate.name.toLowerCase().indexOf(searchString.toLowerCase()) > -1
     );
   };
+  const renderHelpText = () => {
+    return (
+      <$InfoDescription>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+        laboris nisi ut aliquip ex ea commodo consequat.
+      </$InfoDescription>
+    );
+  };
   return (
     <PageContainer>
       {loading ? (
@@ -54,6 +63,7 @@ const OutsourcePage: React.FC = () => {
         </div>
       ) : (
         <$Vertical>
+          {renderHelpText()}
           <Input.Search
             placeholder="Filter Partners"
             allowClear

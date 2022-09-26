@@ -22,7 +22,7 @@ import { LIST_ADSETS_PREVIEWS } from '../AdSetsPage/api.gql';
 import { CREATE_AD_SET } from './api.gql';
 import styles from './index.less';
 import CreateAdSetForm from '@/components/CreateAdSetForm';
-import { $Vertical } from '@/components/generics';
+import { $InfoDescription, $Vertical } from '@/components/generics';
 import { LIST_ADS_PREVIEWS } from '../AdsPage/api.gql';
 import { LIST_CREATED_OFFERS } from '../OffersPage/api.gql';
 import { useAdvertiserUser } from '@/components/AuthGuard/advertiserUserInfo';
@@ -111,6 +111,15 @@ const AdSetCreate: React.FC = () => {
       history.push(`/manage/adsets/id/${res?.data?.createAdSet?.adSet?.id}`);
     }
   };
+  const renderHelpText = () => {
+    return (
+      <$InfoDescription>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+        laboris nisi ut aliquip ex ea commodo consequat.
+      </$InfoDescription>
+    );
+  };
   // console.log(ads);
   // console.log(offers);
   return (
@@ -121,6 +130,7 @@ const AdSetCreate: React.FC = () => {
         </div>
       ) : (
         <div className={styles.content}>
+          {renderHelpText()}
           <$Vertical style={{ width: '800px', maxWidth: '800px' }}>
             <CreateAdSetForm
               onSubmitCreate={createAdSet}

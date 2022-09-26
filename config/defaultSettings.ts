@@ -14,7 +14,7 @@ const Settings: LayoutSettings & {
   fixedHeader: false,
   fixSiderbar: true,
   colorWeak: false,
-  title: 'LOOTBOX',
+  title: 'LOOTBOX Marketers',
   pwa: false,
   logo: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/160/apple/118/wrapped-present_1f381.png',
   iconfontUrl: '',

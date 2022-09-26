@@ -5,6 +5,7 @@ import type {
 } from '@/api/graphql/generated/types';
 import { useAdvertiserUser } from '@/components/AuthGuard/advertiserUserInfo';
 import { PageContainer } from '@ant-design/pro-components';
+import { Button, Image } from 'antd';
 import { useQuery } from '@apollo/client';
 import Spin from 'antd/lib/spin';
 import React, { useState } from 'react';
@@ -13,6 +14,8 @@ import styles from './index.less';
 import { useParams } from '@umijs/max';
 import BreadCrumbDynamic from '@/components/BreadCrumbDynamic';
 import { TournamentID } from '@wormgraph/helpers';
+import { $ColumnGap, $Horizontal } from '@/components/generics';
+import CreateEventForm from '@/components/CreateEventForm';
 
 const EventPage: React.FC = () => {
   const { eventID } = useParams();
@@ -43,9 +46,9 @@ const EventPage: React.FC = () => {
     { title: 'Events', route: '/dashboard/events' },
     { title: tournament?.title || '', route: `/dashboard/events/id/${tournament?.id}` },
   ];
-
+  const maxWidth = '1000px';
   return (
-    <div>
+    <div style={{ maxWidth }}>
       {loading || !tournament ? (
         <div className={styles.loading_container}>
           <Spin />
@@ -53,9 +56,34 @@ const EventPage: React.FC = () => {
       ) : (
         <div className={styles.content}>
           <BreadCrumbDynamic breadLine={breadLine} />
-          <h1>{tournament.title}</h1>
+          <$Horizontal justifyContent="space-between">
+            <h1>{tournament.title}</h1>
+            <a
+              href={`https://www.lootbox.fund/watch?tournament=${tournament.id}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <Button type="primary">View Event</Button>
+            </a>
+          </$Horizontal>
           <br />
-          <p>{JSON.stringify(tournament, null, '\t')}</p>
+          <$Horizontal justifyContent="flex-start" style={{ width: '100%' }}>
+            <CreateEventForm
+              tournament={{
+                title: tournament.title,
+                description: tournament.description,
+                tournamentDate: tournament.tournamentDate,
+                tournamentLink: tournament.tournamentLink || '',
+                coverPhoto: tournament.coverPhoto || '',
+                magicLink: tournament.magicLink || '',
+                prize: tournament.prize || '',
+                communityURL: tournament.communityURL || '',
+              }}
+              mode="view-only"
+            />
+            <$ColumnGap />
+            <Image width={200} src={tournament.coverPhoto || ''} />
+          </$Horizontal>
         </div>
       )}
     </div>

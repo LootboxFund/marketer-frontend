@@ -10,9 +10,9 @@ import Spin from 'antd/lib/spin';
 import React, { useState } from 'react';
 import { LIST_CREATED_OFFERS } from './api.gql';
 import styles from './index.less';
-import { Button, Card, Input } from 'antd';
+import { Button, Card, Empty, Input } from 'antd';
 import Meta from 'antd/lib/card/Meta';
-import { $Horizontal, $Vertical } from '@/components/generics';
+import { $Horizontal, $InfoDescription, $Vertical } from '@/components/generics';
 import { useAdvertiserUser } from '@/components/AuthGuard/advertiserUserInfo';
 
 const OffersPage: React.FC = () => {
@@ -47,6 +47,16 @@ const OffersPage: React.FC = () => {
       offer.title.toLowerCase().indexOf(searchString.toLowerCase()) > -1
     );
   };
+
+  const renderHelpText = () => {
+    return (
+      <$InfoDescription>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+        laboris nisi ut aliquip ex ea commodo consequat.
+      </$InfoDescription>
+    );
+  };
   return (
     <PageContainer>
       {loading ? (
@@ -55,6 +65,7 @@ const OffersPage: React.FC = () => {
         </div>
       ) : (
         <$Vertical>
+          {renderHelpText()}
           <$Horizontal justifyContent="space-between">
             <Input.Search
               placeholder="Find Offer"
@@ -67,6 +78,25 @@ const OffersPage: React.FC = () => {
               <Link to="/manage/offers/create">Create Offer</Link>
             </Button>
           </$Horizontal>
+          {!offers || offers.length === 0 ? (
+            <Empty
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
+              imageStyle={{
+                height: 60,
+              }}
+              description={
+                <span style={{ maxWidth: '200px' }}>
+                  {`You have not made any offers yet.
+                    Get started by creating one now!`}
+                </span>
+              }
+              style={{ border: '1px solid rgba(0,0,0,0.1)', padding: '50px' }}
+            >
+              <Link to="/manage/offers/create">
+                <Button type="primary">Create Offer</Button>
+              </Link>
+            </Empty>
+          ) : null}
           <div className={styles.content}>
             {offers.filter(filterBySearchString).map((offer) => (
               <Link key={offer.id} to={`/manage/offers/id/${offer.id}`}>

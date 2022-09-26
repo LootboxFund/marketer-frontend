@@ -1,8 +1,8 @@
 {
-  "name": "advertiser-frontend",
+  "name": "marketer-frontend",
   "version": "0.1.0",
   "private": true,
-  "description": "Lootbox Advertiser Frontend",
+  "description": "Lootbox Marketer Frontend",
   "scripts": {
     "analyze": "cross-env ANALYZE=1 max build",
     "build": "max build",
@@ -46,7 +46,7 @@
     "@ant-design/pro-components": "2.0.0",
     "@apollo/client": "3.6.9",
     "@google-cloud/storage": "6.5.0",
-    "@umijs/route-utils": "2.1.3",
+    "@umijs/route-utils": "^2.1.3",
     "@wormgraph/helpers": "^0.2.0-afn-alpha45",
     "@wormgraph/manifest": "0.4.0-afm-alpha5",
     "antd": "^4.20.0",

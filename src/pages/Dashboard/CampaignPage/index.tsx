@@ -106,6 +106,7 @@ const CampaignPage: React.FC = () => {
   };
   const searchedTournament = dataTournament?.tournament.tournament;
   const maxWidth = '1000px';
+  console.log(`searchedTournament = `, searchedTournament);
   return (
     <div>
       {loading || !conquest ? (
@@ -202,7 +203,10 @@ const CampaignPage: React.FC = () => {
               })}
             </div>
           ) : (
-            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+            <Empty
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
+              style={{ maxWidth, border: '1px solid rgba(0,0,0,0.1)', padding: '50px' }}
+            />
           )}
         </div>
       )}

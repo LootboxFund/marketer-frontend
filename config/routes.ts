@@ -190,7 +190,7 @@ export default [
       {
         name: 'Billing',
         path: '/company/billing',
-        component: './Welcome',
+        component: './Company/BillingPage',
       },
       {
         name: 'Tiers',

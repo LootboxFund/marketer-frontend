@@ -19,6 +19,7 @@ import styles from './index.less';
 import { LIST_CREATED_OFFERS } from '../OffersPage/api.gql';
 import { AdvertiserID } from '@wormgraph/helpers';
 import { useAdvertiserUser } from '@/components/AuthGuard/advertiserUserInfo';
+import { $InfoDescription } from '@/components/generics';
 
 const OfferCreate: React.FC = () => {
   // get the advertiser user
@@ -61,15 +62,24 @@ const OfferCreate: React.FC = () => {
     }
   };
 
+  const renderHelpText = () => {
+    return (
+      <$InfoDescription>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+        laboris nisi ut aliquip ex ea commodo consequat.
+      </$InfoDescription>
+    );
+  };
+
   return (
     <PageContainer>
-      <div className={styles.content}>
-        <CreateOfferForm
-          onSubmit={createOffer}
-          mode="create"
-          advertiserID={advertiserID as AdvertiserID}
-        />
-      </div>
+      {renderHelpText()}
+      <CreateOfferForm
+        onSubmit={createOffer}
+        mode="create"
+        advertiserID={advertiserID as AdvertiserID}
+      />
     </PageContainer>
   );
 };

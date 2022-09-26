@@ -38,8 +38,12 @@
 - ✅ Add GraphQL server side caching
 - ✅ Ad Creative Device Simulator shows a preview of the media for advertisers
 - ✅ Ad Creative Device Simulator shows a preview of the media for affiliates
+- ✅ Add descriptions to page
+- ✅ Advertiser tier page
+- ✅ Organizer tier page
+- ⬜️ Event page from Advertiser point of view
+- ⬜️ Add event to campaign popup broken image
 
-- ⬜️ Add descriptions to page
 - ⬜️ Fix bug where re-adding an adset to a tournament doesn't add back rate quotes (removing is fine)
 - ⬜️ Kicking out promoter should only kick them out of the specific offer, not all offers
 
