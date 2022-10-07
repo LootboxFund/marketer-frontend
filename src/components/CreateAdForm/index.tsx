@@ -328,6 +328,7 @@ const CreateAdForm: React.FC<CreateAdFormProps> = ({
         },
       ],
     };
+
     if (!viewMode) {
       meta.fields.push({
         key: 'creative_thumbnail',
@@ -354,7 +355,11 @@ const CreateAdForm: React.FC<CreateAdFormProps> = ({
             folderName={AdvertiserStorageFolder.AD_VIDEO}
             newMediaDestination={newMediaDestination}
             forceRefresh={() => setPreviewMedias([newMediaDestination.current])}
-            acceptedFileTypes={'image/*,video/mp4'}
+            acceptedFileTypes={
+              form.getFieldValue('creative_creativeType') === CreativeType.Video
+                ? 'video/mp4'
+                : 'image/*'
+            }
           />
         ),
       });
