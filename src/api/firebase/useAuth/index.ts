@@ -6,7 +6,7 @@ import type {
   UpgradeToAdvertiserResponse,
 } from '../../graphql/generated/types';
 import { useEffect, useState } from 'react';
-import { useMutation } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client';
 import { auth } from '../app';
 import { SIGN_UP_WITH_PASSWORD, CREATE_USER, UPGRADE_TO_ADVERTISER } from './api.gql';
 import {
@@ -24,6 +24,9 @@ import {
 import client from '../../graphql/client';
 import { throwInvalidPasswords } from './password';
 import type { UserID } from '@wormgraph/helpers';
+import { ADVERTISER_ID_COOKIE } from '@/api/constants';
+import { useCookies } from 'react-cookie';
+import { GET_ADVERTISER } from '@/pages/User/Login/api.gql';
 
 interface FrontendUser {
   id: UserID;
@@ -57,10 +60,23 @@ export const useAuth = () => {
    */
   const [user, setUser] = useState<FrontendUser | undefined | null>(undefined);
 
+  const [cookies, setCookie, removeCookie] = useCookies([ADVERTISER_ID_COOKIE]);
+
   const [recaptchaVerifier, setRecaptchaVerifier] = useState<RecaptchaVerifier | null>(null);
   const [phoneConfirmationResult, setPhoneConfirmationResult] = useState<ConfirmationResult | null>(
     null,
   );
+
+  const [
+    getAdvertiser,
+    { loading: loadingAdvertiser, error: errorAdvertiser, data: dataAdvertiser },
+  ] = useLazyQuery(GET_ADVERTISER);
+
+  useEffect(() => {
+    if (!loadingAdvertiser && !errorAdvertiser && dataAdvertiser) {
+      setCookie(ADVERTISER_ID_COOKIE, dataAdvertiser.id, { path: '/' });
+    }
+  }, [dataAdvertiser]);
 
   const setCaptcha = () => {
     const el = document.getElementById('recaptcha-container');
@@ -179,6 +195,8 @@ export const useAuth = () => {
         .catch((err) => console.log(err));
     }
 
+    await getAdvertiser();
+
     return data.createUserRecord as CreateUserResponse;
   };
 
@@ -197,6 +215,8 @@ export const useAuth = () => {
 
     // Send email verification only once on login
     const verificationEmailAlreadySent = localStorage.getItem(EMAIL_VERIFICATION_COOKIE_NAME);
+
+    await getAdvertiser();
 
     if (!!user.email && !user.emailVerified && !verificationEmailAlreadySent) {
       sendEmailVerification(user)
@@ -262,6 +282,7 @@ export const useAuth = () => {
   const logout = async (): Promise<void> => {
     await auth.signOut();
     setUser(null);
+    removeCookie(ADVERTISER_ID_COOKIE, { path: '/' });
   };
 
   // const updatePassword = async (password: string, newPassword: string): Promise<void> => {
