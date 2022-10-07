@@ -10,6 +10,8 @@ import {
 } from '@/api/graphql/generated/types';
 import { GET_ADVERTISER } from '@/pages/User/Login/api.gql';
 import { $Vertical, $Horizontal } from '@/components/generics';
+import { ADVERTISER_ID_COOKIE } from '../../api/constants';
+import { useCookies } from 'react-cookie';
 
 /**
  * strict = forces login
@@ -17,6 +19,7 @@ import { $Vertical, $Horizontal } from '@/components/generics';
 type AuthGuardProps = PropsWithChildren<{ strict?: boolean } & any>;
 
 const AuthGuard = ({ children, strict, ...props }: AuthGuardProps) => {
+  const [cookies, setCookie] = useCookies([ADVERTISER_ID_COOKIE]);
   const [advertiserUser, setAdvertiserUser] = useState<AdvertiserAdminViewResponseSuccess>();
 
   const { user } = useAuth();
@@ -33,7 +36,13 @@ const AuthGuard = ({ children, strict, ...props }: AuthGuardProps) => {
     },
   );
 
-  if (!user) {
+  if (!user && !cookies[ADVERTISER_ID_COOKIE]) {
+    if (window.location.pathname !== `/user/login`) {
+      window.location.href = '/user/login';
+      return;
+    }
+  }
+  if (!user && cookies[ADVERTISER_ID_COOKIE]) {
     if (window.location.pathname === `/user/login`) {
       return children;
     }
@@ -45,10 +54,6 @@ const AuthGuard = ({ children, strict, ...props }: AuthGuardProps) => {
       >
         <$Vertical>
           <Spin style={{ margin: 'auto' }} />
-          <br />
-          <a href={`${window.location.origin}/user/login`}>
-            <Button>LOGIN</Button>
-          </a>
         </$Vertical>
       </$Horizontal>
     );
