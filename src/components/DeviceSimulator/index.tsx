@@ -1,7 +1,7 @@
 import { CreativeType } from '@/api/graphql/generated/types';
 import { AspectRatio, Placement } from '@wormgraph/helpers';
 import { Button } from 'antd';
-import React from 'react';
+import React, { ReactElement, ReactHTMLElement, useRef } from 'react';
 import styles from './index.less';
 import { $Vertical, placeholderImage, $Horizontal, placeholderVideo } from '@/components/generics';
 
@@ -30,6 +30,8 @@ const defaults = {
   aspectRatio: AspectRatio.Portrait9x16,
 };
 const DeviceSimulator: React.FC<DeviceSimulatorProps> = ({ placement, creative }) => {
+  const mainVideo = useRef<HTMLVideoElement>(null);
+  const blurVideo = useRef<HTMLVideoElement>(null);
   const renderImagePreview = () => {
     const imageToShow = (creative?.creativeLinks || []).filter((c) => c.indexOf('.mp4') === -1)[0]
       ? (creative?.creativeLinks || []).filter((c) => c.indexOf('.mp4') === -1)[0]
@@ -55,6 +57,7 @@ const DeviceSimulator: React.FC<DeviceSimulatorProps> = ({ placement, creative }
               creative.aspectRatio && {
                 width: '100%',
                 objectFit: 'cover',
+                objectPosition: 'top center',
                 aspectRatio: aspectRatioCSS[creative.aspectRatio] || '1 / 1',
               }
             }
@@ -115,14 +118,25 @@ const DeviceSimulator: React.FC<DeviceSimulatorProps> = ({ placement, creative }
           style={{ width: '100%', height: '100%', position: 'relative', zIndex: 2 }}
         >
           <video
+            ref={mainVideo}
             autoPlay
             loop
+            muted
+            controls
+            onPause={() => blurVideo.current?.pause()}
+            onPlay={() => blurVideo.current?.play()}
+            onTimeUpdate={() =>
+              blurVideo.current &&
+              mainVideo.current &&
+              (blurVideo.current.currentTime = mainVideo.current.currentTime)
+            }
             src={videoToShow}
             style={
               creative &&
               creative.aspectRatio && {
                 width: '100%',
                 objectFit: 'cover',
+                objectPosition: 'top center',
                 aspectRatio: aspectRatioCSS[creative.aspectRatio] || '1 / 1',
               }
             }
@@ -151,9 +165,11 @@ const DeviceSimulator: React.FC<DeviceSimulatorProps> = ({ placement, creative }
           </$Horizontal>
         </$Vertical>
         <video
+          ref={blurVideo}
           src={videoToShow}
           autoPlay
           loop
+          muted
           style={{
             width: '100%',
             border: 'none',
@@ -165,8 +181,8 @@ const DeviceSimulator: React.FC<DeviceSimulatorProps> = ({ placement, creative }
             zIndex: 1,
           }}
         >
-          <source src={placeholderVideo} type="video/mp4" />
-          <source src={placeholderVideo} type="video/ogg" />
+          <source src={videoToShow} type="video/mp4" />
+          <source src={videoToShow} type="video/ogg" />
         </video>
       </$Vertical>
     );

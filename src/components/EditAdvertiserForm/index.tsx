@@ -23,6 +23,7 @@ export type EditAdvertiserFormProps = {
 };
 
 const ADVERTISER_INFO = {
+  id: '',
   name: '',
   description: '',
   avatar: '',
@@ -38,6 +39,7 @@ const EditAdvertiserForm: React.FC<EditAdvertiserFormProps> = ({ advertiser, onS
   const [advertiserInfo, setAdvertiserInfo] = useState(ADVERTISER_INFO);
   useEffect(() => {
     setAdvertiserInfo({
+      id: advertiser.id,
       name: advertiser.name,
       description: advertiser.description || '',
       avatar: advertiser.avatar || '',
@@ -108,6 +110,9 @@ const EditAdvertiserForm: React.FC<EditAdvertiserFormProps> = ({ advertiser, onS
           />
         ),
       });
+    }
+    if (viewMode) {
+      meta.fields.push({ key: 'id', label: 'Advertiser ID' });
     }
     return meta;
   };

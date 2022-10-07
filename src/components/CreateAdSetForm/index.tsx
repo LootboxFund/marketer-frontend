@@ -122,12 +122,13 @@ const CreateAdSetForm: React.FC<CreateAdSetFormProps> = ({
     }
     if (chosenAdSets.current && chosenAdSets.current.length > 0) {
       payload.adIDs = chosenAdSets.current;
-    }
-    if (chosenAdSets.current && chosenAdSets.current.length > 0) {
-      payload.adIDs = chosenAdSets.current;
+    } else {
+      payload.adIDs = [];
     }
     if (chosenOffers.current && chosenOffers.current.length > 0) {
       payload.offerIDs = chosenOffers.current;
+    } else {
+      payload.offerIDs = [];
     }
     if (newMediaDestination.current) {
       payload.thumbnail = newMediaDestination.current;
