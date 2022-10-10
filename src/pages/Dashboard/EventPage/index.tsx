@@ -14,7 +14,7 @@ import styles from './index.less';
 import { useParams } from '@umijs/max';
 import BreadCrumbDynamic from '@/components/BreadCrumbDynamic';
 import { TournamentID } from '@wormgraph/helpers';
-import { $ColumnGap, $Horizontal } from '@/components/generics';
+import { $ColumnGap, $Horizontal, $InfoDescription } from '@/components/generics';
 import CreateEventForm from '@/components/CreateEventForm';
 
 const EventPage: React.FC = () => {
@@ -47,6 +47,18 @@ const EventPage: React.FC = () => {
     { title: tournament?.title || '', route: `/dashboard/events/id/${tournament?.id}` },
   ];
   const maxWidth = '1000px';
+
+  const renderHelpText = () => {
+    return (
+      <$InfoDescription>
+        {`View in-depth details about an Event to help make informed decisions. `}
+        To learn more,{' '}
+        <span>
+          <a>click here for a tutorial.</a>
+        </span>
+      </$InfoDescription>
+    );
+  };
   return (
     <div style={{ maxWidth }}>
       {loading || !tournament ? (
@@ -66,10 +78,11 @@ const EventPage: React.FC = () => {
               <Button type="primary">View Event</Button>
             </a>
           </$Horizontal>
-          <br />
+          {renderHelpText()}
           <$Horizontal justifyContent="flex-start" style={{ width: '100%' }}>
             <CreateEventForm
               tournament={{
+                id: tournament.id,
                 title: tournament.title,
                 description: tournament.description,
                 tournamentDate: tournament.tournamentDate,

@@ -22,6 +22,7 @@ import { Rule } from 'antd/lib/form';
 
 export type CreateEventFormProps = {
   tournament: {
+    id: string;
     title: string;
     description?: string;
     tournamentDate?: number;
@@ -35,6 +36,7 @@ export type CreateEventFormProps = {
 };
 
 const TOURNAMENT_INFO = {
+  id: '',
   title: '',
   description: '',
   tournamentDate: moment(new Date()),
@@ -55,6 +57,7 @@ const CreateEventForm: React.FC<CreateEventFormProps> = ({ tournament, mode }) =
   useEffect(() => {
     if (tournament) {
       setTournamentInfo({
+        id: tournament.id,
         title: tournament.title,
         description: tournament.description || '',
         tournamentDate: moment(tournament.tournamentDate) || moment(new Date()),
@@ -98,6 +101,7 @@ const CreateEventForm: React.FC<CreateEventFormProps> = ({ tournament, mode }) =
         { key: 'prize', label: 'Prize' },
         { key: 'magicLink', label: 'Magic Link', rules: [{ type: 'url' } as Rule] },
         { key: 'description', label: 'Description', widget: 'textarea', required: true },
+        { key: 'id', label: 'Event ID' },
       ],
     };
     return meta;

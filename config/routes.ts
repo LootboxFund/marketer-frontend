@@ -58,9 +58,9 @@ export default [
         component: './Dashboard/CampaignCreate',
       },
       {
-        name: 'Events',
+        name: 'My Events',
         path: '/dashboard/events',
-        component: './Dashboard/EventsPage',
+        component: './Dashboard/MyEventsPage',
       },
       {
         name: 'Event',
@@ -89,6 +89,11 @@ export default [
         name: 'Outsource',
         path: '/marketplace/outsource',
         component: './Marketplace/OutsourcePage',
+      },
+      {
+        name: 'Events',
+        path: '/marketplace/events',
+        component: './Marketplace/EventsGallery',
       },
     ],
   },
@@ -193,9 +198,9 @@ export default [
         component: './Company/BillingPage',
       },
       {
-        name: 'Tiers',
-        path: '/company/tiers',
-        component: './Company/TierRankPage',
+        name: 'Progress',
+        path: '/company/progress',
+        component: './Company/ProgressPage',
       },
     ],
   },

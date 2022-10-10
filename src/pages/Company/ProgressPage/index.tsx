@@ -151,7 +151,7 @@ const Tier4 = [
   </Timeline.Item>,
 ];
 
-const TierRankPage: React.FC = () => {
+const ProgressPage: React.FC = () => {
   const { advertiserUser } = useAdvertiserUser();
   const { id: advertiserID } = advertiserUser;
   const { logout } = useAuth();
@@ -209,4 +209,4 @@ const TierRankPage: React.FC = () => {
   );
 };
 
-export default TierRankPage;
+export default ProgressPage;

@@ -1,4 +1,5 @@
 import { PageContainer } from '@ant-design/pro-components';
+import { Link } from '@umijs/max';
 import { Card } from 'antd';
 import React from 'react';
 import styles from './index.less';
@@ -12,8 +13,8 @@ const InfoCard: React.FC<{
   title: string;
   index: number;
   desc: string;
-  href: string;
-}> = ({ title, href, index, desc }) => {
+  action: JSX.Element;
+}> = ({ title, action, index, desc }) => {
   return (
     <div
       style={{
@@ -65,16 +66,14 @@ const InfoCard: React.FC<{
         style={{
           fontSize: '14px',
           color: 'rgba(0,0,0,0.65)',
-          textAlign: 'justify',
+          textAlign: 'left',
           lineHeight: '22px',
           marginBottom: 8,
         }}
       >
         {desc}
       </div>
-      <a href={href} target="_blank" rel="noreferrer">
-        Tutorial {'>'}
-      </a>
+      {action}
     </div>
   );
 };
@@ -118,10 +117,7 @@ const GettingStarted: React.FC = () => {
               width: '65%',
             }}
           >
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-            exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure
-            dolor in reprehenderit in voluptate
+            {`Grow your community with friendly online competitions in collaboration with gaming communities, influencers, and content creators. Watch the below tutorial video before you start.`}
           </p>
           <div
             style={{
@@ -131,21 +127,21 @@ const GettingStarted: React.FC = () => {
           >
             <InfoCard
               index={1}
-              href="https://umijs.org/docs/introduce/introduce"
-              title="Plan an Esports Tournament"
-              desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+              title="Plan Your Campaign"
+              desc={`Plan based on company goals. For example "Indonesian Expansion" or "Spring 2023 Sale".`}
+              action={<Link to="/dashboard/campaigns/create">Create Campaign {'>'}</Link>}
             />
             <InfoCard
               index={2}
-              title="Partner with an Affiliate"
-              href="https://ant.design"
-              desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+              title="Partner with Affiliates"
+              desc="Find partners to help you run community events around your campagins."
+              action={<Link to="/marketplace/welcome">Visit Marketplace {'>'}</Link>}
             />
             <InfoCard
               index={3}
               title="Grow Your Community"
-              href="https://procomponents.ant.design"
-              desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+              desc="Measure your growth from events and increase ROI with funnel optimization."
+              action={<Link to="/company/progress">Learn More {'>'}</Link>}
             />
           </div>
         </div>
