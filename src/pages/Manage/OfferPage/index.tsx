@@ -215,6 +215,7 @@ const OfferPage: React.FC = () => {
             description: payload.description || '',
             pricing: payload.pricing,
             status: payload.status,
+            mmp: payload.mmp,
             mmpAlias: payload.mmpAlias,
             offerID: offerID as OfferID,
           },
@@ -241,7 +242,6 @@ const OfferPage: React.FC = () => {
             description: payload.description || '',
             pricing: payload.pricing,
             status: payload.status,
-            mmpAlias: payload.mmpAlias,
             id: activationID,
             order: payload.order,
           },
@@ -364,6 +364,7 @@ const OfferPage: React.FC = () => {
               type="link"
               onClick={() => {
                 setActivationModalType('create');
+                setActivationToEdit(null);
                 setActivationModalVisible(true);
               }}
               style={{ alignSelf: 'flex-end' }}
@@ -429,8 +430,8 @@ const OfferPage: React.FC = () => {
                           type="link"
                           onClick={() => {
                             setActivationModalType('view-edit');
-                            setActivationModalVisible(true);
                             setActivationToEdit(activation);
+                            setActivationModalVisible(true);
                           }}
                           style={{ alignSelf: 'flex-end' }}
                         >
@@ -602,7 +603,7 @@ const OfferPage: React.FC = () => {
           )}
           <br />
           <br />
-          {activationModalType && (
+          {activationModalType && activationModalVisible && (
             <CreateActivationFormModal
               activationModalVisible={activationModalVisible}
               toggleActivationModal={toggleActivationModal}

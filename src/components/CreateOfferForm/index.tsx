@@ -188,7 +188,8 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
           widget: 'select',
           options: [
             MeasurementPartnerType.Appsflyer,
-            MeasurementPartnerType.LootboxPixel,
+            MeasurementPartnerType.GoogleTagManager,
+            MeasurementPartnerType.LootboxAppWebsiteVisit,
             MeasurementPartnerType.Manual,
           ],
         },

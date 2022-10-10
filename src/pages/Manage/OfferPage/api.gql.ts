@@ -24,6 +24,7 @@ export const GET_OFFER = gql`
             description
             pricing
             status
+            mmp
             mmpAlias
             offerID
             order
