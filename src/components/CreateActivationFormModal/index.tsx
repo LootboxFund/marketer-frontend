@@ -82,7 +82,6 @@ const CreateActivationFormModal: React.FC<CreateActivationFormModalProps> = ({
     }
   }, [activationToEdit]);
   const handleFinishCreate = useCallback(async (values) => {
-    console.log('Submit: ', values);
     const payload = {} as Omit<CreateActivationInput, 'offerID'>;
     if (values.name) {
       payload.name = values.name;
@@ -123,7 +122,7 @@ const CreateActivationFormModal: React.FC<CreateActivationFormModalProps> = ({
   const handleFinishEdit = useCallback(
     async (values) => {
       if (!activationToEdit) return;
-      console.log('Submit: ', values);
+
       const payload = {} as Omit<EditActivationInput, 'offerID'>;
       if (values.name) {
         payload.name = values.name;

@@ -79,7 +79,6 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
     }
   }, [offer]);
   const handleFinish = useCallback(async (values) => {
-    console.log('Submit: ', values);
     type OfferFormPayloadFE = CreateOfferPayload | Omit<EditOfferPayload, 'id'>;
     const payload = {} as OfferFormPayloadFE;
     if (values.title) {
