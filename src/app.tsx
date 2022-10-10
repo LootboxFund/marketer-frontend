@@ -81,7 +81,7 @@ export const layout: any = ({
     ],
     links: isDev
       ? [
-          <a key="referral" href="https://lootbox.fund" target="_blank" rel="noreferrer">
+          <a key="referral" href="https://lootbox.fyi/3RIf0AB" target="_blank" rel="noreferrer">
             <LinkOutlined />
             <span>Referral Program</span>
           </a>,
@@ -97,7 +97,7 @@ export const layout: any = ({
       return (
         <>
           {children}
-          {!props.location?.pathname?.includes('/login') && (
+          {/* {!props.location?.pathname?.includes('/login') && (
             <SettingDrawer
               disableUrlParams
               enableDarkTheme
@@ -109,7 +109,7 @@ export const layout: any = ({
                 }));
               }}
             />
-          )}
+          )} */}
         </>
       );
     },

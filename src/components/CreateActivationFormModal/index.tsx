@@ -46,6 +46,7 @@ const ACTIVATION_INFO = {
   description: '',
   pricing: 1,
   status: ActivationStatus.Active,
+  mmp: MeasurementPartnerType.Manual,
   mmpAlias: '',
 };
 
@@ -75,12 +76,12 @@ const CreateActivationFormModal: React.FC<CreateActivationFormModalProps> = ({
         description: activationToEdit.description || '',
         pricing: activationToEdit.pricing,
         status: activationToEdit.status,
+        mmp: activationToEdit.mmp,
         mmpAlias: activationToEdit.mmpAlias,
       });
     }
   }, [activationToEdit]);
   const handleFinishCreate = useCallback(async (values) => {
-    console.log('Submit: ', values);
     const payload = {} as Omit<CreateActivationInput, 'offerID'>;
     if (values.name) {
       payload.name = values.name;
@@ -90,6 +91,9 @@ const CreateActivationFormModal: React.FC<CreateActivationFormModalProps> = ({
     }
     if (values.status) {
       payload.status = values.status;
+    }
+    if (values.mmp) {
+      payload.mmp = values.mmp;
     }
     if (values.mmpAlias) {
       payload.mmpAlias = values.mmpAlias;
@@ -118,7 +122,7 @@ const CreateActivationFormModal: React.FC<CreateActivationFormModalProps> = ({
   const handleFinishEdit = useCallback(
     async (values) => {
       if (!activationToEdit) return;
-      console.log('Submit: ', values);
+
       const payload = {} as Omit<EditActivationInput, 'offerID'>;
       if (values.name) {
         payload.name = values.name;
@@ -128,9 +132,6 @@ const CreateActivationFormModal: React.FC<CreateActivationFormModalProps> = ({
       }
       if (values.status) {
         payload.status = values.status;
-      }
-      if (values.mmpAlias) {
-        payload.mmpAlias = values.mmpAlias;
       }
       if (values.pricing) {
         payload.pricing = values.pricing.price;
@@ -184,8 +185,22 @@ const CreateActivationFormModal: React.FC<CreateActivationFormModalProps> = ({
           ],
         },
         {
+          key: 'mmp',
+          label: 'Tracking',
+          required: true,
+          disabled: mode === 'create' ? false : true,
+          widget: 'select',
+          options: [
+            MeasurementPartnerType.Appsflyer,
+            MeasurementPartnerType.GoogleTagManager,
+            MeasurementPartnerType.LootboxAppWebsiteVisit,
+            MeasurementPartnerType.Manual,
+          ],
+        },
+        {
           key: 'mmpAlias',
           label: 'Measurement ID',
+          disabled: mode === 'create' ? false : true,
           required: true,
           rules: [
             {

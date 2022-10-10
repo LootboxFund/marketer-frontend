@@ -15,7 +15,7 @@ import {
   UpdateAdvertiserDetailsResponseSuccess,
 } from '@/api/graphql/generated/types';
 import { GET_ADVERTISER } from '@/pages/User/Login/api.gql';
-import { $Horizontal, $InfoDescription } from '@/components/generics';
+import { $Horizontal, $InfoDescription, $Vertical } from '@/components/generics';
 import EditAdvertiserForm from '../../../components/EditAdvertiserForm/index';
 import { AdvertiserAdminViewResponseSuccess } from '../../../api/graphql/generated/types';
 import { AdvertiserID } from '@wormgraph/helpers';
@@ -49,7 +49,14 @@ const AccountPage: React.FC = () => {
   if (error) {
     return <span>{error?.message || ''}</span>;
   } else if (data?.advertiserAdminView.__typename === 'ResponseError') {
-    return <span>{data?.advertiserAdminView.error?.message || ''}</span>;
+    return (
+      <$Vertical>
+        <span>{data?.advertiserAdminView.error?.message || ''}</span>
+        <Link to="/user/logout">
+          <Button style={{ marginTop: '20px' }}>Log Out</Button>
+        </Link>
+      </$Vertical>
+    );
   } else if (!data) {
     return null;
   }
