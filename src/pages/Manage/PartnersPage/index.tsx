@@ -83,7 +83,7 @@ const PartnersPage: React.FC = () => {
               }}
               okText="Visit Marketplace"
             >
-              <Button>Add Partner</Button>
+              <Button type="primary">Add Partner</Button>
             </Popconfirm>
           </$Horizontal>
           <br />
@@ -102,7 +102,7 @@ const PartnersPage: React.FC = () => {
               style={{ border: '1px solid rgba(0,0,0,0.1)', padding: '50px' }}
             >
               <Link to="/marketplace/outsource">
-                <Button type="primary">Visit Marketplace</Button>
+                <Button>Visit Marketplace</Button>
               </Link>
             </Empty>
           ) : null}

@@ -49,9 +49,11 @@ const OutsourcePage: React.FC = () => {
   const renderHelpText = () => {
     return (
       <$InfoDescription>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-        laboris nisi ut aliquip ex ea commodo consequat.
+        {`The Outsourcing Marketplace lets you hire event organizers from gaming communities, influencers & streamers. Use this if you want to be the MAIN advertiser.`}
+        {` `}To learn more,{' '}
+        <span>
+          <a>click here for a tutorial.</a>
+        </span>
       </$InfoDescription>
     );
   };

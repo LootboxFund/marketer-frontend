@@ -51,9 +51,11 @@ const OffersPage: React.FC = () => {
   const renderHelpText = () => {
     return (
       <$InfoDescription>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-        laboris nisi ut aliquip ex ea commodo consequat.
+        {`This page lists all the promotional offers you've made for attracting new users. Click the "Create Offer" button to add more.`}
+        {` `}To learn more,{' '}
+        <span>
+          <a>click here for a tutorial.</a>
+        </span>
       </$InfoDescription>
     );
   };
@@ -74,9 +76,9 @@ const OffersPage: React.FC = () => {
               onSearch={setSearchString}
               style={{ width: 200 }}
             />
-            <Button>
-              <Link to="/manage/offers/create">Create Offer</Link>
-            </Button>
+            <Link to="/manage/offers/create">
+              <Button type="primary">Create Offer</Button>
+            </Link>
           </$Horizontal>
           {!offers || offers.length === 0 ? (
             <Empty
@@ -93,7 +95,7 @@ const OffersPage: React.FC = () => {
               style={{ border: '1px solid rgba(0,0,0,0.1)', padding: '50px' }}
             >
               <Link to="/manage/offers/create">
-                <Button type="primary">Create Offer</Button>
+                <Button>Create Offer</Button>
               </Link>
             </Empty>
           ) : null}
