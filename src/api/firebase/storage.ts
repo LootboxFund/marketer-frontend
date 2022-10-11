@@ -46,7 +46,7 @@ export const uploadImageToFirestore = async ({
   const fileID = uuidV4();
   const fileDestination = `${LOOTBOX_ADVERTISER_ASSET_FOLDER}/advertiser/${advertiserID}/${folderName}/${
     folderID || 'unknown'
-  }/${fileID}/${extension ? '.' + extension : ''}`;
+  }/${fileID}/${fileID}${extension ? '.' + extension : ''}`;
 
   const downloadURL = await uploadImageToBucket(fileDestination, file);
   return downloadURL;

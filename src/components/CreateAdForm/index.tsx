@@ -184,12 +184,19 @@ const CreateAdForm: React.FC<CreateAdFormProps> = ({
       payload.creative.themeColor = newThemeColor.current;
     }
     if (newMediaDestination.current) {
-      payload.creative.creativeLinks = [newMediaDestination.current];
-    }
-    if (newMediaDestination.current) {
+      const mp4_version = newMediaDestination.current;
+      const x = newMediaDestination.current.split('.');
+      x.pop();
+      const filePathWithoutExtension = x.join('.');
+      const webm_version = `${filePathWithoutExtension}.webm?alt=media`;
+      const thumbnail_version = `${filePathWithoutExtension}.jpeg?alt=media`;
+      payload.creative.creativeLinks =
+        values.creative_creativeType === CreativeType.Video
+          ? [mp4_version, webm_version]
+          : [newMediaDestination.current];
       payload.creative.thumbnail =
         values.creative_creativeType === CreativeType.Video
-          ? placeholderVideoThumbnail
+          ? thumbnail_version
           : newMediaDestination.current;
     }
     payload.advertiserID = advertiserID;
@@ -259,12 +266,19 @@ const CreateAdForm: React.FC<CreateAdFormProps> = ({
       payload.creative.themeColor = newThemeColor.current;
     }
     if (payload.creative && newMediaDestination.current) {
-      payload.creative.creativeLinks = [newMediaDestination.current];
-    }
-    if (payload.creative && newMediaDestination.current) {
+      const mp4_version = newMediaDestination.current;
+      const x = newMediaDestination.current.split('.');
+      x.pop();
+      const filePathWithoutExtension = x.join('.');
+      const webm_version = `${filePathWithoutExtension}.webm?alt=media`;
+      const thumbnail_version = `${filePathWithoutExtension}.jpeg?alt=media`;
+      payload.creative.creativeLinks =
+        values.creative_creativeType === CreativeType.Video
+          ? [mp4_version, webm_version]
+          : [newMediaDestination.current];
       payload.creative.thumbnail =
         values.creative_creativeType === CreativeType.Video
-          ? placeholderVideoThumbnail
+          ? thumbnail_version
           : newMediaDestination.current;
     }
     setPending(true);
