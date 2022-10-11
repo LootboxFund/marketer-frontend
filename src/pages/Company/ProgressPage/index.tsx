@@ -151,7 +151,7 @@ const Tier4 = [
   </Timeline.Item>,
 ];
 
-const TierRankPage: React.FC = () => {
+const ProgressPage: React.FC = () => {
   const { advertiserUser } = useAdvertiserUser();
   const { id: advertiserID } = advertiserUser;
   const { logout } = useAuth();
@@ -178,9 +178,12 @@ const TierRankPage: React.FC = () => {
   const renderHelpText = () => {
     return (
       <$InfoDescription>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-        laboris nisi ut aliquip ex ea commodo consequat.
+        {`Building an organic community is hard to do alone! LOOTBOX helps you scale community growth
+        by providing you the tools and framework to partner with event organizers all around the
+        world. `}
+        <span>
+          <a>Click here to learn more.</a>
+        </span>
       </$InfoDescription>
     );
   };
@@ -209,4 +212,4 @@ const TierRankPage: React.FC = () => {
   );
 };
 
-export default TierRankPage;
+export default ProgressPage;

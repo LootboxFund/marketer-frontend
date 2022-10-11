@@ -10,12 +10,12 @@ import type {
 } from '@/api/graphql/generated/types';
 import BreadCrumbDynamic from '@/components/BreadCrumbDynamic';
 import CreateCampaignForm from '@/components/CreateCampaignForm';
-import { $Horizontal } from '@/components/generics';
+import { $Horizontal, $InfoDescription } from '@/components/generics';
 import { DeleteOutlined, EyeOutlined, FolderAddOutlined } from '@ant-design/icons';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { Link } from '@umijs/max';
 import { AdvertiserID } from '@wormgraph/helpers';
-import { Button, Card, Empty, Image, Input, Modal, Popconfirm, Skeleton } from 'antd';
+import { Button, Card, Empty, Image, Input, message, Modal, Popconfirm, Skeleton } from 'antd';
 import Meta from 'antd/lib/card/Meta';
 import Spin from 'antd/lib/spin';
 import React, { useState } from 'react';
@@ -106,7 +106,18 @@ const CampaignPage: React.FC = () => {
   };
   const searchedTournament = dataTournament?.tournament.tournament;
   const maxWidth = '1000px';
-  console.log(`searchedTournament = `, searchedTournament);
+
+  const renderHelpText = () => {
+    return (
+      <$InfoDescription>
+        {`Organize events under this campaign if they share the same objective.`} To learn more,{' '}
+        <span>
+          <a>click here for a tutorial.</a>
+        </span>
+      </$InfoDescription>
+    );
+  };
+
   return (
     <div>
       {loading || !conquest ? (
@@ -117,7 +128,7 @@ const CampaignPage: React.FC = () => {
         <div className={styles.content}>
           <BreadCrumbDynamic breadLine={breadLine} />
           <h1>{conquest.title}</h1>
-          <br />
+          {renderHelpText()}
           <$Horizontal style={{ maxWidth }}>
             <CreateCampaignForm
               conquest={{
@@ -136,6 +147,9 @@ const CampaignPage: React.FC = () => {
           <br />
           <br />
           <h2>Events</h2>
+          <$InfoDescription maxWidth={maxWidth}>
+            Events are typically organized by partners from the marketplace.
+          </$InfoDescription>
           <$Horizontal justifyContent="space-between" style={{ maxWidth }}>
             <Input.Search
               placeholder="Filter Events"
@@ -145,7 +159,7 @@ const CampaignPage: React.FC = () => {
               style={{ width: 200 }}
             />
             <Button
-              type="link"
+              type="primary"
               onClick={() => {
                 setAddTournamentModalVisible(true);
               }}
@@ -180,7 +194,7 @@ const CampaignPage: React.FC = () => {
                       </Link>,
                       <Popconfirm
                         key={`remove-${conquest.id}`}
-                        title="Are you sure to remove this tournament from your campaign?"
+                        title="Are you sure to remove this event from your campaign?"
                         onConfirm={async (e) => {
                           console.log(e);
                           await updateConquest({
@@ -221,6 +235,10 @@ const CampaignPage: React.FC = () => {
           </Button>,
         ]}
       >
+        <$InfoDescription maxWidth={maxWidth}>
+          An Event must first be created by a partner before it can be added to a campaign. You can
+          find Events in <Link to="/marketplace/events">Marketplace</Link>.
+        </$InfoDescription>
         <Input.Search
           placeholder="Search Event by ID"
           onSearch={(value: string) => {
@@ -263,6 +281,7 @@ const CampaignPage: React.FC = () => {
                         });
                         setAddTournamentPending(false);
                         setAddTournamentModalVisible(false);
+                        message.success('Successfully added Event to Campaign.');
                       }
                     }}
                     key={`view-${searchedTournament.id}`}

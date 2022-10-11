@@ -8,6 +8,18 @@ import { AdvertiserID, ConquestID } from '@wormgraph/helpers';
 import { AdvertiserStorageFolder, uploadImageToFirestore } from '@/api/firebase/storage';
 import { $Vertical, $Horizontal } from '@/components/generics';
 
+const getVideoDuration = (file: any): Promise<number> =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      // @ts-ignore
+      const media = new Audio(reader.result);
+      media.onloadedmetadata = () => resolve(media.duration);
+    };
+    reader.readAsDataURL(file);
+    reader.onerror = (error) => reject(error);
+  });
+
 export const HiddenViewWidget = (data: any) => null;
 
 interface AntUploadFileProps {
@@ -28,6 +40,17 @@ export const AntUploadFile: React.FC<AntUploadFileProps> = ({
 }) => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const customUploadImage = async ({ file, onSuccess }: any) => {
+    if (file.size > 50000000) {
+      message.error('Video must be under 50MB');
+      return;
+    }
+
+    const duration = await getVideoDuration(file);
+
+    if (duration > 61) {
+      message.error('Video must be under 60 seconds');
+      return;
+    }
     const destination = await uploadImageToFirestore({
       folderName,
       file: file,
@@ -35,6 +58,7 @@ export const AntUploadFile: React.FC<AntUploadFileProps> = ({
       advertiserID,
     });
     newMediaDestination.current = destination;
+    console.log(`>>> Uploaded to ${newMediaDestination.current}`);
     onSuccess('ok');
     if (forceRefresh) {
       forceRefresh();

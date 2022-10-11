@@ -277,9 +277,19 @@ const CreateAdSetForm: React.FC<CreateAdSetFormProps> = ({
             );
           },
         },
-        { key: 'name', label: 'Name', required: true },
-
-        { key: 'description', label: 'Description', widget: 'textarea' },
+        {
+          key: 'name',
+          label: 'Name',
+          required: true,
+          tooltip: 'The public name of your Ad Set that partners will use to reference it.',
+        },
+        {
+          key: 'description',
+          label: 'Description',
+          widget: 'textarea',
+          tooltip:
+            'A public summary that describes who this Ad Set will appeal to. Your partners will use this information to determine how they use your ad set.',
+        },
         {
           key: 'image',
           label: 'Image',
@@ -291,6 +301,8 @@ const CreateAdSetForm: React.FC<CreateAdSetFormProps> = ({
               acceptedFileTypes={'image/*'}
             />
           ),
+          tooltip:
+            'A public thumbnail of your Ad Set. It can be anything as long as it is not confusing. A good thuumbnail is either same as the underlying ad creative, or the offer image.',
         },
         {
           key: 'status',
@@ -303,6 +315,7 @@ const CreateAdSetForm: React.FC<CreateAdSetFormProps> = ({
             AdSetStatus.Planned,
             AdSetStatus.Archived,
           ],
+          tooltip: 'Only Active Ad Sets can be shown in an Event.',
         },
         {
           key: 'pickCreativesLabel',

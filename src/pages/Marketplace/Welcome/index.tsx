@@ -1,4 +1,5 @@
 import { PageContainer } from '@ant-design/pro-components';
+import { Link } from '@umijs/max';
 import { Card } from 'antd';
 import React from 'react';
 import styles from './index.less';
@@ -12,8 +13,8 @@ const InfoCard: React.FC<{
   title: string;
   index: number;
   desc: string;
-  href: string;
-}> = ({ title, href, index, desc }) => {
+  action: JSX.Element;
+}> = ({ title, action, index, desc }) => {
   return (
     <div
       style={{
@@ -65,16 +66,14 @@ const InfoCard: React.FC<{
         style={{
           fontSize: '14px',
           color: 'rgba(0,0,0,0.65)',
-          textAlign: 'justify',
+          textAlign: 'left',
           lineHeight: '22px',
           marginBottom: 8,
         }}
       >
         {desc}
       </div>
-      <a href={href} target="_blank" rel="noreferrer">
-        Tutorial {'>'}
-      </a>
+      {action}
     </div>
   );
 };
@@ -106,7 +105,7 @@ const Welcome: React.FC = () => {
               color: '#1A1A1A',
             }}
           >
-            Welcome to the Marketplace
+            The Guide to Scaling Community Events
           </div>
           <p
             style={{
@@ -118,10 +117,7 @@ const Welcome: React.FC = () => {
               width: '65%',
             }}
           >
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-            exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure
-            dolor in reprehenderit in voluptate
+            {`The LOOTBOX Marketplace is where you can outsource event management globally to affiliate partners. We recommend that you watch the below tutorial video to get started.`}
           </p>
           <div
             style={{
@@ -131,21 +127,21 @@ const Welcome: React.FC = () => {
           >
             <InfoCard
               index={1}
-              href="https://umijs.org/docs/introduce/introduce"
               title="Find Affiliate Partners"
-              desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+              desc="Shop for qualified gaming communities, influencers & streamers in a central place."
+              action={<Link to="/marketplace/outsource">Find Partners {'>'}</Link>}
             />
             <InfoCard
               index={2}
               title="Outsource Your Events"
-              href="https://ant.design"
-              desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+              desc="Invite them to run your community events, or join their existing plans."
+              action={<a>Create Proposal {'>'}</a>}
             />
             <InfoCard
               index={3}
-              title="Track Your Success"
-              href="https://procomponents.ant.design"
-              desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+              title="Track Performance"
+              desc="Measure who is performing best and the cost effectiveness of each partner."
+              action={<a>Learn More {'>'}</a>}
             />
           </div>
         </div>

@@ -23,7 +23,7 @@ const CampaignCreate: React.FC = () => {
   const { advertiserUser } = useAdvertiserUser();
   const { id: advertiserID } = advertiserUser;
   const [createConquestMutation] = useMutation<
-    { createConquest: ResponseError | CreateTournamentResponseSuccess },
+    { createConquest: ResponseError | CreateConquestResponseSuccess },
     MutationCreateConquestArgs
   >(CREATE_CONQUEST, {
     refetchQueries: [{ query: LIST_CONQUEST_PREVIEWS, variables: { advertiserID } }],
@@ -50,9 +50,8 @@ const CampaignCreate: React.FC = () => {
   const renderHelpText = () => {
     return (
       <$InfoDescription>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-        laboris nisi ut aliquip ex ea commodo consequat.
+        {`Organize your events around a campaign representing a company goal.`}
+        {` `}To learn more, <a>click here for a tutorial.</a>
       </$InfoDescription>
     );
   };

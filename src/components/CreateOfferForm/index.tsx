@@ -134,19 +134,35 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
       disabled: pending,
       initialValues: offerInfo,
       fields: [
-        { key: 'title', label: 'Title', required: true },
+        {
+          key: 'title',
+          label: 'Title',
+          required: true,
+          tooltip:
+            'The public title that partners or the marketplace sees when your offer is published.',
+        },
         {
           key: 'startDate',
           label: 'Start Date',
           widget: 'date-picker',
           viewWidget: DateView,
+          tooltip:
+            "The date your offer starts being valid. This is an internal field that only your team can see. You must manually update the status of your offer to 'Active' to make it visible to partners.",
         },
-        { key: 'description', label: 'Description', widget: 'textarea' },
+        {
+          key: 'description',
+          label: 'Description',
+          widget: 'textarea',
+          tooltip:
+            'The public description of your offer that partners read to understand what your offer goals are.',
+        },
         {
           key: 'endDate',
           label: 'End Date',
           widget: 'date-picker',
           viewWidget: DateView,
+          tooltip:
+            "The date your offer stops being valid. This is an internal field that only your team can see. You must manually update the status of your offer to 'Inactive' to make it not visible to partners.",
         },
         {
           key: 'maxBudget',
@@ -157,6 +173,8 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
             price: mode === 'create' ? 1000 : offer?.maxBudget || 1000,
             currency: 'USDC Polygon',
           },
+          tooltip:
+            "An internal field that only your team can see. It's the maximum budget you're willing to spend on this offer.",
         },
         {
           key: 'affiliateBaseLink',
@@ -168,6 +186,8 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
             { type: 'url' } as Rule,
             { type: 'string', min: 3 } as Rule,
           ],
+          tooltip:
+            'The trackable link that your users click when they go to claim your offer. This can be your website, an appstore, or a checkout page for example.',
         },
         {
           key: 'status',
@@ -179,6 +199,8 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
             OfferStatus.Planned,
             OfferStatus.Archived,
           ],
+          tooltip:
+            'An internal field that only your team can see. Only Active offers can be used in events.',
         },
         {
           key: 'mmp',
@@ -191,6 +213,8 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
             MeasurementPartnerType.LootboxAppWebsiteVisit,
             MeasurementPartnerType.Manual,
           ],
+          tooltip:
+            'The tracking software your offer uses to measure performance. Talk with the LOOTBOX team on how to set this up.',
         },
       ],
     };
@@ -207,6 +231,8 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
             acceptedFileTypes={'image/*'}
           />
         ),
+        tooltip:
+          "The offer's image that partners see when your offer is published to the marketplace.",
       });
     }
     return meta;

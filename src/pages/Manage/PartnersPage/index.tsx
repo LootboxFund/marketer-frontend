@@ -52,9 +52,7 @@ const PartnersPage: React.FC = () => {
   const renderHelpText = () => {
     return (
       <$InfoDescription>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-        laboris nisi ut aliquip ex ea commodo consequat.
+        {`This page lists all the influencers, creators, and gaming communities you've had revenue sharing agreements with. This is a historical list that is automatically populated.`}
       </$InfoDescription>
     );
   };
@@ -83,7 +81,7 @@ const PartnersPage: React.FC = () => {
               }}
               okText="Visit Marketplace"
             >
-              <Button>Add Partner</Button>
+              <Button type="primary">Add Partner</Button>
             </Popconfirm>
           </$Horizontal>
           <br />
@@ -102,7 +100,7 @@ const PartnersPage: React.FC = () => {
               style={{ border: '1px solid rgba(0,0,0,0.1)', padding: '50px' }}
             >
               <Link to="/marketplace/outsource">
-                <Button type="primary">Visit Marketplace</Button>
+                <Button>Visit Marketplace</Button>
               </Link>
             </Empty>
           ) : null}

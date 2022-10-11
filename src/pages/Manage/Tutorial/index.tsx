@@ -1,4 +1,5 @@
 import { PageContainer } from '@ant-design/pro-components';
+import { Link } from '@umijs/max';
 import { Card } from 'antd';
 import React from 'react';
 import styles from './index.less';
@@ -12,8 +13,8 @@ const InfoCard: React.FC<{
   title: string;
   index: number;
   desc: string;
-  href: string;
-}> = ({ title, href, index, desc }) => {
+  action: JSX.Element;
+}> = ({ title, action, index, desc }) => {
   return (
     <div
       style={{
@@ -65,16 +66,14 @@ const InfoCard: React.FC<{
         style={{
           fontSize: '14px',
           color: 'rgba(0,0,0,0.65)',
-          textAlign: 'justify',
+          textAlign: 'left',
           lineHeight: '22px',
           marginBottom: 8,
         }}
       >
         {desc}
       </div>
-      <a href={href} target="_blank" rel="noreferrer">
-        Tutorial {'>'}
-      </a>
+      {action}
     </div>
   );
 };
@@ -118,10 +117,7 @@ const Welcome: React.FC = () => {
               width: '65%',
             }}
           >
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-            exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure
-            dolor in reprehenderit in voluptate
+            {`Create offers and promotional video ads to increase sales and attract new users. Setup tracking to measure performance. We recommend that you watch the below tutorial video to get started.`}
           </p>
           <div
             style={{
@@ -131,21 +127,21 @@ const Welcome: React.FC = () => {
           >
             <InfoCard
               index={1}
-              href="https://umijs.org/docs/introduce/introduce"
               title="Create an Offer"
-              desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+              desc="Attact new users with a promotion that your partners can share with their audience."
+              action={<Link to="/manage/offers/create">Create Offer {'>'}</Link>}
             />
             <InfoCard
               index={2}
               title="Create an Ad"
-              href="https://ant.design"
-              desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+              desc="Upload a video ad that will play on Lootbox tickets and drive offer completions."
+              action={<Link to="/manage/ads/create">Create Offer {'>'}</Link>}
             />
             <InfoCard
               index={3}
               title="Increase Global Sales"
-              href="https://procomponents.ant.design"
-              desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+              desc="Track & optimize the performance of your offers and ads to increase global sales."
+              action={<a>Learn More {'>'}</a>}
             />
           </div>
         </div>

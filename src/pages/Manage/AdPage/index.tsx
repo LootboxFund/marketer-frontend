@@ -81,9 +81,11 @@ const AdPage: React.FC = () => {
   const renderHelpText = () => {
     return (
       <$InfoDescription>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-        laboris nisi ut aliquip ex ea commodo consequat.
+        {`Here you can manage your Ad Creative and preview how it will appear on devices. You can customize the image, video, theme color and call to action.`}
+        {` `}To learn more,{' '}
+        <span>
+          <a>click here for a tutorial.</a>
+        </span>
       </$InfoDescription>
     );
   };
@@ -97,7 +99,6 @@ const AdPage: React.FC = () => {
         <div className={styles.content}>
           <BreadCrumbDynamic breadLine={breadLine} />
           <h1>{ad.name}</h1>
-          <br />
           {renderHelpText()}
           <div style={{ minWidth: '1000px', maxWidth: '1000px' }}>
             <CreateAdForm

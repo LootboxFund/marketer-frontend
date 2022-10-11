@@ -23,9 +23,23 @@ import {
   EditWhitelistAffiliateToOfferResponse,
   MutationEditWhitelistAffiliateToOfferArgs,
 } from '@/api/graphql/generated/types';
+import { history, useModel } from '@umijs/max';
 import { ActivationStatus } from '@/api/graphql/generated/types';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { Spin, Image, Row, Col, Card, Button, Modal, Input, Switch, Empty } from 'antd';
+import {
+  Spin,
+  Image,
+  Row,
+  Col,
+  Card,
+  Button,
+  Modal,
+  Input,
+  Switch,
+  Empty,
+  Popconfirm,
+  message,
+} from 'antd';
 import React, { useCallback, useState } from 'react';
 import {
   CREATE_ACTIVATION,
@@ -40,9 +54,15 @@ import {
 import styles from './index.less';
 import { useParams } from 'react-router-dom';
 import BreadCrumbDynamic from '@/components/BreadCrumbDynamic';
-import { $ColumnGap, $Horizontal, $Vertical, placeholderImage } from '@/components/generics';
+import {
+  $ColumnGap,
+  $Horizontal,
+  $InfoDescription,
+  $Vertical,
+  placeholderImage,
+} from '@/components/generics';
 import CreateOfferForm from '@/components/CreateOfferForm';
-import type { ActivationID, AdvertiserID, OfferID } from '@wormgraph/helpers';
+import { ActivationID, AdvertiserID, formatBigNumber, OfferID } from '@wormgraph/helpers';
 import CreateActivationFormModal from '@/components/CreateActivationFormModal';
 import { CaretDownOutlined, CaretUpOutlined } from '@ant-design/icons';
 import { LIST_CREATED_OFFERS } from '../OffersPage/api.gql';
@@ -334,7 +354,13 @@ const OfferPage: React.FC = () => {
           <BreadCrumbDynamic breadLine={breadLine} />
 
           <h1>{offer.title}</h1>
-          <br />
+          <$InfoDescription>
+            {`This is the Offer Control Panel for "${offer.title}". You can edit the offer details and manage its activation events with payout amounts.`}
+            {` `}To learn more,{' '}
+            <span>
+              <a>click here for a tutorial.</a>
+            </span>
+          </$InfoDescription>
           <$Horizontal>
             <CreateOfferForm
               offer={{
@@ -358,10 +384,10 @@ const OfferPage: React.FC = () => {
             <Image width={200} src={offer.image || ''} />
           </$Horizontal>
           <br />
+          <br />
           <$Horizontal justifyContent="space-between">
             <h2>Activation Funnel</h2>
             <Button
-              type="link"
               onClick={() => {
                 setActivationModalType('create');
                 setActivationToEdit(null);
@@ -372,7 +398,13 @@ const OfferPage: React.FC = () => {
               Add Activation
             </Button>
           </$Horizontal>
-          <br />
+          <$InfoDescription>
+            {`Activations are specific events that you want to happen in an offer. They typically occur chronologically in a sales funnel.`}
+            {` `}To learn more,{' '}
+            <span>
+              <a>click here for a tutorial.</a>
+            </span>
+          </$InfoDescription>
           {activationsSorted && activationsSorted.length > 0 ? (
             <Card>
               {activationsSorted.map((activation, i) => {
@@ -472,7 +504,6 @@ const OfferPage: React.FC = () => {
           <$Horizontal justifyContent="space-between">
             <h2>Allowed Partners</h2>
             <Button
-              type="link"
               onClick={() => {
                 setAddPartnerModalVisible(true);
               }}
@@ -481,7 +512,13 @@ const OfferPage: React.FC = () => {
               Invite Partner
             </Button>
           </$Horizontal>
-          <br />
+          <$InfoDescription>
+            {`You can control who has access to your offer as an Event Organizer.`}
+            {` `}To learn more,{' '}
+            <span>
+              <a>click here for a tutorial.</a>
+            </span>
+          </$InfoDescription>
           {whitelistedPartners.length > 0 ? (
             <div className={styles.whitelistedPartnersGrid}>
               {whitelistedPartners.map((whitelist) => (
@@ -514,19 +551,23 @@ const OfferPage: React.FC = () => {
                           loading={updatingWhitelist === whitelist.whitelist.id}
                           onChange={async (checked) => {
                             setUpdatingWhitelist(whitelist.whitelist.id);
+                            const newStatus = checked
+                              ? OrganizerOfferWhitelistStatus.Active
+                              : OrganizerOfferWhitelistStatus.Inactive;
                             await updateWhitelist({
                               variables: {
                                 payload: {
                                   id: whitelist.whitelist.id,
-                                  status: checked
-                                    ? OrganizerOfferWhitelistStatus.Active
-                                    : OrganizerOfferWhitelistStatus.Inactive,
+                                  status: newStatus,
                                   advertiserID,
                                   affiliateID: whitelist.organizer.id,
                                   offerID: whitelist.whitelist.offerID,
                                 },
                               },
                             });
+                            message.success(
+                              `Successfully set this partners access to ${newStatus}`,
+                            );
                             setUpdatingWhitelist(null);
                           }}
                         />
@@ -562,8 +603,27 @@ const OfferPage: React.FC = () => {
           )}
           <br />
           <br />
-          <h2>Ad Sets</h2>
-          <br />
+
+          <$Horizontal justifyContent="space-between">
+            <h2>Ad Sets</h2>
+            <Popconfirm
+              title="Go to an Ad Sets' control panel to include it into an Offer."
+              onConfirm={() => {
+                history.push('/manage/adsets');
+              }}
+              okText="View Ad Sets"
+              cancelText="Cancel"
+            >
+              <Button style={{ alignSelf: 'flex-end' }}>Include Ad Set</Button>
+            </Popconfirm>
+          </$Horizontal>
+          <$InfoDescription>
+            {`Offers should include Ad Sets that play video ads on various ad placecment spots - primarily on Lootbox tickets.`}
+            {` `}To learn more,{' '}
+            <span>
+              <a>click here for a tutorial.</a>
+            </span>
+          </$InfoDescription>
           {adSetPreviewsSorted.length > 0 ? (
             <div className={styles.adSetGrid}>
               {adSetPreviewsSorted.map((adSet) => {
@@ -628,6 +688,11 @@ const OfferPage: React.FC = () => {
               </Button>,
             ]}
           >
+            <$InfoDescription>
+              {`Whitelisted partners will be able to show your video ads in their events.`}
+              {` `}Find partners at the{' '}
+              <Link to="/marketplace/outsource">Outsourcing Marketplace</Link>
+            </$InfoDescription>
             <Input.Search
               placeholder="Search Partner by ID"
               onSearch={(value: string) => {
@@ -669,6 +734,7 @@ const OfferPage: React.FC = () => {
                           });
                           setAddPartnerPending(false);
                           setAddPartnerModalVisible(false);
+                          message.success('Successfully whitelisted this partner to offer');
                         }}
                         key={`view-${searchedPartner.id}`}
                         style={{ width: '80%' }}
@@ -679,6 +745,10 @@ const OfferPage: React.FC = () => {
                   >
                     <Meta
                       title={searchedPartner.name}
+                      description={`${formatBigNumber(
+                        searchedPartner.audienceSize || 0,
+                        1,
+                      )} Audience`}
                       style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}
                     />
                   </Card>

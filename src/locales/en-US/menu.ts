@@ -54,7 +54,7 @@ export default {
   'menu.Dashboard.Campaigns': 'Campaigns',
   'menu.Dashboard.Campaign': 'Campaigns',
   'menu.Dashboard.Create Campaign': 'Create Campaign',
-  'menu.Dashboard.Events': 'Events',
+  'menu.Dashboard.My Events': 'My Events',
   'menu.Dashboard.Event': 'Event',
   'menu.Manage': 'Manage',
   'menu.Manage.Tutorial': 'Tutorial',
@@ -73,7 +73,8 @@ export default {
   'menu.Marketplace': 'Marketplace',
   'menu.Marketplace.Welcome': 'Welcome',
   'menu.Marketplace.Outsource': 'Outsource',
+  'menu.Marketplace.Events': 'Events',
   'menu.Company.Account': 'Account',
   'menu.Company.Billing': 'Billing',
-  'menu.Company.Tiers': 'Tiers',
+  'menu.Company.Progress': 'Progress',
 };

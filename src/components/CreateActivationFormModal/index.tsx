@@ -25,6 +25,8 @@ import type {
   CreateActivationPayload,
   EditActivationPayload,
 } from '../../api/graphql/generated/types';
+import { $InfoDescription } from '../generics';
+import { Link } from '@umijs/max';
 
 export type CreateActivationFormModalProps = {
   activationToEdit: Activation | null;
@@ -161,8 +163,18 @@ const CreateActivationFormModal: React.FC<CreateActivationFormModalProps> = ({
       disabled: pendingActivationEdit,
       initialValues: activationInfo,
       fields: [
-        { key: 'name', label: 'Name', required: true },
-        { key: 'description', label: 'Description', widget: 'textarea' },
+        {
+          key: 'name',
+          label: 'Name',
+          required: true,
+          tooltip: 'The public name of the activation that your partners see.',
+        },
+        {
+          key: 'description',
+          label: 'Description',
+          widget: 'textarea',
+          tooltip: 'An explaination of what this activation entails.',
+        },
         {
           key: 'pricing',
           label: 'Pricing',
@@ -172,6 +184,8 @@ const CreateActivationFormModal: React.FC<CreateActivationFormModalProps> = ({
             price: mode === 'create' ? 1 : activationToEdit?.pricing || 1,
             currency: 'USDC Polygon',
           },
+          tooltip:
+            'How much you are happy to spend to get 1 qualified person to do this 1 activation.',
         },
         {
           key: 'status',
@@ -183,6 +197,7 @@ const CreateActivationFormModal: React.FC<CreateActivationFormModalProps> = ({
             ActivationStatus.Planned,
             ActivationStatus.Archived,
           ],
+          tooltip: 'Only Active activations will be billed and tracked.',
         },
         {
           key: 'mmp',
@@ -196,6 +211,8 @@ const CreateActivationFormModal: React.FC<CreateActivationFormModalProps> = ({
             MeasurementPartnerType.LootboxAppWebsiteVisit,
             MeasurementPartnerType.Manual,
           ],
+          tooltip:
+            'The tracking software this activation uses to report successful conversions. Talk with the LOOTBOX team on how to set this up.',
         },
         {
           key: 'mmpAlias',
@@ -217,6 +234,8 @@ const CreateActivationFormModal: React.FC<CreateActivationFormModalProps> = ({
               },
             },
           ],
+          tooltip:
+            'The unique activation name reported to tracking software. Talk with the LOOTBOX team on how to set this up.',
         },
       ],
     };
@@ -247,26 +266,24 @@ const CreateActivationFormModal: React.FC<CreateActivationFormModalProps> = ({
       okButtonProps={{ loading: pendingActivationEdit, disabled: pendingActivationEdit }}
       cancelButtonProps={{ disabled: pendingActivationEdit }}
     >
-      <Card style={{ flex: 1 }}>
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-          {viewMode && !lockedToEdit && (
-            <Button
-              type="link"
-              onClick={() => setViewMode(false)}
-              style={{ alignSelf: 'flex-end' }}
-            >
-              Edit
-            </Button>
-          )}
-          <Form
-            layout="vertical"
-            form={form}
-            onFinish={mode === 'create' ? handleFinishCreate : handleFinishEdit}
-          >
-            <FormBuilder form={form} meta={getMeta()} viewMode={viewMode} />
-          </Form>
-        </div>
-      </Card>
+      <$InfoDescription>
+        {`Activations are specific events you want to happen. They are paid to partners on a `}
+        <a>performance basis.</a>
+      </$InfoDescription>
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
+        {viewMode && !lockedToEdit && (
+          <Button type="link" onClick={() => setViewMode(false)} style={{ alignSelf: 'flex-end' }}>
+            Edit
+          </Button>
+        )}
+        <Form
+          layout="vertical"
+          form={form}
+          onFinish={mode === 'create' ? handleFinishCreate : handleFinishEdit}
+        >
+          <FormBuilder form={form} meta={getMeta()} viewMode={viewMode} />
+        </Form>
+      </div>
     </Modal>
   );
 };

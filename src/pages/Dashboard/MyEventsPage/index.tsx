@@ -16,7 +16,7 @@ import { Button, Card, Empty, Input, message, Popconfirm } from 'antd';
 import { Link } from '@umijs/max';
 import Meta from 'antd/lib/card/Meta';
 
-const EventsPage: React.FC = () => {
+const MyEventsPage: React.FC = () => {
   const [searchString, setSearchString] = useState('');
   const { advertiserUser } = useAdvertiserUser();
   const { id: advertiserID } = advertiserUser;
@@ -50,9 +50,11 @@ const EventsPage: React.FC = () => {
   const renderHelpText = () => {
     return (
       <$InfoDescription>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-        laboris nisi ut aliquip ex ea commodo consequat.
+        {`Quickly search for events without remembering campaigns. This page lists all the events you have been involved in.`}
+        To learn more,{' '}
+        <span>
+          <a>click here for a tutorial.</a>
+        </span>
       </$InfoDescription>
     );
   };
@@ -75,14 +77,14 @@ const EventsPage: React.FC = () => {
               style={{ width: 200 }}
             />
             <Popconfirm
-              title="Events must first be added to a campaign. Select a campaign from the campaigns page to get started."
+              title="Events must first be added to a campaign. Visit the Marketplace and copy an Event ID to add it to a campaign."
               onConfirm={() => {
-                history.push('/dashboard/campaigns');
+                history.push('/marketplace/events');
               }}
-              okText="Go to Campaigns"
+              okText="Visit Marketplace"
               cancelText="Cancel"
             >
-              <Button>Add Event</Button>
+              <Button type="primary">Add Event</Button>
             </Popconfirm>
           </$Horizontal>
           <br />
@@ -130,4 +132,4 @@ const EventsPage: React.FC = () => {
   );
 };
 
-export default EventsPage;
+export default MyEventsPage;
