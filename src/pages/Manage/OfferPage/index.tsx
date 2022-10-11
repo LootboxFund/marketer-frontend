@@ -689,8 +689,8 @@ const OfferPage: React.FC = () => {
             ]}
           >
             <$InfoDescription>
-              {`Whitelisted partners will be able to show your video ads in their events. Plan with them first.`}
-              {` `}You can find partners and copy Promoter ID from the{' '}
+              {`Whitelisted partners will be able to show your video ads in their events.`}
+              {` `}Find partners at the{' '}
               <Link to="/marketplace/outsource">Outsourcing Marketplace</Link>
             </$InfoDescription>
             <Input.Search

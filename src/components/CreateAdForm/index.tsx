@@ -298,7 +298,8 @@ const CreateAdForm: React.FC<CreateAdFormProps> = ({
           key: 'placement',
           label: 'Placement',
           widget: 'select',
-          tooltip: 'This determines where your ad is shown',
+          tooltip:
+            'This determines where your ad is shown. See the tutorial linked above for a list of placements and how each one works.',
           required: true,
           initialValue: adInfo.placement,
           options: [Placement.AfterTicketClaim],
@@ -316,6 +317,8 @@ const CreateAdForm: React.FC<CreateAdFormProps> = ({
             AspectRatio.Square1x1,
             AspectRatio.Landscape16x9,
           ],
+          tooltip:
+            'This determines how the ad will be shown on devices. The optimal is Portrait2x3 as it can show on all devices',
         },
         {
           key: 'creative_creativeType',
@@ -325,6 +328,8 @@ const CreateAdForm: React.FC<CreateAdFormProps> = ({
           initialValue: adInfo.creative.creativeType,
           // @ts-ignore
           options: [CreativeType.Image, CreativeType.Video],
+          tooltip:
+            'Choose between image or video. Note that you can upload GIFs too, which count as image.',
         },
       ],
     };
@@ -362,6 +367,8 @@ const CreateAdForm: React.FC<CreateAdFormProps> = ({
             }
           />
         ),
+        tooltip:
+          'Upload the image or video for your ad. Please keep it under 5MB for images and 100MB for videos. We will automatically compress & transcode media to optimize for the right device delivery.',
       });
     }
     return meta;
@@ -380,6 +387,8 @@ const CreateAdForm: React.FC<CreateAdFormProps> = ({
           required: true,
           initialValue: adInfo.creative.callToAction,
           options: Object.keys(AdSampleCallToActions),
+          tooltip:
+            "The text that appears on the ad's button. Your call to action should match the ad media and your offer.",
         },
       ],
     };
@@ -389,6 +398,8 @@ const CreateAdForm: React.FC<CreateAdFormProps> = ({
       meta.fields.push({
         key: 'customCTA',
         label: 'Custom CTA',
+        tooltip:
+          'Specify a custom call to action. Note that this may result in longer review times before your ad can be shown to the public.',
       });
     }
 
@@ -400,6 +411,8 @@ const CreateAdForm: React.FC<CreateAdFormProps> = ({
         <input value="Set By Offer" disabled style={{ width: '100%', color: 'gray' }} />
       ),
       viewWidget: () => <i style={{ color: 'gray' }}>{'Set By Offer'}</i>,
+      tooltip:
+        "Where users will be taken when they click on your ad's call to action button. This is automatically set by the Offer.",
     });
     meta.fields.push({
       key: 'creative_themeColor',
@@ -423,6 +436,7 @@ const CreateAdForm: React.FC<CreateAdFormProps> = ({
           }}
         />
       ),
+      tooltip: "The color of your ad's call to action button and other accent colors.",
     });
     return meta;
   };
@@ -432,15 +446,27 @@ const CreateAdForm: React.FC<CreateAdFormProps> = ({
       disabled: pending,
       initialValues: adInfo,
       fields: [
-        { key: 'name', label: 'Name', required: true },
+        {
+          key: 'name',
+          label: 'Name',
+          required: true,
+          tooltip: 'Only visible to your internal name for easy reference.',
+        },
         {
           key: 'status',
           label: 'Status',
           required: true,
           widget: 'radio-group',
           options: [AdStatus.Active, AdStatus.Inactive, AdStatus.Planned, AdStatus.Archived],
+          tooltip: 'Only Active Ads can be shown to users',
         },
-        { key: 'description', label: 'Private Notes', widget: 'textarea' },
+        {
+          key: 'description',
+          label: 'Private Notes',
+          widget: 'textarea',
+          tooltip:
+            'Only visible to your team to describe how to best use this ad and who to speak to for more details.',
+        },
       ],
     };
   };

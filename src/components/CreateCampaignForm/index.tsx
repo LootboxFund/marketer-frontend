@@ -102,27 +102,17 @@ const CreateCampaignForm: React.FC<CreateCampaignFormProps> = ({
       columns: 2,
       disabled: pending,
       initialValues: conquestInfo,
-      fields: [{ key: 'title', label: 'Title', required: true }],
+      fields: [
+        {
+          key: 'title',
+          label: 'Title',
+          required: true,
+          tooltip: 'Only shown internally with your team.',
+        },
+      ],
     };
     if (mode !== 'create') {
       const editOnlyFields = [
-        {
-          key: 'startDate',
-          label: 'Start Date',
-          widget: 'date-picker',
-          viewWidget: DateView,
-        },
-        {
-          key: 'description',
-          label: 'Description',
-          widget: 'textarea',
-        },
-        {
-          key: 'endDate',
-          label: 'End Date',
-          widget: 'date-picker',
-          viewWidget: DateView,
-        },
         {
           key: 'status',
           label: 'Status',
@@ -133,6 +123,30 @@ const CreateCampaignForm: React.FC<CreateCampaignFormProps> = ({
             ConquestStatus.Planned,
             ConquestStatus.Archived,
           ],
+          tooltip:
+            "An internal indicator for your team to know whether the campaign is active or not. Won't be shown to users.",
+        },
+        {
+          key: 'startDate',
+          label: 'Start Date',
+          widget: 'date-picker',
+          viewWidget: DateView,
+          tooltip:
+            'When you expect the first event in this campaign to happen. You can pre-make your campaign ahead of time to start planning. Automatically set to day of campaign creation if you do not specify a start date.',
+        },
+        {
+          key: 'endDate',
+          label: 'End Date',
+          widget: 'date-picker',
+          viewWidget: DateView,
+          tooltip:
+            "When you expect the last event in this campaign to happen. Automatically set to 90 days after start date if you don't set it.",
+        },
+        {
+          key: 'description',
+          label: 'Description',
+          widget: 'textarea',
+          tooltip: "Internal notes about the campaign. Won't be shown to users.",
         },
       ];
       editOnlyFields.forEach((f: any) => meta.fields.push(f));
@@ -149,6 +163,8 @@ const CreateCampaignForm: React.FC<CreateCampaignFormProps> = ({
               acceptedFileTypes={'image/*'}
             />
           ),
+          tooltip:
+            "The campaign's thumbnail image for only your team to see. Won't be shown to users.",
         });
       }
     }

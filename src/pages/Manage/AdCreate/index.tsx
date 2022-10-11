@@ -68,9 +68,11 @@ const AdCreate: React.FC = () => {
   const renderHelpText = () => {
     return (
       <$InfoDescription>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-        laboris nisi ut aliquip ex ea commodo consequat.
+        {`Make an Ad Creative by uploading an image or video to attract new users. The media, copywriting, and call to action should match an existing Offer.`}
+        {` `}To learn more,{' '}
+        <span>
+          <a>click here for a tutorial.</a>
+        </span>
       </$InfoDescription>
     );
   };

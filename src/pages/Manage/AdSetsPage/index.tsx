@@ -56,9 +56,11 @@ const AdSetsPage: React.FC = () => {
   const renderHelpText = () => {
     return (
       <$InfoDescription>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-        laboris nisi ut aliquip ex ea commodo consequat.
+        {`This page lists all your Ad Sets - they define which ad creative is shown to which audiences. Ad creatives are managed on a seperate page.`}
+        {` `}To learn more,{' '}
+        <span>
+          <a>click here for a tutorial.</a>
+        </span>
       </$InfoDescription>
     );
   };
@@ -121,7 +123,7 @@ const AdSetsPage: React.FC = () => {
                     className={styles.card}
                     cover={<img alt="example" src={imageToDisplay} className={styles.cardImage} />}
                   >
-                    <Meta title={adSet.name} />
+                    <Meta title={adSet.name} description={adSet.placement} />
                   </Card>
                 </Link>
               );

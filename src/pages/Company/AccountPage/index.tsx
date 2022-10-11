@@ -97,9 +97,11 @@ const AccountPage: React.FC = () => {
   const renderHelpText = () => {
     return (
       <$InfoDescription>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-        laboris nisi ut aliquip ex ea commodo consequat.
+        This is your advertiser profile page. Be sure to fill out all your details so that you
+        appear in the marketplace for partners to work with. To learn more,{' '}
+        <span>
+          <a>click here for a tutorial.</a>
+        </span>
       </$InfoDescription>
     );
   };

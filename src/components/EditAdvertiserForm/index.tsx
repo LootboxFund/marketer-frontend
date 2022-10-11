@@ -86,14 +86,31 @@ const EditAdvertiserForm: React.FC<EditAdvertiserFormProps> = ({ advertiser, onS
       disabled: pending,
       initialValues: advertiserInfo,
       fields: [
-        { key: 'name', label: 'Name', required: true },
-        { key: 'publicContactEmail', label: 'Public Contact Email' },
+        {
+          key: 'name',
+          label: 'Name',
+          required: true,
+          tooltip: 'Your public name that will appear in the marketplace for partners to see.',
+        },
+        {
+          key: 'publicContactEmail',
+          label: 'Public Contact Email',
+          tooltip:
+            'Your private contact email that will only be visible to your chosen partners. It will NOT be visible on the public marketplace.',
+        },
         {
           key: 'description',
           label: 'Description',
           widget: 'textarea',
+          tooltip:
+            'A public description of your company and what you are looking for in partners. It will be visible on the public marketplace.',
         },
-        { key: 'website', label: 'Website' },
+        {
+          key: 'website',
+          label: 'Website',
+          tooltip:
+            'A public link to your website or soials. We recommend you use a LinkTree or LinkInBio page so that you can list many sites.',
+        },
       ],
     };
     if (!viewMode) {
@@ -109,10 +126,15 @@ const EditAdvertiserForm: React.FC<EditAdvertiserFormProps> = ({ advertiser, onS
             acceptedFileTypes={'image/*'}
           />
         ),
+        tooltip: 'A public thumbnail of your company logo.',
       });
     }
     if (viewMode) {
-      meta.fields.push({ key: 'id', label: 'Advertiser ID' });
+      meta.fields.push({
+        key: 'id',
+        label: 'Advertiser ID',
+        tooltip: 'Your Advertiser ID in case anyone asks you for it.',
+      });
     }
     return meta;
   };

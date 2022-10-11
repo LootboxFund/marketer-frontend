@@ -178,9 +178,12 @@ const ProgressPage: React.FC = () => {
   const renderHelpText = () => {
     return (
       <$InfoDescription>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-        laboris nisi ut aliquip ex ea commodo consequat.
+        {`Building an organic community is hard to do alone! LOOTBOX helps you scale community growth
+        by providing you the tools and framework to partner with event organizers all around the
+        world. `}
+        <span>
+          <a>Click here to learn more.</a>
+        </span>
       </$InfoDescription>
     );
   };
