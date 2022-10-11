@@ -10,13 +10,25 @@ import { $InfoDescription, $Vertical } from '@/components/generics';
 import { PageContainer } from '@ant-design/pro-components';
 import { useQuery } from '@apollo/client';
 import { Link } from '@umijs/max';
-import { Button, Card, Input, message, Popconfirm } from 'antd';
+import { Avatar, Button, Card, Input, message, Popconfirm, Popover, Space, Table } from 'antd';
 import Meta from 'antd/lib/card/Meta';
 import Spin from 'antd/lib/spin';
 import React, { useState } from 'react';
 import { BROWSE_ALL_AFFILIATES } from './api.gql';
 import styles from './index.less';
-import { formatBigNumber } from '@wormgraph/helpers';
+import { AffiliateID, formatBigNumber, OrganizerRank, rankInfoTable } from '@wormgraph/helpers';
+import { ColumnsType } from 'antd/lib/table';
+
+type DataType = {
+  avatar: string;
+  description: string;
+  id: AffiliateID;
+  name: string;
+  publicContactEmail: string;
+  rank: OrganizerRank;
+  website: string;
+  audienceSize: number;
+};
 
 const OutsourcePage: React.FC = () => {
   const { advertiserUser } = useAdvertiserUser();
@@ -57,6 +69,75 @@ const OutsourcePage: React.FC = () => {
       </$InfoDescription>
     );
   };
+
+  const columns: ColumnsType<DataType> = [
+    {
+      title: '',
+      dataIndex: 'avatar',
+      key: 'avatar',
+      render: (_, record) => <Avatar src={record.avatar} size="default" />,
+    },
+    {
+      title: 'Promoter',
+      dataIndex: 'name',
+      key: 'name',
+      render: (_, record) => (
+        <$Vertical>
+          <span>{record.name}</span>
+        </$Vertical>
+      ),
+    },
+    {
+      title: 'Audience',
+      dataIndex: 'audienceSize',
+      key: 'audienceSize',
+      render: (_, record) => (
+        <$Vertical>
+          <span>{formatBigNumber(record.audienceSize, 1)}</span>
+        </$Vertical>
+      ),
+    },
+    {
+      title: 'Biography',
+      dataIndex: 'description',
+      key: 'description',
+      width: '40%',
+      render: (_, record) => {
+        return (
+          <Popover content={record.description} title={record.name}>
+            <span>{record.description.slice(0, 200)}</span>
+          </Popover>
+        );
+      },
+    },
+    {
+      title: 'Action',
+      key: 'action',
+      render: (_, record) => {
+        console.log(record);
+        return (
+          <Space size="middle">
+            <Popconfirm
+              key={`invite-${record.id}`}
+              title={`To invite ${record.name} to your Event, copy their PromoterID "${record.id}" and add them from your Event Page`}
+              onConfirm={() => {
+                navigator.clipboard.writeText(record.id);
+                message.success('Copied to clipboard');
+              }}
+              okText="Copy Promoter ID"
+            >
+              <Button type="primary">Invite</Button>
+            </Popconfirm>
+            <Button key={`view-${record.id}`} disabled={!record.website}>
+              <a href={record.website || ''} target="_blank" rel="noreferrer">
+                Socials
+              </a>
+            </Button>
+          </Space>
+        );
+      },
+    },
+  ];
   return (
     <PageContainer>
       {loading ? (
@@ -75,43 +156,22 @@ const OutsourcePage: React.FC = () => {
           />
           <br />
           <div className={styles.content}>
-            {affiliates.filter(filterBySearchString).map((affiliate) => {
-              return (
-                <Card
-                  key={affiliate.id}
-                  className={styles.card}
-                  cover={
-                    <img alt="example" src={affiliate.avatar || ''} className={styles.cardImage} />
-                  }
-                  actions={[
-                    <Popconfirm
-                      key={`invite-${affiliate.id}`}
-                      title={`To invite ${affiliate.name} to your Event, copy their PromoterID "${affiliate.id}" and add them from your Event Page`}
-                      onConfirm={() => {
-                        navigator.clipboard.writeText(affiliate.id);
-                        message.success('Copied to clipboard');
-                      }}
-                      okText="Copy Promoter ID"
-                    >
-                      <Button type="primary" style={{ width: '90%' }}>
-                        Invite
-                      </Button>
-                    </Popconfirm>,
-
-                    <Button key={`view-${affiliate.id}`} disabled={!affiliate.website}>
-                      <a href={affiliate.website || ''} target="_blank" rel="noreferrer">
-                        View Socials
-                      </a>
-                    </Button>,
-                  ]}
-                >
-                  <Meta
-                    title={affiliate.name}
-                    description={`${formatBigNumber(affiliate.audienceSize || 0, 1)} Audience`}
-                  />
-                </Card>
-              );
-            })}
+            <Table
+              // @ts-ignore
+              columns={columns}
+              dataSource={affiliates.filter(filterBySearchString).map((affiliate) => {
+                return {
+                  avatar: affiliate.avatar || '',
+                  description: affiliate.description || '',
+                  id: affiliate.id,
+                  name: affiliate.name,
+                  publicContactEmail: affiliate.publicContactEmail || '',
+                  rank: affiliate.rank || rankInfoTable.ClayRank1,
+                  website: affiliate.website || '',
+                  audienceSize: affiliate.audienceSize || 0,
+                };
+              })}
+            />
           </div>
         </$Vertical>
       )}
