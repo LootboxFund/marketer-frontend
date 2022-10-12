@@ -40,16 +40,25 @@ export const AntUploadFile: React.FC<AntUploadFileProps> = ({
 }) => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const customUploadImage = async ({ file, onSuccess }: any) => {
-    if (file.size > 50000000) {
-      message.error('Video must be under 50MB');
-      return;
+    console.log(file);
+    if (file.type.indexOf('video') > -1) {
+      if (file.size > 50000000) {
+        message.error('Video must be under 50MB');
+        return;
+      }
+
+      const duration = await getVideoDuration(file);
+
+      if (duration > 61) {
+        message.error('Video must be under 60 seconds');
+        return;
+      }
     }
-
-    const duration = await getVideoDuration(file);
-
-    if (duration > 61) {
-      message.error('Video must be under 60 seconds');
-      return;
+    if (file.type.indexOf('image') > -1) {
+      if (file.size > 10000000) {
+        message.error('Image must be under 10MB');
+        return;
+      }
     }
     const destination = await uploadImageToFirestore({
       folderName,

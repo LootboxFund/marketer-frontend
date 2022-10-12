@@ -91,8 +91,8 @@ export const CONNECT_WALLET = gql`
 `;
 
 export const UPGRADE_TO_ADVERTISER = gql`
-  mutation UpgradeToAdvertiser($payload: UpgradeToAdvertiserPayload!) {
-    upgradeToAdvertiser(payload: $payload) {
+  mutation UpgradeToAdvertiser {
+    upgradeToAdvertiser {
       ... on UpgradeToAdvertiserResponseSuccess {
         advertiser {
           id

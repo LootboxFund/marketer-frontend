@@ -12,6 +12,7 @@ import { GET_ADVERTISER } from '@/pages/User/Login/api.gql';
 import { $Vertical, $Horizontal } from '@/components/generics';
 import { ADVERTISER_ID_COOKIE } from '../../api/constants';
 import { useCookies } from 'react-cookie';
+import RegisterAccount from '../RegisterAccount';
 
 /**
  * strict = forces login
@@ -36,10 +37,42 @@ const AuthGuard = ({ children, strict, ...props }: AuthGuardProps) => {
     },
   );
 
+  if (user && !cookies[ADVERTISER_ID_COOKIE]) {
+    console.log('hello');
+    if (window.location.pathname !== `/user/login`) {
+      console.log('world');
+      return (
+        <$Horizontal
+          justifyContent="center"
+          verticalCenter
+          style={{ width: '100vw', height: '100vh' }}
+        >
+          <RegisterAccount
+            isModalOpen={true}
+            setIsModalOpen={() => {}}
+            initialView="confirm_upgrade"
+          />
+        </$Horizontal>
+      );
+    }
+  }
   if (!user && !cookies[ADVERTISER_ID_COOKIE]) {
     if (window.location.pathname !== `/user/login`) {
-      window.location.href = '/user/login';
-      return;
+      return (
+        <$Horizontal
+          justifyContent="center"
+          verticalCenter
+          style={{ width: '100vw', height: '100vh' }}
+        >
+          <$Vertical>
+            <Spin style={{ margin: 'auto' }} />
+            <br />
+            <a href="/user/login">
+              <Button type="primary">Login</Button>
+            </a>
+          </$Vertical>
+        </$Horizontal>
+      );
     }
   }
   if (!user && cookies[ADVERTISER_ID_COOKIE]) {

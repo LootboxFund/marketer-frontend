@@ -70,15 +70,6 @@ const CreateEventForm: React.FC<CreateEventFormProps> = ({ tournament, mode }) =
     }
   }, [tournament]);
   const getMeta = () => {
-    // communityURL?: InputMaybe<Scalars['String']>;
-    // coverPhoto?: InputMaybe<Scalars['String']>;
-    // description: Scalars['String'];
-    // organizer?: InputMaybe<Scalars['ID']>;
-    // prize?: InputMaybe<Scalars['String']>;
-    // streams?: InputMaybe<Array<StreamInput>>;
-    // title: Scalars['String'];
-    // tournamentDate: Scalars['Timestamp'];
-    // tournamentLink?: InputMaybe<Scalars['String']>;
     const meta = {
       columns: 1,
       disabled: pending,
@@ -99,8 +90,8 @@ const CreateEventForm: React.FC<CreateEventFormProps> = ({ tournament, mode }) =
         },
         { key: 'communityURL', label: 'Link to Community', rules: [{ type: 'url' } as Rule] },
         { key: 'prize', label: 'Prize' },
-        { key: 'magicLink', label: 'Magic Link', rules: [{ type: 'url' } as Rule] },
-        { key: 'description', label: 'Description', widget: 'textarea', required: true },
+        // { key: 'magicLink', label: 'Magic Link', rules: [{ type: 'url' } as Rule] },
+        { key: 'description', label: 'Description', widget: 'textarea' },
         { key: 'id', label: 'Event ID' },
       ],
     };
