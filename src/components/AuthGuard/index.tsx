@@ -39,7 +39,7 @@ const AuthGuard = ({ children, strict, ...props }: AuthGuardProps) => {
 
   if (user && !cookies[ADVERTISER_ID_COOKIE]) {
     console.log('hello');
-    if (window.location.pathname !== `/user/login`) {
+    if (window.location.pathname !== `/user/login` && window.location.pathname !== `/user/logout`) {
       console.log('world');
       return (
         <$Horizontal
