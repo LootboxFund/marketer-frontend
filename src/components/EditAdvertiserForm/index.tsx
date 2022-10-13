@@ -8,6 +8,7 @@ import type { UpdateAdvertiserDetailsPayload } from '@/api/graphql/generated/typ
 import { AntUploadFile } from '../AntFormBuilder';
 import { AdvertiserStorageFolder } from '@/api/firebase/storage';
 import { $Horizontal } from '@/components/generics';
+import { useAuth } from '@/api/firebase/useAuth';
 
 export type EditAdvertiserFormProps = {
   advertiser: {
@@ -27,15 +28,18 @@ const ADVERTISER_INFO = {
   name: '',
   description: '',
   avatar: '',
+  privateLoginEmail: '',
   publicContactEmail: '',
   website: '',
 };
 
 const EditAdvertiserForm: React.FC<EditAdvertiserFormProps> = ({ advertiser, onSubmit, mode }) => {
+  const { user } = useAuth();
   const [form] = Form.useForm();
   const [viewMode, setViewMode] = useState(true);
   const [pending, setPending] = useState(false);
   const newMediaDestination = useRef('');
+  console.log(user);
   const [advertiserInfo, setAdvertiserInfo] = useState(ADVERTISER_INFO);
   useEffect(() => {
     setAdvertiserInfo({
@@ -43,10 +47,17 @@ const EditAdvertiserForm: React.FC<EditAdvertiserFormProps> = ({ advertiser, onS
       name: advertiser.name,
       description: advertiser.description || '',
       avatar: advertiser.avatar || '',
+      privateLoginEmail: advertiserInfo.privateLoginEmail || '',
       publicContactEmail: advertiser.publicContactEmail || '',
       website: advertiser.website || '',
     });
   }, [advertiser]);
+  useEffect(() => {
+    setAdvertiserInfo({
+      ...advertiserInfo,
+      privateLoginEmail: user?.email || '',
+    });
+  }, [user]);
   const handleFinish = useCallback(async (values) => {
     const payload = {} as Omit<UpdateAdvertiserDetailsPayload, 'id'>;
     if (values.name) {
@@ -91,6 +102,16 @@ const EditAdvertiserForm: React.FC<EditAdvertiserFormProps> = ({ advertiser, onS
           label: 'Name',
           required: true,
           tooltip: 'Your public name that will appear in the marketplace for partners to see.',
+        },
+        {
+          key: 'privateLoginEmail',
+          label: 'Private Login Email',
+          tooltip: 'Used for login to LOOTBOX. Not shown publically.',
+          widget: () => (
+            <span style={{ color: 'gray', marginLeft: '10px' }}>
+              {`${advertiserInfo.privateLoginEmail} (Locked)`}
+            </span>
+          ),
         },
         {
           key: 'publicContactEmail',

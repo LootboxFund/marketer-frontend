@@ -7,32 +7,23 @@ import { UserID } from '@wormgraph/helpers';
 export type RegisterAccountProps = {
   isModalOpen: boolean;
   setIsModalOpen: (bool: boolean) => void;
-  initialView: 'initial_registration' | 'confirm_upgrade';
 };
 
-const RegisterAccount: React.FC<RegisterAccountProps> = ({
-  isModalOpen,
-  setIsModalOpen,
-  initialView,
-}) => {
-  const { signUpWithEmailAndPassword, upgradeToAdvertiser, logout } = useAuth();
+const RegisterAccount: React.FC<RegisterAccountProps> = ({ isModalOpen, setIsModalOpen }) => {
+  const { signUpWithEmailAndPassword, signInWithEmailAndPassword, upgradeToAdvertiser, logout } =
+    useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-
-  const [upgradeStatus, setUpgradeStatus] = useState<
-    'confirm_upgrade' | 'successful_upgrade' | 'initial_registration' | 'can_login_now'
-  >(initialView);
 
   const handleSignUpWithEmailAndPassword = async () => {
     setLoading(true);
     try {
       logout();
       await signUpWithEmailAndPassword(email, password, password);
-      message.success(
-        'Registered account! You must now request to be upgraded to an advertiser or affiliate.',
-      );
-      setUpgradeStatus('can_login_now');
+      await signInWithEmailAndPassword(email, password);
+      await upgradeToAdvertiser();
+      window.location.href = '/';
     } catch (err: any) {
       message.error(err.message);
     } finally {
@@ -40,72 +31,6 @@ const RegisterAccount: React.FC<RegisterAccountProps> = ({
     }
   };
   const renderContent = () => {
-    if (upgradeStatus === 'can_login_now') {
-      return (
-        <Result
-          title="Successfully Registered"
-          subTitle="You can login now"
-          status="success"
-          extra={[
-            <Button
-              onClick={() => setIsModalOpen(false)}
-              type="primary"
-              loading={loading}
-              key="close"
-            >
-              Proceed to Login
-            </Button>,
-          ]}
-        />
-      );
-    } else if (upgradeStatus === 'confirm_upgrade') {
-      return (
-        <Result
-          title="Upgrade Your Account"
-          subTitle="Get access to the Marketing Features of LOOTBOX by upgrading to a Marketer Account"
-          extra={[
-            <Button
-              onClick={async () => {
-                setLoading(true);
-                try {
-                  await upgradeToAdvertiser();
-                  setUpgradeStatus('successful_upgrade');
-                  setLoading(false);
-                } catch (e) {
-                  console.log(e);
-                  message.error('You do not have permission to do this');
-                  setLoading(false);
-                }
-              }}
-              type="primary"
-              loading={loading}
-              key="console"
-            >
-              CONFIRM UPGRADE
-            </Button>,
-          ]}
-        />
-      );
-    } else if (upgradeStatus === 'successful_upgrade') {
-      return (
-        <Result
-          status="success"
-          title="Congratulations!"
-          subTitle="You have upgraded to a Marketer Account and can now start running ads with offers!"
-          extra={[
-            <Button
-              onClick={async () => {
-                window.location.reload();
-              }}
-              type="primary"
-              key="closemodal"
-            >
-              Proceed to Dashboard
-            </Button>,
-          ]}
-        />
-      );
-    }
     return (
       <$Vertical>
         <label>Email</label>
@@ -124,6 +49,7 @@ const RegisterAccount: React.FC<RegisterAccountProps> = ({
           type="password"
           onChange={(e) => setPassword(e.target.value)}
           style={{ marginBottom: '10px' }}
+          onPressEnter={() => handleSignUpWithEmailAndPassword()}
         />
 
         <Button

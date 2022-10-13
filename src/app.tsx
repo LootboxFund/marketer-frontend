@@ -8,7 +8,7 @@ import { ApolloProvider } from '@apollo/client';
 import client from '@/api/graphql/client';
 import defaultSettings from '../config/defaultSettings';
 import { errorConfig } from './requestErrorConfig';
-import { GET_ADVERTISER } from './pages/User/Login/api.gql';
+import { GET_ADVERTISER } from '@/components/LoginAccount/api.gql';
 import { AdvertiserAdminViewResponse } from './api/graphql/generated/types';
 import { AdvertiserID, UserID } from '@wormgraph/helpers';
 import AuthGuard from './components/AuthGuard';

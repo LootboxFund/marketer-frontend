@@ -25,7 +25,7 @@ import { throwInvalidPasswords } from './password';
 import type { UserID } from '@wormgraph/helpers';
 import { ADVERTISER_ID_COOKIE } from '@/api/constants';
 import { useCookies } from 'react-cookie';
-import { GET_ADVERTISER } from '@/pages/User/Login/api.gql';
+import { GET_ADVERTISER } from '@/components/LoginAccount/api.gql';
 import { message } from 'antd';
 
 interface FrontendUser {
