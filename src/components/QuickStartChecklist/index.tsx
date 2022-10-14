@@ -18,14 +18,12 @@ const data = [
     title: 'Watch the Getting Started Video',
     description: 'Get a quick overview of the platform and learn how to get started.',
     tutorial: 'https://lootbox.fund',
-    action: '/dashboard/getting-started',
     isAdvanced: false,
     key: 'watch-getting-started-video',
   },
   {
     title: 'Fill Out Your Profile',
-    description:
-      'Customize your profile to help advertisers and partners find you and learn more about you.',
+    description: 'Customize your profile to attract partners to promote or run your events.',
     tutorial: 'https://lootbox.fund',
     examples: 'https://google.com',
     action: '/dashboard/getting-started',
@@ -33,84 +31,68 @@ const data = [
     key: 'fill-out-profile',
   },
   {
-    title: 'Connect Your Wallet',
-    description:
-      'Connect your wallet to start earning revenue from the Marketplace and withdraw your earnings.',
-    tutorial: 'https://lootbox.fund',
-    action: '/dashboard/getting-started',
-    isAdvanced: true,
-    key: 'connect-wallet',
-  },
-  {
-    title: 'Host Your First Event',
-    description: 'Import your existing tournaments or create a new event.',
+    title: 'Create an Offer',
+    description: 'Offers are promotional incentives to attract new users.',
     tutorial: 'https://lootbox.fund',
     examples: 'https://google.com',
-    action: '/dashboard/getting-started',
+    action: '/manage/offers/create',
     isAdvanced: false,
-    key: 'host-first-event',
+    key: 'create-an-offer',
   },
   {
-    title: 'Add Revenue Streams',
-    description:
-      'Add affiliate offers from the Marketplace to start earning from each Lootbox ticket distributed.',
+    title: 'Define an Activation',
+    description: 'Activations are specific events you want to see happen.',
     tutorial: 'https://lootbox.fund',
     examples: 'https://google.com',
-    action: '/dashboard/getting-started',
     isAdvanced: true,
-    key: 'add-revenue-streams',
+    key: 'define-an-activation',
   },
   {
-    title: 'Recruit Promoters',
-    description:
-      'Recruit influencers & partners to help promote your events and share the revenue.',
+    title: 'Create an Ad',
+    description: 'Deliver your message with a video or image ad shown on Lootbox tickets.',
     tutorial: 'https://lootbox.fund',
     examples: 'https://google.com',
-    action: '/dashboard/getting-started',
-    isAdvanced: true,
-    key: 'recruit-promoters',
-  },
-  {
-    title: 'Create Your First Lootbox',
-    description: 'Customize a Lootbox using the branding of your favorite team.',
-    tutorial: 'https://lootbox.fund',
-    examples: 'https://google.com',
-    action: '/dashboard/getting-started',
+    action: '/manage/ads/create',
     isAdvanced: false,
-    key: 'create-first-lootbox',
+    key: 'create-an-ad',
+  },
+  {
+    title: 'Preload Your Wallet',
+    description: 'Connect your wallet and preload funds to pay for ads.',
+    tutorial: 'https://lootbox.fund',
+    action: '/company/account',
+    isAdvanced: true,
+    key: 'preload-wallet',
+  },
+  {
+    title: 'Recruit Partners',
+    description:
+      'Recruit influencers, streamers and gaming communities to help promoter or run your events.',
+    tutorial: 'https://lootbox.fund',
+    examples: 'https://google.com',
+    action: '/marketplace/outsource',
+    isAdvanced: false,
+    key: 'recruit-partners',
   },
   {
     title: 'Share Free Tickets',
     description:
-      'Share 10 tickets of your Lootbox with your followers to start building your community.',
+      'Distribute Lootbox tickets to community members so that your offer can attract new customers.',
     tutorial: 'https://lootbox.fund',
     examples: 'https://google.com',
-    action: '/dashboard/getting-started',
     isAdvanced: false,
     key: 'share-free-tickets',
   },
   {
-    title: 'Reward Your Fans',
-    description: 'Deposit rewards into the Lootbox for ticket holders to redeem their winnings.',
+    title: 'View Ticket Performance',
+    description: 'Review analytics on offer conversions & ticket distribution from partners. ',
     tutorial: 'https://lootbox.fund',
-    examples: 'https://google.com',
-    action: '/dashboard/getting-started',
     isAdvanced: true,
-    key: 'reward-fans',
-  },
-  {
-    title: 'View Your Earnings',
-    description:
-      'View the affiliate revenue earned from ticket distribution and withdraw to your wallet.',
-    tutorial: 'https://lootbox.fund',
-    action: '/dashboard/getting-started',
-    isAdvanced: true,
-    key: 'view-earnings',
+    key: 'view-ticket-performance',
   },
   {
     title: 'Meet the LOOTBOX Team',
-    description: 'Schedule a call with the LOOTBOX team to get bonus perks.',
-    action: '/dashboard/getting-started',
+    description: 'Schedule a call with the LOOTBOX team to meet your account manager.',
     isAdvanced: true,
     key: 'meet-lootbox-team',
   },
@@ -187,10 +169,8 @@ const QuickStartChecklist: React.FC<QuickStartChecklistProps> = ({}) => {
             }}
           >
             {todoStatuses.isAdvancedMode
-              ? `Supercharge your gaming competitions with LOOTBOX fan tickets, which rewards viewers
-            with a share of the prize money if their favorite gamer wins. Each free ticket shared can generate affiliate revenue for the event organizer & promoters. We recommend that you watch the below tutorial videos to get started.`
-              : `Supercharge your gaming competitions with LOOTBOX fan tickets, which rewards viewers
-              with a share of the prize money if their favorite gamer wins. Watch the below tutorial videos to get started.`}
+              ? `Grow your community with friendly online competitions in collaboration with gaming communities, influencers, and content creators. LOOTBOX helps you scale community building globally. Watch the below tutorial videos to get started.`
+              : `Grow your community with friendly online competitions in collaboration with gaming communities, influencers, and content creators. Watch the below tutorial videos to get started.`}
           </p>
         </$Vertical>
         {/* <$Vertical style={{ flex: 1 }}>
@@ -235,7 +215,7 @@ const QuickStartChecklist: React.FC<QuickStartChecklistProps> = ({}) => {
                   />
                 )
               }
-              title={<a href={item.action}>{item.title}</a>}
+              title={item.action ? <a href={item.action}>{item.title}</a> : <a>{item.title}</a>}
               description={item.description}
             />
             <$Horizontal style={{ width: '250px' }}>
