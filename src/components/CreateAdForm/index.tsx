@@ -373,6 +373,7 @@ const CreateAdForm: React.FC<CreateAdFormProps> = ({
             advertiserID={advertiserID}
             folderName={AdvertiserStorageFolder.AD_VIDEO}
             newMediaDestination={newMediaDestination}
+            notificationDuration={null}
             forceRefresh={() => setPreviewMedias([newMediaDestination.current])}
             acceptedFileTypes={
               form.getFieldValue('creative_creativeType') === CreativeType.Video

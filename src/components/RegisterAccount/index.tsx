@@ -10,24 +10,20 @@ export type RegisterAccountProps = {
 };
 
 const RegisterAccount: React.FC<RegisterAccountProps> = ({ isModalOpen, setIsModalOpen }) => {
-  const { signUpWithEmailAndPassword, upgradeToAdvertiser } = useAuth();
+  const { signUpWithEmailAndPassword, signInWithEmailAndPassword, upgradeToAdvertiser, logout } =
+    useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [newUserID, setNewUserID] = useState<UserID>();
-  const [upgradeStatus, setUpgradeStatus] = useState<
-    'confirm_upgrade' | 'successful_upgrade' | 'initial_registration'
-  >('initial_registration');
 
   const handleSignUpWithEmailAndPassword = async () => {
     setLoading(true);
     try {
-      const userID = await signUpWithEmailAndPassword(email, password, password);
-      message.success(
-        'Registered account! You must now request to be upgraded to an advertiser or affiliate.',
-      );
-      setUpgradeStatus('confirm_upgrade');
-      setNewUserID(userID as UserID);
+      logout();
+      await signUpWithEmailAndPassword(email, password, password);
+      await signInWithEmailAndPassword(email, password);
+      await upgradeToAdvertiser();
+      window.location.href = '/';
     } catch (err: any) {
       message.error(err.message);
     } finally {
@@ -35,56 +31,6 @@ const RegisterAccount: React.FC<RegisterAccountProps> = ({ isModalOpen, setIsMod
     }
   };
   const renderContent = () => {
-    if (upgradeStatus === 'confirm_upgrade') {
-      return (
-        <Result
-          title="Upgrade Your Account"
-          subTitle="Get access to the Marketing Features of LOOTBOX by upgrading to a Marketer Account"
-          extra={[
-            <Button
-              onClick={async () => {
-                if (newUserID) {
-                  setLoading(true);
-                  try {
-                    await upgradeToAdvertiser(newUserID);
-                    setUpgradeStatus('successful_upgrade');
-                    setLoading(false);
-                  } catch (e) {
-                    console.log(e);
-                    message.error('You do not have permission to do this');
-                    setLoading(false);
-                  }
-                }
-              }}
-              type="primary"
-              loading={loading}
-              key="console"
-            >
-              CONFIRM UPGRADE
-            </Button>,
-          ]}
-        />
-      );
-    } else if (upgradeStatus === 'successful_upgrade') {
-      return (
-        <Result
-          status="success"
-          title="Congratulations!"
-          subTitle="You have upgraded to a Marketer Account and can now start running ads with offers. Login to get started!"
-          extra={[
-            <Button
-              onClick={async () => {
-                setIsModalOpen(false);
-              }}
-              type="primary"
-              key="closemodal"
-            >
-              Login
-            </Button>,
-          ]}
-        />
-      );
-    }
     return (
       <$Vertical>
         <label>Email</label>
@@ -103,6 +49,7 @@ const RegisterAccount: React.FC<RegisterAccountProps> = ({ isModalOpen, setIsMod
           type="password"
           onChange={(e) => setPassword(e.target.value)}
           style={{ marginBottom: '10px' }}
+          onPressEnter={() => handleSignUpWithEmailAndPassword()}
         />
 
         <Button

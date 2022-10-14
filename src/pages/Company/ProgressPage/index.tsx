@@ -7,7 +7,7 @@ import type {
 } from '@/api/graphql/generated/types';
 import { useAdvertiserUser } from '@/components/AuthGuard/advertiserUserInfo';
 import { $InfoDescription } from '@/components/generics';
-import { GET_ADVERTISER } from '@/pages/User/Login/api.gql';
+import { GET_ADVERTISER } from '@/components/LoginAccount/api.gql';
 import { SmileOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-components';
 import { useQuery } from '@apollo/client';

@@ -1,7 +1,6 @@
 import type {
   CreateUserResponse,
   MutationCreateUserWithPasswordArgs,
-  MutationUpgradeToAdvertiserArgs,
   ResponseError,
   UpgradeToAdvertiserResponse,
 } from '../../graphql/generated/types';
@@ -26,7 +25,8 @@ import { throwInvalidPasswords } from './password';
 import type { UserID } from '@wormgraph/helpers';
 import { ADVERTISER_ID_COOKIE } from '@/api/constants';
 import { useCookies } from 'react-cookie';
-import { GET_ADVERTISER } from '@/pages/User/Login/api.gql';
+import { GET_ADVERTISER } from '@/components/LoginAccount/api.gql';
+import { message } from 'antd';
 
 interface FrontendUser {
   id: UserID;
@@ -100,10 +100,8 @@ export const useAuth = () => {
     MutationCreateUserWithPasswordArgs
   >(SIGN_UP_WITH_PASSWORD);
 
-  const [upgradeToAdvertiserMutation] = useMutation<
-    { upgradeToAdvertiser: UpgradeToAdvertiserResponse },
-    MutationUpgradeToAdvertiserArgs
-  >(UPGRADE_TO_ADVERTISER);
+  const [upgradeToAdvertiserMutation] =
+    useMutation<{ upgradeToAdvertiser: UpgradeToAdvertiserResponse }>(UPGRADE_TO_ADVERTISER);
 
   const [createUserMutation] = useMutation<{ createUserRecord: CreateUserResponse }>(CREATE_USER);
 
@@ -259,22 +257,16 @@ export const useAuth = () => {
     return '';
   };
 
-  const upgradeToAdvertiser = async (userID: UserID) => {
-    if (!userID) {
-      throw new Error('User ID is required');
-    }
-    const { data } = await upgradeToAdvertiserMutation({
-      variables: {
-        payload: {
-          userID,
-        },
-      },
-    });
+  const upgradeToAdvertiser = async () => {
+    const { data } = await upgradeToAdvertiserMutation();
 
     if (!data) {
       throw new Error('An error occurred');
     } else if (data?.upgradeToAdvertiser?.__typename === 'ResponseError') {
       throw new Error(data.upgradeToAdvertiser.error.message);
+    } else if (data?.upgradeToAdvertiser?.__typename === 'UpgradeToAdvertiserResponseSuccess') {
+      message.success('Successfully registered as an advertiser!');
+      setCookie(ADVERTISER_ID_COOKIE, data.upgradeToAdvertiser.advertiser.id, { path: '/' });
     }
     return data.upgradeToAdvertiser;
   };

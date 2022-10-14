@@ -1,3 +1,4 @@
+import QuickStartChecklist from '@/components/QuickStartChecklist';
 import { PageContainer } from '@ant-design/pro-components';
 import { Link } from '@umijs/max';
 import { Card } from 'antd';
@@ -80,96 +81,20 @@ const InfoCard: React.FC<{
 
 const GettingStarted: React.FC = () => {
   return (
-    <PageContainer>
+    <div>
       <Card
         style={{
-          borderRadius: 8,
+          borderRadius: 10,
+          maxWidth: '1000px',
         }}
         bodyStyle={{
           backgroundImage:
             'radial-gradient(circle at 97% 10%, #EBF2FF 0%, #F5F8FF 28%, #EBF1FF 124%)',
         }}
       >
-        <div
-          style={{
-            backgroundPosition: '100% -30%',
-            backgroundRepeat: 'no-repeat',
-            backgroundSize: '274px auto',
-            backgroundImage:
-              "url('https://gw.alipayobjects.com/mdn/rms_a9745b/afts/img/A*BuFmQqsB2iAAAAAAAAAAAAAAARQnAQ')",
-          }}
-        >
-          <div
-            style={{
-              fontSize: '20px',
-              color: '#1A1A1A',
-            }}
-          >
-            Grow Your Community
-          </div>
-          <p
-            style={{
-              fontSize: '14px',
-              color: 'rgba(0,0,0,0.65)',
-              lineHeight: '22px',
-              marginTop: 16,
-              marginBottom: 32,
-              width: '65%',
-            }}
-          >
-            {`Grow your community with friendly online competitions in collaboration with gaming communities, influencers, and content creators. Watch the below tutorial video before you start.`}
-          </p>
-          <div
-            style={{
-              display: 'flex',
-              gap: 16,
-            }}
-          >
-            <InfoCard
-              index={1}
-              title="Plan Your Campaign"
-              desc={`Plan based on company goals. For example "Indonesian Expansion" or "Spring 2023 Sale".`}
-              action={<Link to="/dashboard/campaigns/create">Create Campaign {'>'}</Link>}
-            />
-            <InfoCard
-              index={2}
-              title="Partner with Affiliates"
-              desc="Find partners to help you run community events around your campagins."
-              action={<Link to="/marketplace/welcome">Visit Marketplace {'>'}</Link>}
-            />
-            <InfoCard
-              index={3}
-              title="Grow Your Community"
-              desc="Measure your growth from events and increase ROI with funnel optimization."
-              action={<Link to="/company/progress">Learn More {'>'}</Link>}
-            />
-          </div>
-        </div>
+        <QuickStartChecklist />
       </Card>
-      <Card
-        style={{
-          borderRadius: 8,
-        }}
-        bodyStyle={{
-          backgroundImage:
-            'radial-gradient(circle at 97% 10%, #EBF2FF 0%, #F5F8FF 28%, #EBF1FF 124%)',
-          height: 'auto',
-          minHeight: '500px',
-        }}
-      >
-        <div style={{ maxWidth: '1980px' }}>
-          <iframe
-            className={styles.video}
-            width="100%"
-            src="https://www.youtube.com/embed/e0hlP84HeMU"
-            title="YouTube video player"
-            frameBorder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-          />
-        </div>
-      </Card>
-    </PageContainer>
+    </div>
   );
 };
 

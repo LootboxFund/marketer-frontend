@@ -14,7 +14,7 @@ import {
   UpdateAdvertiserDetailsPayload,
   UpdateAdvertiserDetailsResponseSuccess,
 } from '@/api/graphql/generated/types';
-import { GET_ADVERTISER } from '@/pages/User/Login/api.gql';
+import { GET_ADVERTISER } from '@/components/LoginAccount/api.gql';
 import { $Horizontal, $InfoDescription, $Vertical } from '@/components/generics';
 import EditAdvertiserForm from '../../../components/EditAdvertiserForm/index';
 import { AdvertiserAdminViewResponseSuccess } from '../../../api/graphql/generated/types';

@@ -1,6 +1,6 @@
 import type { Moment } from 'moment';
-import { Button, Col, InputNumber, message, Row, Select, Spin, Upload } from 'antd';
-import { UploadOutlined } from '@ant-design/icons';
+import { Button, Col, InputNumber, message, notification, Row, Select, Spin, Upload } from 'antd';
+import { CheckCircleFilled, StopOutlined, UploadOutlined } from '@ant-design/icons';
 import type { UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { useEffect, useState } from 'react';
 import { ChromePicker } from 'react-color';
@@ -29,6 +29,7 @@ interface AntUploadFileProps {
   folderName: AdvertiserStorageFolder;
   acceptedFileTypes: 'image/*,video/mp4' | 'image/*' | 'video/mp4';
   forceRefresh?: () => void;
+  notificationDuration?: number | null;
 }
 export const AntUploadFile: React.FC<AntUploadFileProps> = ({
   advertiserID,
@@ -37,19 +38,65 @@ export const AntUploadFile: React.FC<AntUploadFileProps> = ({
   folderName,
   acceptedFileTypes,
   forceRefresh,
+  notificationDuration,
 }) => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const customUploadImage = async ({ file, onSuccess }: any) => {
-    if (file.size > 50000000) {
-      message.error('Video must be under 50MB');
-      return;
+    console.log(file);
+    if (file.type.indexOf('video') > -1) {
+      if (file.size > 50000000) {
+        if (notificationDuration || notificationDuration === null) {
+          notification.open({
+            message: 'Video Upload Error',
+            description: 'Video must be under 50MB',
+            // @ts-ignore
+            btn: <Button onClick={() => notification.destroy('file-upload-error')}>Close</Button>,
+            duration: notificationDuration,
+            icon: <StopOutlined style={{ color: 'red' }} />,
+            key: 'file-upload-error',
+          });
+        } else {
+          message.error('Video must be under 50MB');
+        }
+        return;
+      }
+
+      const duration = await getVideoDuration(file);
+
+      if (duration > 61) {
+        if (notificationDuration || notificationDuration === null) {
+          notification.open({
+            message: 'Video upload error',
+            description: 'Video must be under 60 seconds',
+            // @ts-ignore
+            btn: <Button onClick={() => notification.destroy('file-upload-error')}>Close</Button>,
+            duration: notificationDuration,
+            icon: <StopOutlined style={{ color: 'red' }} />,
+            key: 'file-upload-error',
+          });
+        } else {
+          message.error('Video must be under 60 seconds');
+        }
+        return;
+      }
     }
-
-    const duration = await getVideoDuration(file);
-
-    if (duration > 61) {
-      message.error('Video must be under 60 seconds');
-      return;
+    if (file.type.indexOf('image') > -1) {
+      if (file.size > 10000000) {
+        if (notificationDuration || notificationDuration === null) {
+          notification.open({
+            message: 'Image Upload Error',
+            description: 'Image must be under 10MB',
+            // @ts-ignore
+            btn: <Button onClick={() => notification.destroy('file-upload-error')}>Close</Button>,
+            duration: notificationDuration,
+            icon: <StopOutlined style={{ color: 'red' }} />,
+            key: 'file-upload-error',
+          });
+        } else {
+          message.error('Image must be under 10MB');
+        }
+        return;
+      }
     }
     const destination = await uploadImageToFirestore({
       folderName,
@@ -60,13 +107,26 @@ export const AntUploadFile: React.FC<AntUploadFileProps> = ({
     newMediaDestination.current = destination;
     console.log(`>>> Uploaded to ${newMediaDestination.current}`);
     onSuccess('ok');
+    if (notificationDuration || notificationDuration === null) {
+      notification.open({
+        message: 'Successful Upload',
+        description: 'Your file has been uploaded',
+        // @ts-ignore
+        btn: <Button onClick={() => notification.destroy('file-upload-success')}>Close</Button>,
+        duration: notificationDuration,
+        icon: <CheckCircleFilled style={{ color: 'green' }} />,
+        key: 'file-upload-success',
+      });
+    }
     if (forceRefresh) {
       forceRefresh();
     }
   };
   const handleChange: UploadProps['onChange'] = async (info: any) => {
     if (info.file.status === 'done') {
-      message.success(`${info.file.name} file uploaded successfully`);
+      if (!notificationDuration && notificationDuration !== null) {
+        message.success(`${info.file.name} file uploaded successfully`);
+      }
     } else if (info.file.status === 'error') {
       message.error(`${info.file.name} file upload failed.`);
     }

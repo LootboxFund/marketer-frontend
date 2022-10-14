@@ -3,12 +3,6 @@ import { DefaultFooter } from '@ant-design/pro-components';
 import { useIntl } from '@umijs/max';
 
 const Footer: React.FC = () => {
-  const intl = useIntl();
-  const defaultMessage = intl.formatMessage({
-    id: 'app.copyright.produced',
-    defaultMessage: '蚂蚁集团体验技术部出品',
-  });
-
   const currentYear = new Date().getFullYear();
 
   return (
@@ -16,11 +10,11 @@ const Footer: React.FC = () => {
       style={{
         background: 'none',
       }}
-      copyright={`${currentYear} ${defaultMessage}`}
+      copyright={`${currentYear} Produced by Lootbox Fund Corporation`}
       links={[
         {
-          key: 'sayhi',
-          title: 'Tweet Us',
+          key: 'LOOTBOX',
+          title: 'LOOTBOX',
           href: 'https://twitter.com/LootboxFund',
           blankTarget: true,
         },
@@ -31,9 +25,9 @@ const Footer: React.FC = () => {
           blankTarget: true,
         },
         {
-          key: 'LOOTBOX',
-          title: 'LOOTBOX',
-          href: 'https://twitter.com/LootboxFund',
+          key: 'sayhi',
+          title: 'Beta Version 0.2',
+          href: 'https://lootbox.fund',
           blankTarget: true,
         },
       ]}

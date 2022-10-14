@@ -16,6 +16,7 @@ import BreadCrumbDynamic from '@/components/BreadCrumbDynamic';
 import { TournamentID } from '@wormgraph/helpers';
 import { $ColumnGap, $Horizontal, $InfoDescription } from '@/components/generics';
 import CreateEventForm from '@/components/CreateEventForm';
+import { manifest } from '@/manifest';
 
 const EventPage: React.FC = () => {
   const { eventID } = useParams();
@@ -71,7 +72,7 @@ const EventPage: React.FC = () => {
           <$Horizontal justifyContent="space-between">
             <h1>{tournament.title}</h1>
             <a
-              href={`https://www.lootbox.fund/watch?tournament=${tournament.id}`}
+              href={`${manifest.microfrontends.webflow.battlePage}?tournament=${tournament.id}`}
               target="_blank"
               rel="noreferrer"
             >

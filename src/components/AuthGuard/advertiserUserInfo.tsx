@@ -3,7 +3,7 @@ import {
   AdvertiserAdminViewResponse,
   AdvertiserAdminViewResponseSuccess,
 } from '@/api/graphql/generated/types';
-import { GET_ADVERTISER } from '@/pages/User/Login/api.gql';
+import { GET_ADVERTISER } from '@/components/LoginAccount/api.gql';
 import { useQuery } from '@apollo/client';
 import { useState } from 'react';
 import { useCookies } from 'react-cookie';
