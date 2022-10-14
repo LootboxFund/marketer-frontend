@@ -13,8 +13,8 @@ const Footer: React.FC = () => {
       copyright={`${currentYear} Produced by Lootbox Fund Corporation`}
       links={[
         {
-          key: 'sayhi',
-          title: 'Tweet Us',
+          key: 'LOOTBOX',
+          title: 'LOOTBOX',
           href: 'https://twitter.com/LootboxFund',
           blankTarget: true,
         },
@@ -25,9 +25,9 @@ const Footer: React.FC = () => {
           blankTarget: true,
         },
         {
-          key: 'LOOTBOX',
-          title: 'LOOTBOX',
-          href: 'https://twitter.com/LootboxFund',
+          key: 'sayhi',
+          title: 'Beta Version 0.2',
+          href: 'https://lootbox.fund',
           blankTarget: true,
         },
       ]}

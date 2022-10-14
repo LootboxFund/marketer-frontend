@@ -142,41 +142,6 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
             'The public title that partners or the marketplace sees when your offer is published.',
         },
         {
-          key: 'startDate',
-          label: 'Start Date',
-          widget: 'date-picker',
-          viewWidget: DateView,
-          tooltip:
-            "The date your offer starts being valid. This is an internal field that only your team can see. You must manually update the status of your offer to 'Active' to make it visible to partners.",
-        },
-        {
-          key: 'description',
-          label: 'Description',
-          widget: 'textarea',
-          tooltip:
-            'The public description of your offer that partners read to understand what your offer goals are.',
-        },
-        {
-          key: 'endDate',
-          label: 'End Date',
-          widget: 'date-picker',
-          viewWidget: DateView,
-          tooltip:
-            "The date your offer stops being valid. This is an internal field that only your team can see. You must manually update the status of your offer to 'Inactive' to make it not visible to partners.",
-        },
-        {
-          key: 'maxBudget',
-          label: 'Max Budget',
-          widget: PriceInput,
-          viewWidget: PriceView,
-          initialValue: {
-            price: mode === 'create' ? 1000 : offer?.maxBudget || 1000,
-            currency: 'USDC Polygon',
-          },
-          tooltip:
-            "An internal field that only your team can see. It's the maximum budget you're willing to spend on this offer.",
-        },
-        {
           key: 'affiliateBaseLink',
           label: 'Affiliate Link',
           required: mode === 'create' ? true : false,
@@ -193,10 +158,15 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
           key: 'status',
           label: 'Status',
           widget: 'radio-group',
+          // @ts-ignore
           options: [
+            // @ts-ignore
             OfferStatus.Active,
+            // @ts-ignore
             OfferStatus.Inactive,
+            // @ts-ignore
             OfferStatus.Planned,
+            // @ts-ignore
             OfferStatus.Archived,
           ],
           tooltip:
@@ -218,22 +188,69 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
         },
       ],
     };
-    if (!viewMode) {
+    if (mode !== 'create') {
       // @ts-ignore
       meta.fields.push({
-        key: 'image',
-        label: 'Image',
-        widget: () => (
-          <AntUploadFile
-            advertiserID={advertiserID}
-            folderName={AdvertiserStorageFolder.OFFER_IMAGE}
-            newMediaDestination={newMediaDestination}
-            acceptedFileTypes={'image/*'}
-          />
-        ),
+        key: 'startDate',
+        label: 'Start Date',
+        widget: 'date-picker',
+        // @ts-ignore
+        viewWidget: DateView,
         tooltip:
-          "The offer's image that partners see when your offer is published to the marketplace.",
+          "The date your offer starts being valid. This is an internal field that only your team can see. You must manually update the status of your offer to 'Active' to make it visible to partners.",
       });
+      // @ts-ignore
+      meta.fields.push({
+        key: 'maxBudget',
+        label: 'Max Budget',
+        // @ts-ignore
+        widget: PriceInput,
+        viewWidget: PriceView,
+        initialValue: {
+          // @ts-ignore
+          price: mode === 'create' ? 1000 : offer?.maxBudget || 1000,
+          currency: 'USDC Polygon',
+        },
+        tooltip:
+          "An internal field that only your team can see. It's the maximum budget you're willing to spend on this offer.",
+      });
+      // @ts-ignore
+      meta.fields.push({
+        key: 'endDate',
+        label: 'End Date',
+        // @ts-ignore
+        widget: 'date-picker',
+        // @ts-ignore
+        viewWidget: DateView,
+        tooltip:
+          "The date your offer stops being valid. This is an internal field that only your team can see. You must manually update the status of your offer to 'Inactive' to make it not visible to partners.",
+      });
+      // @ts-ignore
+      meta.fields.push({
+        key: 'description',
+        label: 'Description',
+        widget: 'textarea',
+        tooltip:
+          'The public description of your offer that partners read to understand what your offer goals are.',
+      });
+      if (!viewMode) {
+        // @ts-ignore
+        meta.fields.push({
+          key: 'image',
+          label: 'Image',
+          // @ts-ignore
+          widget: () => (
+            <AntUploadFile
+              advertiserID={advertiserID}
+              folderName={AdvertiserStorageFolder.OFFER_IMAGE}
+              newMediaDestination={newMediaDestination}
+              acceptedFileTypes={'image/*'}
+            />
+          ),
+          tooltip:
+            "The offer's image that partners see when your offer is published to the marketplace.",
+        });
+      }
     }
     return meta;
   };
