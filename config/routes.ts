@@ -132,6 +132,7 @@ export default [
       {
         name: 'Ad Sets',
         path: '/manage/adsets',
+        hideInMenu: true,
         component: './Manage/AdSetsPage',
       },
       {
@@ -147,19 +148,24 @@ export default [
         component: './Manage/AdSetCreate',
       },
       {
-        name: 'Creatives',
+        name: 'Ads',
+        path: '/manage/ads/shortcut',
+        redirect: '/manage/ads',
+      },
+      {
+        name: 'Ad Creatives',
         path: '/manage/ads',
         hideInMenu: true,
         component: './Manage/AdsPage',
       },
       {
-        name: 'Creative',
+        name: 'Ad Creative',
         path: '/manage/ads/id/:adID',
         hideInMenu: true,
         component: './Manage/AdPage',
       },
       {
-        name: 'New Creative',
+        name: 'New Ad Creative',
         path: '/manage/ads/create',
         hideInMenu: true,
         component: './Manage/AdCreate',

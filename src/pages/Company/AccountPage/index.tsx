@@ -1,26 +1,29 @@
 import { PageContainer } from '@ant-design/pro-components';
 import { Link } from '@umijs/max';
-import { Button, Spin, Image } from 'antd';
+import { Button, Spin, Image, Popconfirm } from 'antd';
 import { history, useModel } from '@umijs/max';
 import React, { useState } from 'react';
 import styles from './index.less';
 import { useAuth } from '@/api/firebase/useAuth';
 import { stringify } from 'querystring';
-import { useMutation, useQuery } from '@apollo/client';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import {
   AdvertiserAdminViewResponse,
+  AffiliatePublicViewResponse,
   MutationUpdateAdvertiserDetailsArgs,
+  QueryAffiliatePublicViewArgs,
   ResponseError,
   UpdateAdvertiserDetailsPayload,
   UpdateAdvertiserDetailsResponseSuccess,
 } from '@/api/graphql/generated/types';
 import { GET_ADVERTISER } from '@/components/LoginAccount/api.gql';
-import { $Horizontal, $InfoDescription, $Vertical } from '@/components/generics';
+import { $Horizontal, $InfoDescription, $Vertical, $ColumnGap } from '@/components/generics';
 import EditAdvertiserForm from '../../../components/EditAdvertiserForm/index';
 import { AdvertiserAdminViewResponseSuccess } from '../../../api/graphql/generated/types';
 import { AdvertiserID } from '@wormgraph/helpers';
 import { UPDATE_ADVERTISER } from './api.gql';
 import { useAdvertiserUser } from '@/components/AuthGuard/advertiserUserInfo';
+import SwitchToHostButton from '@/components/SwitchToHostButton';
 
 const AccountPage: React.FC = () => {
   const { advertiserUser } = useAdvertiserUser();
@@ -116,24 +119,31 @@ const AccountPage: React.FC = () => {
         <div className={styles.content}>
           {renderHelpText()}
           <$Horizontal style={{ maxWidth }}>
-            <EditAdvertiserForm
-              advertiser={{
-                id: advertiser.id as AdvertiserID,
-                name: advertiser.name,
-                description: advertiser.description || '',
-                avatar: advertiser.avatar,
-                publicContactEmail: advertiser.publicContactEmail || '',
-                website: advertiser.website || '',
-              }}
-              onSubmit={updateAdvertiser}
-              mode="view-edit"
-            />
+            {advertiser && (
+              <EditAdvertiserForm
+                advertiser={{
+                  id: advertiser.id as AdvertiserID,
+                  name: advertiser.name,
+                  description: advertiser.description || '',
+                  avatar: advertiser.avatar,
+                  publicContactEmail: advertiser.publicContactEmail || '',
+                  website: advertiser.website || '',
+                }}
+                onSubmit={updateAdvertiser}
+                mode="view-edit"
+              />
+            )}
+
             <Image width={200} src={advertiser.avatar || ''} />
           </$Horizontal>
           <br />
-          <Button onClick={() => loginOut()} type="ghost">
-            Logout
-          </Button>
+          <$Horizontal>
+            <SwitchToHostButton />
+            <$ColumnGap />
+            <Button onClick={() => loginOut()} type="ghost">
+              Logout
+            </Button>
+          </$Horizontal>
         </div>
       )}
     </PageContainer>

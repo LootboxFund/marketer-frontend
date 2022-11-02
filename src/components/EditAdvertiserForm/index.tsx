@@ -39,10 +39,11 @@ const EditAdvertiserForm: React.FC<EditAdvertiserFormProps> = ({ advertiser, onS
   const [viewMode, setViewMode] = useState(true);
   const [pending, setPending] = useState(false);
   const newMediaDestination = useRef('');
-  console.log(user);
   const [advertiserInfo, setAdvertiserInfo] = useState(ADVERTISER_INFO);
+
   useEffect(() => {
     setAdvertiserInfo({
+      ...advertiserInfo,
       id: advertiser.id,
       name: advertiser.name,
       description: advertiser.description || '',
@@ -53,10 +54,10 @@ const EditAdvertiserForm: React.FC<EditAdvertiserFormProps> = ({ advertiser, onS
     });
   }, [advertiser]);
   useEffect(() => {
-    setAdvertiserInfo({
-      ...advertiserInfo,
+    setAdvertiserInfo((info) => ({
+      ...info,
       privateLoginEmail: user?.email || '',
-    });
+    }));
   }, [user]);
   const handleFinish = useCallback(async (values) => {
     const payload = {} as Omit<UpdateAdvertiserDetailsPayload, 'id'>;

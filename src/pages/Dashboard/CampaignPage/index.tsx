@@ -175,7 +175,6 @@ const CampaignPage: React.FC = () => {
                 return (
                   <Card
                     key={tp.id}
-                    hoverable
                     className={styles.card}
                     cover={
                       <img
