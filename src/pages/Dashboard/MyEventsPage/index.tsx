@@ -15,6 +15,7 @@ import { $Horizontal, $InfoDescription, $Vertical } from '@/components/generics'
 import { Button, Card, Empty, Input, message, Popconfirm } from 'antd';
 import { Link } from '@umijs/max';
 import Meta from 'antd/lib/card/Meta';
+import SwitchToHostButton from '@/components/SwitchToHostButton';
 
 const MyEventsPage: React.FC = () => {
   const [searchString, setSearchString] = useState('');
@@ -76,16 +77,19 @@ const MyEventsPage: React.FC = () => {
               onSearch={setSearchString}
               style={{ width: 200 }}
             />
-            <Popconfirm
-              title="Events must first be added to a campaign. Visit the Marketplace and copy an Event ID to add it to a campaign."
-              onConfirm={() => {
-                history.push('/marketplace/events');
-              }}
-              okText="Visit Marketplace"
-              cancelText="Cancel"
-            >
-              <Button type="primary">Add Event</Button>
-            </Popconfirm>
+            <$Horizontal spacing={2}>
+              <SwitchToHostButton buttonText="Host Own Event" />
+              <Popconfirm
+                title="To add other peoples events into your campaigns, visit the Marketplace and copy an Event ID to add it to a campaign."
+                onConfirm={() => {
+                  history.push('/marketplace/events');
+                }}
+                okText="Visit Marketplace"
+                cancelText="Cancel"
+              >
+                <Button type="primary">Add Marketplace Event</Button>
+              </Popconfirm>
+            </$Horizontal>
           </$Horizontal>
           <br />
           {!tournaments || tournaments.length === 0 ? (

@@ -11,9 +11,10 @@ import { manifest } from '../../manifest';
 
 export type SwitchToHostButtonProps = {
   buttonType?: 'primary' | 'default' | 'link' | 'text' | 'ghost';
+  buttonText?: string;
 };
 
-const SwitchToHostButton: React.FC<SwitchToHostButtonProps> = ({ buttonType }) => {
+const SwitchToHostButton: React.FC<SwitchToHostButtonProps> = ({ buttonType, buttonText }) => {
   const [loading, setLoading] = useState(false);
   const { upgradeToAffiliate } = useAuth();
   // GET AFFILIATE
@@ -38,13 +39,13 @@ const SwitchToHostButton: React.FC<SwitchToHostButtonProps> = ({ buttonType }) =
   };
   return (
     <Popconfirm
-      title="To host a tournament, you will need to switch to the Event Organizer App and login there with the same account. Would you like to open it in a new tab?"
+      title="To host your own events, you will need to switch to the Event Organizer App and login there with the same account. Would you like to open it in a new tab?"
       onConfirm={onConfirm}
       okText="Confirm"
       cancelText="Cancel"
     >
       <Button loading={loading} type={buttonType || 'ghost'}>
-        Switch to Host
+        {buttonText || 'Switch to Host'}
       </Button>
     </Popconfirm>
   );
