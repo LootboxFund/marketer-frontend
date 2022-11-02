@@ -215,7 +215,9 @@ const QuickStartChecklist: React.FC<QuickStartChecklistProps> = ({}) => {
                   />
                 )
               }
-              title={item.action ? <a href={item.action}>{item.title}</a> : <a>{item.title}</a>}
+              title={
+                item.action ? <a href={item.action}>{item.title}</a> : <span>{item.title}</span>
+              }
               description={item.description}
             />
             <$Horizontal style={{ width: '250px' }}>
