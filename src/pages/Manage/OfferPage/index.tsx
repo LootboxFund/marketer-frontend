@@ -22,6 +22,9 @@ import {
   OrganizerOfferWhitelistStatus,
   EditWhitelistAffiliateToOfferResponse,
   MutationEditWhitelistAffiliateToOfferArgs,
+  OfferPreview,
+  ListCreatedOffersResponse,
+  QueryListCreatedOffersArgs,
 } from '@/api/graphql/generated/types';
 import { history, useModel } from '@umijs/max';
 import { ActivationStatus } from '@/api/graphql/generated/types';
@@ -67,7 +70,7 @@ import CreateActivationFormModal from '@/components/CreateActivationFormModal';
 import { CaretDownOutlined, CaretUpOutlined } from '@ant-design/icons';
 import { LIST_CREATED_OFFERS } from '../OffersPage/api.gql';
 import { useAdvertiserUser } from '@/components/AuthGuard/advertiserUserInfo';
-import { AdSetStatus } from '../../../api/graphql/generated/types';
+import { AdSetStatus, OfferStrategyType } from '../../../api/graphql/generated/types';
 import { Link } from '@umijs/max';
 import Meta from 'antd/lib/card/Meta';
 import { LIST_PARTNERS } from '../PartnersPage/api.gql';
@@ -136,6 +139,25 @@ const OfferPage: React.FC = () => {
   >(EDIT_ACTIVATION, {
     refetchQueries: [{ query: GET_OFFER, variables: { offerID } }],
   });
+  // LIST OFFERS
+  const [offers, setOffers] = useState<OfferPreview[]>([]);
+  const {
+    data: listOffersData,
+    loading: listOffersLoading,
+    error: listOffersError,
+  } = useQuery<{ listCreatedOffers: ListCreatedOffersResponse }, QueryListCreatedOffersArgs>(
+    LIST_CREATED_OFFERS,
+    {
+      variables: { advertiserID },
+      onCompleted: (data) => {
+        if (data?.listCreatedOffers.__typename === 'ListCreatedOffersResponseSuccess') {
+          const offers = data.listCreatedOffers.offers;
+          // console.log(offers);
+          setOffers(offers);
+        }
+      },
+    },
+  );
   // SWAP POSITIONS ACTIVATION
   const [swapActivationPositionsMutation] = useMutation<
     { editActivation: ResponseError | EditActivationResponseSuccess },
@@ -185,6 +207,11 @@ const OfferPage: React.FC = () => {
     ],
   });
 
+  if (listOffersError) {
+    return <span>{listOffersError?.message || ''}</span>;
+  } else if (listOffersData?.listCreatedOffers.__typename === 'ResponseError') {
+    return <span>{listOffersData?.listCreatedOffers.error?.message || ''}</span>;
+  }
   if (!offerID) {
     return <div>Offer ID not found</div>;
   }
@@ -205,20 +232,28 @@ const OfferPage: React.FC = () => {
     );
   }
   const editOffer = async (payload: Omit<EditOfferPayload, 'id'>) => {
-    const res = await editOfferMutation({
-      variables: {
-        payload: {
-          id: offerID,
-          advertiserID,
-          title: payload.title,
-          description: payload.description,
-          image: payload.image,
-          maxBudget: payload.maxBudget,
-          startDate: payload.startDate,
-          endDate: payload.endDate,
-          status: payload.status,
-        },
+    console.log(`--- payload ---`);
+    console.log(payload);
+    const editOfferVariables = {
+      payload: {
+        id: offerID,
+        advertiserID,
+        title: payload.title,
+        description: payload.description,
+        image: payload.image,
+        maxBudget: payload.maxBudget,
+        startDate: payload.startDate,
+        endDate: payload.endDate,
+        status: payload.status,
       },
+    };
+    // @ts-ignore
+    if (payload.airdropMetadata) {
+      // @ts-ignore
+      editOfferVariables.payload.airdropMetadata = payload.airdropMetadata;
+    }
+    const res = await editOfferMutation({
+      variables: editOfferVariables,
     });
     if (!res?.data || res?.data?.editOffer?.__typename === 'ResponseError') {
       // @ts-ignore
@@ -342,7 +377,9 @@ const OfferPage: React.FC = () => {
   const adSetPreviewsSorted = (offer?.adSetPreviews || [])
     .slice()
     .sort((a, b) => (a.status === AdSetStatus.Active ? -1 : 1));
-
+  console.log(`--- offer ---`);
+  console.log(offer);
+  console.log(offers);
   return (
     <div style={{ maxWidth }}>
       {loading || !offer ? (
@@ -375,7 +412,21 @@ const OfferPage: React.FC = () => {
                 status: offer.status,
                 affiliateBaseLink: offer.affiliateBaseLink || '',
                 mmp: offer.mmp,
+                strategy: offer.strategy || OfferStrategyType.None,
+                airdropMetadata: offer.airdropMetadata
+                  ? {
+                      excludedOffers: offer.airdropMetadata.excludedOffers,
+                      instructionsLink: offer.airdropMetadata.instructionsLink,
+                      oneLiner: offer.airdropMetadata.oneLiner,
+                      questionOne: offer.airdropMetadata.questionOne,
+                      questionOneType: offer.airdropMetadata.questionOneType,
+                      questionTwo: offer.airdropMetadata.questionTwo,
+                      questionTwoType: offer.airdropMetadata.questionTwoType,
+                      value: offer.airdropMetadata.value,
+                    }
+                  : undefined,
               }}
+              offers={offers.filter((o) => o.strategy === OfferStrategyType.Airdrop)}
               advertiserID={advertiserID as AdvertiserID}
               onSubmit={editOffer}
               mode="view-edit"
@@ -500,7 +551,70 @@ const OfferPage: React.FC = () => {
               </Button>
             </Empty>
           )}
-
+          <br />
+          <br />
+          <$Horizontal justifyContent="space-between">
+            <h2>Ad Sets</h2>
+            <Popconfirm
+              title={
+                <span>
+                  {`Go to an Ad Sets' control panel to include it into an Offer. `}
+                  <a>View Tutorial</a>
+                </span>
+              }
+              onConfirm={() => {
+                history.push('/manage/adsets');
+              }}
+              okText="View Ad Sets"
+              cancelText="Cancel"
+            >
+              <Button style={{ alignSelf: 'flex-end' }}>Include Ad Set</Button>
+            </Popconfirm>
+          </$Horizontal>
+          <$InfoDescription>
+            {`Offers should include Ad Sets that play video ads on various ad placecment spots - primarily on Lootbox tickets.`}
+            {` `}To learn more,{' '}
+            <span>
+              <a>click here for a tutorial.</a>
+            </span>
+          </$InfoDescription>
+          {adSetPreviewsSorted.length > 0 ? (
+            <div className={styles.adSetGrid}>
+              {adSetPreviewsSorted.map((adSet) => {
+                const imageToDisplay = adSet.thumbnail || placeholderImage;
+                return (
+                  <Link key={adSet.id} to={`/manage/adsets/id/${adSet.id}`}>
+                    <Card
+                      hoverable
+                      className={styles.card}
+                      cover={
+                        <img alt="example" src={imageToDisplay} className={styles.cardImage} />
+                      }
+                    >
+                      <Meta title={adSet.name} />
+                    </Card>
+                  </Link>
+                );
+              })}
+            </div>
+          ) : (
+            <Empty
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
+              imageStyle={{
+                height: 60,
+              }}
+              description={
+                <span style={{ maxWidth: '200px' }}>
+                  {`You have not included any Ads to this event yet. Go to your Ad Sets page to get started!`}
+                </span>
+              }
+              style={{ border: '1px solid rgba(0,0,0,0.1)', padding: '50px' }}
+            >
+              <Link to="/manage/adsets">
+                <Button>Include Ad</Button>
+              </Link>
+            </Empty>
+          )}
           <br />
           <br />
           <$Horizontal justifyContent="space-between">
@@ -608,70 +722,6 @@ const OfferPage: React.FC = () => {
           <br />
           <br />
 
-          <$Horizontal justifyContent="space-between">
-            <h2>Ad Sets</h2>
-            <Popconfirm
-              title={
-                <span>
-                  {`Go to an Ad Sets' control panel to include it into an Offer. `}
-                  <a>View Tutorial</a>
-                </span>
-              }
-              onConfirm={() => {
-                history.push('/manage/adsets');
-              }}
-              okText="View Ad Sets"
-              cancelText="Cancel"
-            >
-              <Button style={{ alignSelf: 'flex-end' }}>Include Ad Set</Button>
-            </Popconfirm>
-          </$Horizontal>
-          <$InfoDescription>
-            {`Offers should include Ad Sets that play video ads on various ad placecment spots - primarily on Lootbox tickets.`}
-            {` `}To learn more,{' '}
-            <span>
-              <a>click here for a tutorial.</a>
-            </span>
-          </$InfoDescription>
-          {adSetPreviewsSorted.length > 0 ? (
-            <div className={styles.adSetGrid}>
-              {adSetPreviewsSorted.map((adSet) => {
-                const imageToDisplay = adSet.thumbnail || placeholderImage;
-                return (
-                  <Link key={adSet.id} to={`/manage/adsets/id/${adSet.id}`}>
-                    <Card
-                      hoverable
-                      className={styles.card}
-                      cover={
-                        <img alt="example" src={imageToDisplay} className={styles.cardImage} />
-                      }
-                    >
-                      <Meta title={adSet.name} />
-                    </Card>
-                  </Link>
-                );
-              })}
-            </div>
-          ) : (
-            <Empty
-              image={Empty.PRESENTED_IMAGE_SIMPLE}
-              imageStyle={{
-                height: 60,
-              }}
-              description={
-                <span style={{ maxWidth: '200px' }}>
-                  {`You have not included any Ads to this event yet. Go to your Ad Sets page to get started!`}
-                </span>
-              }
-              style={{ border: '1px solid rgba(0,0,0,0.1)', padding: '50px' }}
-            >
-              <Link to="/manage/adsets">
-                <Button>Include Ad</Button>
-              </Link>
-            </Empty>
-          )}
-          <br />
-          <br />
           {activationModalType && activationModalVisible && (
             <CreateActivationFormModal
               activationModalVisible={activationModalVisible}

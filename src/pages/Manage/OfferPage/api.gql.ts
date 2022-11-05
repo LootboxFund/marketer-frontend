@@ -36,6 +36,17 @@ export const GET_OFFER = gql`
             placement
             thumbnail
           }
+          strategy
+          airdropMetadata {
+            oneLiner
+            value
+            instructionsLink
+            questionOne
+            questionOneType
+            questionTwo
+            questionTwoType
+            excludedOffers
+          }
         }
       }
       ... on ResponseError {
