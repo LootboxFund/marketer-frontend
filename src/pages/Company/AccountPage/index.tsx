@@ -103,7 +103,9 @@ const AccountPage: React.FC = () => {
         This is your advertiser profile page. Be sure to fill out all your details so that you
         appear in the marketplace for partners to work with. To learn more,{' '}
         <span>
-          <a>click here for a tutorial.</a>
+          <a href="https://lootbox.fyi/3WvNEkD" target="_blank" rel="noreferrer">
+            click here for a tutorial.
+          </a>
         </span>
       </$InfoDescription>
     );

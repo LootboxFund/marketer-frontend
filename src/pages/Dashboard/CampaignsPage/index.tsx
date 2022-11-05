@@ -55,7 +55,9 @@ const CampaignsPage: React.FC = () => {
         {`Campaigns help organize your community events under company goals. Click the "Create Campaign" button to make a new one.`}{' '}
         To learn more,{' '}
         <span>
-          <a>click here for a tutorial.</a>
+          <a href="https://lootbox.fyi/3DB5VEv" target="_blank" rel="noreferrer">
+            click here for a tutorial.
+          </a>
         </span>
       </$InfoDescription>
     );

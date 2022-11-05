@@ -182,7 +182,9 @@ const ProgressPage: React.FC = () => {
         by providing you the tools and framework to partner with event organizers all around the
         world. `}
         <span>
-          <a>Click here to learn more.</a>
+          <a href="https://lootbox.fyi/3UccAwc" target="_blank" rel="noreferrer">
+            Click here to learn more.
+          </a>
         </span>
       </$InfoDescription>
     );

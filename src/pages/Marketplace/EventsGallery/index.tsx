@@ -57,10 +57,12 @@ const EventsGallery: React.FC = () => {
   const renderHelpText = () => {
     return (
       <$InfoDescription>
-        {`The Events Marketplace lets you find existing gaming competitions and other community events which you can advertiser in. Use this if you do NOT want to be the main advertiser.`}
+        {`The Events Marketplace lets you find existing gaming competitions and other community events which you can advertiser in.`}
         {` `}To learn more,{' '}
         <span>
-          <a>click here for a tutorial.</a>
+          <a href="https://lootbox.fyi/3T8cQL4" target="_blank" rel="noreferrer">
+            click here for a tutorial.
+          </a>
         </span>
       </$InfoDescription>
     );

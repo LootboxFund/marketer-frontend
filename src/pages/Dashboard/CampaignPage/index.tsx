@@ -148,7 +148,8 @@ const CampaignPage: React.FC = () => {
           <br />
           <h2>Events</h2>
           <$InfoDescription maxWidth={maxWidth}>
-            Events are typically organized by partners from the marketplace.
+            {`Events are typically organized by partners from the marketplace. `}
+            <a>View Tutorial</a>
           </$InfoDescription>
           <$Horizontal justifyContent="space-between" style={{ maxWidth }}>
             <Input.Search
@@ -236,7 +237,7 @@ const CampaignPage: React.FC = () => {
       >
         <$InfoDescription maxWidth={maxWidth}>
           An Event must first be created by a partner before it can be added to a campaign. You can
-          find Events in <Link to="/marketplace/events">Marketplace</Link>.
+          find Events in <Link to="/marketplace/events">Marketplace</Link> or <a>View Tutorial</a>.
         </$InfoDescription>
         <Input.Search
           placeholder="Search Event by ID"

@@ -54,7 +54,9 @@ const MyEventsPage: React.FC = () => {
         {`Quickly search for events without remembering campaigns. This page lists all the events you have been involved in.`}
         To learn more,{' '}
         <span>
-          <a>click here for a tutorial.</a>
+          <a href="https://lootbox.fyi/3T8cQL4" target="_blank" rel="noreferrer">
+            click here for a tutorial.
+          </a>
         </span>
       </$InfoDescription>
     );
@@ -80,7 +82,13 @@ const MyEventsPage: React.FC = () => {
             <$Horizontal spacing={2}>
               <SwitchToHostButton buttonText="Host Own Event" />
               <Popconfirm
-                title="To add other peoples events into your campaigns, visit the Marketplace and copy an Event ID to add it to a campaign."
+                title={
+                  <span>
+                    {`To add other peoples events into your campaigns, visit the Marketplace and copy
+                    an Event ID to add it to a campaign. `}
+                    <a>View Tutorial</a>
+                  </span>
+                }
                 onConfirm={() => {
                   history.push('/marketplace/events');
                 }}

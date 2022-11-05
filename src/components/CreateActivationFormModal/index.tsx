@@ -267,8 +267,8 @@ const CreateActivationFormModal: React.FC<CreateActivationFormModalProps> = ({
       cancelButtonProps={{ disabled: pendingActivationEdit }}
     >
       <$InfoDescription>
-        {`Activations are specific events you want to happen. They are paid to partners on a `}
-        <a>performance basis.</a>
+        {`Activations are specific events you want to happen. They are paid to partners on a performance basis. `}
+        <a>View Tutorial</a>
       </$InfoDescription>
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         {viewMode && !lockedToEdit && (

@@ -21,7 +21,9 @@ const BillingPage: React.FC = () => {
         This is where you can preload your company wallet and view historical marketing spend. To
         learn more,{' '}
         <span>
-          <a>click here for a tutorial.</a>
+          <a href="https://lootbox.fyi/3NxwAXi" target="_blank" rel="noreferrer">
+            click here for a tutorial.
+          </a>
         </span>
       </$InfoDescription>
     );

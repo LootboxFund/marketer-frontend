@@ -402,7 +402,9 @@ const OfferPage: React.FC = () => {
             {`Activations are specific events that you want to happen in an offer. They typically occur chronologically in a sales funnel.`}
             {` `}To learn more,{' '}
             <span>
-              <a>click here for a tutorial.</a>
+              <a href="https://lootbox.fyi/3FK3X7I" target="_blank" rel="noreferrer">
+                click here for a tutorial.
+              </a>
             </span>
           </$InfoDescription>
           {activationsSorted && activationsSorted.length > 0 ? (
@@ -516,7 +518,9 @@ const OfferPage: React.FC = () => {
             {`You can control who has access to your offer as an Event Organizer.`}
             {` `}To learn more,{' '}
             <span>
-              <a>click here for a tutorial.</a>
+              <a href="https://lootbox.fyi/3fwaSqj" target="_blank" rel="noreferrer">
+                click here for a tutorial.
+              </a>
             </span>
           </$InfoDescription>
           {whitelistedPartners.length > 0 ? (
@@ -607,7 +611,12 @@ const OfferPage: React.FC = () => {
           <$Horizontal justifyContent="space-between">
             <h2>Ad Sets</h2>
             <Popconfirm
-              title="Go to an Ad Sets' control panel to include it into an Offer."
+              title={
+                <span>
+                  {`Go to an Ad Sets' control panel to include it into an Offer. `}
+                  <a>View Tutorial</a>
+                </span>
+              }
               onConfirm={() => {
                 history.push('/manage/adsets');
               }}
@@ -689,9 +698,10 @@ const OfferPage: React.FC = () => {
             ]}
           >
             <$InfoDescription>
-              {`Whitelisted partners will be able to show your video ads in their events.`}
-              {` `}Find partners at the{' '}
-              <Link to="/marketplace/outsource">Outsourcing Marketplace</Link>
+              {`Whitelisted partners will be able to show your video ads in their events. `}
+              {'Find partners at the '}
+              <Link to="/marketplace/outsource">Outsourcing Marketplace</Link> {` or `}
+              <a>View Tutorial</a>
             </$InfoDescription>
             <Input.Search
               placeholder="Search Partner by ID"
