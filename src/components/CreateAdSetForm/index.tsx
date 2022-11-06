@@ -345,7 +345,7 @@ const CreateAdSetForm: React.FC<CreateAdSetFormProps> = ({
           ),
           required: true,
           disabled: mode !== 'create',
-          options: [Placement.AfterTicketClaim, Placement.BeforePayout, Placement.AfterPayout],
+          options: [Placement.AfterTicketClaim, Placement.Airdrop],
           rules: [
             {
               validator: (rule: any, value: any, callback: any) => {

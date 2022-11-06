@@ -9,6 +9,7 @@ import { AntUploadFile } from '../AntFormBuilder';
 import { AdvertiserStorageFolder } from '@/api/firebase/storage';
 import { $Horizontal } from '@/components/generics';
 import { useAuth } from '@/api/firebase/useAuth';
+import ClickToCopy from '../ClickToCopy';
 
 export type EditAdvertiserFormProps = {
   advertiser: {
@@ -156,6 +157,8 @@ const EditAdvertiserForm: React.FC<EditAdvertiserFormProps> = ({ advertiser, onS
         key: 'id',
         label: 'Advertiser ID',
         tooltip: 'Your Advertiser ID in case anyone asks you for it.',
+        // @ts-ignore
+        viewWidget: () => <ClickToCopy text={advertiserInfo.id} showTip />,
       });
     }
     return meta;
