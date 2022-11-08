@@ -1,7 +1,5 @@
 import {
   AdvertiserID,
-  AirdropQuestionField,
-  AirdropQuestionFieldType,
   ConquestStatus,
   MeasurementPartnerType,
   OfferID,
@@ -18,6 +16,7 @@ import {
   OfferAirdropMetadata,
   OfferPreview,
   OfferStrategyType,
+  QuestionAnswerPreview,
 } from '@/api/graphql/generated/types';
 import { AntUploadFile, PriceInput, PriceView } from '../AntFormBuilder';
 import { Rule } from 'antd/lib/form';
@@ -25,6 +24,7 @@ import { DateView } from '../AntFormBuilder';
 import { AdvertiserStorageFolder } from '@/api/firebase/storage';
 import { $Vertical, $Horizontal } from '@/components/generics';
 import AirdropOfferExclusionPicker from './AirdropOfferExclusionPicker';
+import { QuestionFieldType } from '../../api/graphql/generated/types';
 
 export type CreateOfferFormProps = {
   offer?: {
@@ -63,10 +63,7 @@ const OFFER_INFO = {
     excludedOffers: [] as OfferID[],
     instructionsLink: '',
     oneLiner: '',
-    questionOne: '',
-    questionOneType: AirdropQuestionFieldType.Text as AirdropQuestionFieldType,
-    questionTwo: '',
-    questionTwoType: AirdropQuestionFieldType.Text as AirdropQuestionFieldType,
+    questions: [] as QuestionAnswerPreview[],
     value: '',
   },
 };
@@ -109,14 +106,7 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
           excludedOffers: (offer.airdropMetadata?.excludedOffers || []) as OfferID[],
           instructionsLink: offer.airdropMetadata?.instructionsLink || '',
           oneLiner: offer.airdropMetadata?.oneLiner || '',
-          questionOne: offer.airdropMetadata?.questionOne || '',
-          questionOneType:
-            (offer.airdropMetadata?.questionOneType as AirdropQuestionFieldType) ||
-            AirdropQuestionFieldType.Text,
-          questionTwo: offer.airdropMetadata?.questionTwo || '',
-          questionTwoType:
-            (offer.airdropMetadata?.questionTwoType as AirdropQuestionFieldType) ||
-            AirdropQuestionFieldType.Text,
+          questions: offer.airdropMetadata?.questions || [],
           value: offer.airdropMetadata?.value || '',
         },
       });
@@ -163,12 +153,21 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
         oneLiner: values.airdropMetadata_oneLiner,
         value: values.airdropMetadata_value,
         instructionsLink: values.airdropMetadata_instructionsLink,
-        questionOne: values.airdropMetadata_questionOneText,
-        questionOneType: values.airdropMetadata_questionOneType,
-        questionTwo: values.airdropMetadata_questionTwoText,
-        questionTwoType: values.airdropMetadata_questionTwoType,
         excludedOffers: chosenOffers.current,
+        questions: [],
       };
+      if (values.airdropMetadata_questionOneText && values.airdropMetadata_questionOneType) {
+        payload.airdropMetadata.questions.push({
+          question: values.airdropMetadata_questionOneText,
+          type: values.airdropMetadata_questionOneType,
+        });
+      }
+      if (values.airdropMetadata_questionTwoText && values.airdropMetadata_questionTwoType) {
+        payload.airdropMetadata.questions.push({
+          question: values.airdropMetadata_questionTwoText,
+          type: values.airdropMetadata_questionTwoType,
+        });
+      }
     }
     if (newMediaDestination.current) {
       payload.image = newMediaDestination.current;
@@ -337,7 +336,7 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
           initialValue: offerInfo?.airdropMetadata.oneLiner,
           tooltip:
             'One line description of what you want the user to do to claim your airdrop reward. Max 50 characters.',
-          rules: [{ required: true } as Rule, { type: 'string', max: 50 } as Rule],
+          rules: [{ type: 'string', max: 50 } as Rule],
         },
         {
           key: 'airdropMetadata_value',
@@ -353,11 +352,7 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
           initialValue: offerInfo?.airdropMetadata.instructionsLink,
           tooltip:
             'Link to a YouTube video or Notion page where users will go to see your full instructions. It should be easy to follow. Use a placeholder bitly or google docs link if you do not have this yet.',
-          rules: [
-            { required: true } as Rule,
-            { type: 'url' } as Rule,
-            { type: 'string', min: 3 } as Rule,
-          ],
+          rules: [{ type: 'url' } as Rule, { type: 'string', min: 3 } as Rule],
           viewWidget: () => (
             <a
               href={offerInfo?.airdropMetadata.instructionsLink || ''}
@@ -386,13 +381,13 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
   const getMetaForAirdrop2 = () => {
     const meta = {
       columns: 2,
-      disabled: pending,
+      disabled: mode === 'create' ? pending : true,
       initialValues: offerInfo,
       fields: [
         {
           key: 'airdropMetadata_questionOneText',
           label: 'Question 1',
-          initialValue: offerInfo?.airdropMetadata.questionOne,
+          initialValue: offerInfo?.airdropMetadata.questions[0]?.question || '',
           tooltip:
             'You can ask up to 2 questions from the user for your data analysis purposes. Watch the tutorial for our recommendations.',
           rules: [{ type: 'string', min: 3 } as Rule],
@@ -400,22 +395,22 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
         {
           key: 'airdropMetadata_questionOneType',
           label: 'Field Type',
-          initialValue: offerInfo?.airdropMetadata.questionOneType,
+          initialValue: offerInfo?.airdropMetadata.questions[0]?.type || QuestionFieldType.Text,
           tooltip:
             'Choose text answers for the most flexible. Address refers to a blockchain address. Screenshot is an image upload.',
           widget: 'select',
           options: [
-            AirdropQuestionFieldType.Text,
-            AirdropQuestionFieldType.Email,
-            AirdropQuestionFieldType.Phone,
-            AirdropQuestionFieldType.Address,
-            AirdropQuestionFieldType.Screenshot,
+            QuestionFieldType.Text,
+            QuestionFieldType.Email,
+            QuestionFieldType.Phone,
+            QuestionFieldType.Address,
+            QuestionFieldType.Screenshot,
           ],
         },
         {
           key: 'airdropMetadata_questionTwoText',
           label: 'Question 2',
-          initialValue: offerInfo?.airdropMetadata.questionTwo,
+          initialValue: offerInfo?.airdropMetadata.questions[1]?.question || '',
           tooltip:
             'You can ask up to 2 questions from the user for your data analysis purposes. Watch the tutorial for our recommendations.',
           rules: [{ type: 'string', min: 3 } as Rule],
@@ -423,16 +418,16 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
         {
           key: 'airdropMetadata_questionTwoType',
           label: 'Field Type',
-          initialValue: offerInfo?.airdropMetadata.questionTwoType,
+          initialValue: offerInfo?.airdropMetadata.questions[1]?.type || QuestionFieldType.Text,
           tooltip:
             'Choose text answers for the most flexible. Address refers to a blockchain address. Screenshot is an image upload.',
           widget: 'select',
           options: [
-            AirdropQuestionFieldType.Text,
-            AirdropQuestionFieldType.Email,
-            AirdropQuestionFieldType.Phone,
-            AirdropQuestionFieldType.Address,
-            AirdropQuestionFieldType.Screenshot,
+            QuestionFieldType.Text,
+            QuestionFieldType.Email,
+            QuestionFieldType.Phone,
+            QuestionFieldType.Address,
+            QuestionFieldType.Screenshot,
           ],
         },
       ],

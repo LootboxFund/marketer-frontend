@@ -418,16 +418,14 @@ const OfferPage: React.FC = () => {
                       excludedOffers: offer.airdropMetadata.excludedOffers,
                       instructionsLink: offer.airdropMetadata.instructionsLink,
                       oneLiner: offer.airdropMetadata.oneLiner,
-                      questionOne: offer.airdropMetadata.questionOne,
-                      questionOneType: offer.airdropMetadata.questionOneType,
-                      questionTwo: offer.airdropMetadata.questionTwo,
-                      questionTwoType: offer.airdropMetadata.questionTwoType,
                       value: offer.airdropMetadata.value,
+                      questions: offer.airdropMetadata.questions,
                     }
                   : undefined,
               }}
               offers={offers.filter((o) => o.strategy === OfferStrategyType.Airdrop)}
               advertiserID={advertiserID as AdvertiserID}
+              // @ts-ignore
               onSubmit={editOffer}
               mode="view-edit"
             />

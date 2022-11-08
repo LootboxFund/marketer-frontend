@@ -41,11 +41,11 @@ export const GET_OFFER = gql`
             oneLiner
             value
             instructionsLink
-            questionOne
-            questionOneType
-            questionTwo
-            questionTwoType
             excludedOffers
+            questions {
+              question
+              type
+            }
           }
         }
       }
