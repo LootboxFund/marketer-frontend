@@ -35,8 +35,12 @@ const AdSetToOfferPicker: React.FC<AdSetToOfferPickerProps> = ({
     direction: TransferDirection,
     moveKeys: string[],
   ) => {
-    setTargetKeys(newTargetKeys);
-    chosenOffers.current = newTargetKeys as OfferID[];
+    // setTargetKeys(newTargetKeys);
+    // chosenOffers.current = newTargetKeys as OfferID[];
+
+    // only allow 1 to be selected
+    setTargetKeys([newTargetKeys[0]]);
+    chosenOffers.current = [newTargetKeys[0]] as OfferID[];
   };
 
   const handleSelectChange = (sourceSelectedKeys: string[], targetSelectedKeys: string[]) => {
