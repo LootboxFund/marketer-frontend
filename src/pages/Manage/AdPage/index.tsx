@@ -84,7 +84,9 @@ const AdPage: React.FC = () => {
         {`Here you can manage your Ad Creative and preview how it will appear on devices. You can customize the image, video, theme color and call to action.`}
         {` `}To learn more,{' '}
         <span>
-          <a>click here for a tutorial.</a>
+          <a href="https://lootbox.fyi/3OGCrKI" target="_blank" rel="noreferrer">
+            click here for a tutorial.
+          </a>
         </span>
       </$InfoDescription>
     );

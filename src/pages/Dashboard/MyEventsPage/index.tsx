@@ -54,7 +54,7 @@ const MyEventsPage: React.FC = () => {
         {`Quickly search for events without remembering campaigns. This page lists all the events you have been involved in.`}
         To learn more,{' '}
         <span>
-          <a href="https://lootbox.fyi/3T8cQL4" target="_blank" rel="noreferrer">
+          <a href="https://lootbox.fyi/3ODqYvd" target="_blank" rel="noreferrer">
             click here for a tutorial.
           </a>
         </span>
@@ -86,7 +86,9 @@ const MyEventsPage: React.FC = () => {
                   <span>
                     {`To add other peoples events into your campaigns, visit the Marketplace and copy
                     an Event ID to add it to a campaign. `}
-                    <a>View Tutorial</a>
+                    <a href="https://google.com" target="_blank" rel="noreferrer">
+                      View Tutorial
+                    </a>
                   </span>
                 }
                 onConfirm={() => {

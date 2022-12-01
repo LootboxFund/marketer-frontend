@@ -60,7 +60,7 @@ const AdsPage: React.FC = () => {
         {`This page lists your Ad Creatives - they are the media & copywriting shown on ads. Creatives must be attached to an Ad Set.`}
         {` `}To learn more,{' '}
         <span>
-          <a href="https://lootbox.fyi/3zI7NKy" target="_blank" rel="noreferrer">
+          <a href="https://lootbox.fyi/3OGCrKI" target="_blank" rel="noreferrer">
             click here for a tutorial.
           </a>
         </span>

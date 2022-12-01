@@ -106,7 +106,7 @@ const OfferCreate: React.FC = () => {
         {`An Offer is a promotional incentive to attract new users to your company. Event partners will promote your Offer to their audience. Tracking software is required.`}
         {` `}To learn more,{' '}
         <span>
-          <a href="https://lootbox.fyi/3FGvMxp" target="_blank" rel="noreferrer">
+          <a href="https://lootbox.fyi/3DZrRul" target="_blank" rel="noreferrer">
             click here for a tutorial.
           </a>
         </span>

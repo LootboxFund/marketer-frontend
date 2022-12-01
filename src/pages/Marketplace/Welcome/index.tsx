@@ -135,13 +135,21 @@ const Welcome: React.FC = () => {
               index={2}
               title="Outsource Your Events"
               desc="Invite them to run your community events, or join their existing plans."
-              action={<a>Create Proposal {'>'}</a>}
+              action={
+                <a href="https://google.com" target="_blank" rel="noreferrer">
+                  Create Proposal {'>'}
+                </a>
+              }
             />
             <InfoCard
               index={3}
               title="Track Performance"
               desc="Measure who is performing best and the cost effectiveness of each partner."
-              action={<a>Learn More {'>'}</a>}
+              action={
+                <a href="https://google.com" target="_blank" rel="noreferrer">
+                  Learn More {'>'}
+                </a>
+              }
             />
           </div>
         </div>

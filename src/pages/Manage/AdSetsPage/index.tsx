@@ -59,7 +59,7 @@ const AdSetsPage: React.FC = () => {
         {`This page lists all your Ad Sets - they define which ad creative is shown to which audiences. Ad creatives are managed on a seperate page.`}
         {` `}To learn more,{' '}
         <span>
-          <a href="https://lootbox.fyi/3U4NgYV" target="_blank" rel="noreferrer">
+          <a href="https://lootbox.fyi/3SYOALz" target="_blank" rel="noreferrer">
             click here for a tutorial.
           </a>
         </span>

@@ -149,7 +149,9 @@ const AdSetPage: React.FC = () => {
         {`This is the AdSet Control Panel. Here you can decide combinations of Ad Creatives + Offer Placements + Audience Targeting. `}
         {` `}To learn more,{' '}
         <span>
-          <a>click here for a tutorial.</a>
+          <a href="https://lootbox.fyi/3i8CuTk" target="_blank" rel="noreferrer">
+            click here for a tutorial.
+          </a>
         </span>
       </$InfoDescription>
     );

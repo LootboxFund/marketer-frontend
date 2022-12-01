@@ -52,7 +52,7 @@ const CampaignCreate: React.FC = () => {
       <$InfoDescription>
         {`Organize your events around a campaign representing a company goal.`}
         {` `}To learn more,{' '}
-        <a href="https://lootbox.fyi/3NBkbBL" target="_blank" rel="noreferrer">
+        <a href="https://lootbox.fyi/3DB5VEv" target="_blank" rel="noreferrer">
           click here for a tutorial.
         </a>
       </$InfoDescription>

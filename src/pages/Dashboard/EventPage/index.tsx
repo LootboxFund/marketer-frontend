@@ -55,7 +55,9 @@ const EventPage: React.FC = () => {
         {`View in-depth details about an Event to help make informed decisions. `}
         To learn more,{' '}
         <span>
-          <a>click here for a tutorial.</a>
+          <a href="https://lootbox.fyi/3EUYGcu" target="_blank" rel="noreferrer">
+            click here for a tutorial.
+          </a>
         </span>
       </$InfoDescription>
     );

@@ -54,7 +54,7 @@ const OffersPage: React.FC = () => {
         {`This page lists all the promotional offers you've made for attracting new users. Click the "Create Offer" button to add more.`}
         {` `}To learn more,{' '}
         <span>
-          <a href="https://lootbox.fyi/3DZrRul" target="_blank" rel="noreferrer">
+          <a href="https://lootbox.fyi/3FGvMxp" target="_blank" rel="noreferrer">
             click here for a tutorial.
           </a>
         </span>

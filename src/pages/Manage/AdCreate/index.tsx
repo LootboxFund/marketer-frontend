@@ -71,7 +71,9 @@ const AdCreate: React.FC = () => {
         {`Make an Ad Creative by uploading an image or video to attract new users. The media, copywriting, and call to action should match an existing Offer.`}
         {` `}To learn more,{' '}
         <span>
-          <a>click here for a tutorial.</a>
+          <a href="https://lootbox.fyi/3zI7NKy" target="_blank" rel="noreferrer">
+            click here for a tutorial.
+          </a>
         </span>
       </$InfoDescription>
     );

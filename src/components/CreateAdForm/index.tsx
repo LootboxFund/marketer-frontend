@@ -395,7 +395,7 @@ const CreateAdForm: React.FC<CreateAdFormProps> = ({
       disabled: pending,
       initialValues: adInfo,
       fields: [
-        { key: 'publicInfo', label: 'Public Info', widget: 'textarea', required: true },
+        { key: 'publicInfo', label: 'Public Info', widget: 'textarea' },
         {
           key: 'creative_callToAction',
           label: 'Call To Action',

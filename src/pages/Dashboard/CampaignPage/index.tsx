@@ -112,7 +112,9 @@ const CampaignPage: React.FC = () => {
       <$InfoDescription>
         {`Organize events under this campaign if they share the same objective.`} To learn more,{' '}
         <span>
-          <a>click here for a tutorial.</a>
+          <a href="https://lootbox.fyi/3EEwSrg" target="_blank" rel="noreferrer">
+            click here for a tutorial.
+          </a>
         </span>
       </$InfoDescription>
     );
@@ -149,7 +151,9 @@ const CampaignPage: React.FC = () => {
           <h2>Events</h2>
           <$InfoDescription maxWidth={maxWidth}>
             {`Events are typically organized by partners from the marketplace. `}
-            <a>View Tutorial</a>
+            <a href="https://lootbox.fyi/3gxa9Wa" target="_blank" rel="noreferrer">
+              View Tutorial
+            </a>
           </$InfoDescription>
           <$Horizontal justifyContent="space-between" style={{ maxWidth }}>
             <Input.Search
@@ -237,7 +241,11 @@ const CampaignPage: React.FC = () => {
       >
         <$InfoDescription maxWidth={maxWidth}>
           An Event must first be created by a partner before it can be added to a campaign. You can
-          find Events in <Link to="/marketplace/events">Marketplace</Link> or <a>View Tutorial</a>.
+          find Events in <Link to="/marketplace/events">Marketplace</Link> or{' '}
+          <a href="https://lootbox.fyi/3T8cQL4" target="_blank" rel="noreferrer">
+            View Tutorial
+          </a>
+          .
         </$InfoDescription>
         <Input.Search
           placeholder="Search Event by ID"

@@ -64,7 +64,7 @@ const OutsourcePage: React.FC = () => {
         {`The Outsourcing Marketplace lets you hire event organizers from gaming communities, influencers & streamers.`}
         {` `}To learn more,{' '}
         <span>
-          <a href="https://lootbox.fyi/3fwaSqj" target="_blank" rel="noreferrer">
+          <a href="https://lootbox.fyi/3tVx80n" target="_blank" rel="noreferrer">
             click here for a tutorial.
           </a>
         </span>
@@ -124,7 +124,9 @@ const OutsourcePage: React.FC = () => {
               title={
                 <span>
                   {`To invite ${record.name} to your Event, copy their PromoterID "${record.id}" and add them from your Event Page. `}
-                  <a>View Tutorial</a>
+                  <a href="https://lootbox.fyi/3VoS7V2" target="_blank" rel="noreferrer">
+                    View Tutorial
+                  </a>
                 </span>
               }
               onConfirm={() => {

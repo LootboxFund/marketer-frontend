@@ -141,7 +141,11 @@ const Welcome: React.FC = () => {
               index={3}
               title="Increase Global Sales"
               desc="Track & optimize the performance of your offers and ads to increase global sales."
-              action={<a>Learn More {'>'}</a>}
+              action={
+                <a href="https://google.com" target="_blank" rel="noreferrer">
+                  Learn More {'>'}
+                </a>
+              }
             />
           </div>
         </div>

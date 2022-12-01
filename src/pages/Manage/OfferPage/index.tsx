@@ -395,7 +395,9 @@ const OfferPage: React.FC = () => {
             {`This is the Offer Control Panel for "${offer.title}". You can edit the offer details and manage its activation events with payout amounts.`}
             {` `}To learn more,{' '}
             <span>
-              <a>click here for a tutorial.</a>
+              <a href="https://lootbox.fyi/3gx5Iuu" target="_blank" rel="noreferrer">
+                click here for a tutorial.
+              </a>
             </span>
           </$InfoDescription>
           <$Horizontal>
@@ -557,7 +559,9 @@ const OfferPage: React.FC = () => {
               title={
                 <span>
                   {`Go to an Ad Sets' control panel to include it into an Offer. `}
-                  <a>View Tutorial</a>
+                  <a href="https://google.com" target="_blank" rel="noreferrer">
+                    View Tutorial
+                  </a>
                 </span>
               }
               onConfirm={() => {
@@ -573,7 +577,9 @@ const OfferPage: React.FC = () => {
             {`Offers should include Ad Sets that play video ads on various ad placecment spots - primarily on Lootbox tickets.`}
             {` `}To learn more,{' '}
             <span>
-              <a>click here for a tutorial.</a>
+              <a href="https://lootbox.fyi/3AIa4G0" target="_blank" rel="noreferrer">
+                click here for a tutorial.
+              </a>
             </span>
           </$InfoDescription>
           {adSetPreviewsSorted.length > 0 ? (
@@ -630,7 +636,7 @@ const OfferPage: React.FC = () => {
             {`You can control who has access to your offer as an Event Organizer.`}
             {` `}To learn more,{' '}
             <span>
-              <a href="https://lootbox.fyi/3fwaSqj" target="_blank" rel="noreferrer">
+              <a href="https://lootbox.fyi/3tVx80n" target="_blank" rel="noreferrer">
                 click here for a tutorial.
               </a>
             </span>
@@ -749,7 +755,9 @@ const OfferPage: React.FC = () => {
               {`Whitelisted partners will be able to show your video ads in their events. `}
               {'Find partners at the '}
               <Link to="/marketplace/outsource">Outsourcing Marketplace</Link> {` or `}
-              <a>View Tutorial</a>
+              <a href="https://lootbox.fyi/3fwaSqj" target="_blank" rel="noreferrer">
+                View Tutorial
+              </a>
             </$InfoDescription>
             <Input.Search
               placeholder="Search Partner by ID"

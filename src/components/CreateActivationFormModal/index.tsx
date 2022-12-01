@@ -268,7 +268,9 @@ const CreateActivationFormModal: React.FC<CreateActivationFormModalProps> = ({
     >
       <$InfoDescription>
         {`Activations are specific events you want to happen. They are paid to partners on a performance basis. `}
-        <a>View Tutorial</a>
+        <a href="https://lootbox.fyi/3FK3X7I" target="_blank" rel="noreferrer">
+          View Tutorial
+        </a>
       </$InfoDescription>
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         {viewMode && !lockedToEdit && (
