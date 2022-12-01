@@ -19,6 +19,7 @@ import type {
 import { AntUploadFile, DateView, PriceInput, PriceView } from '../AntFormBuilder';
 import { $Horizontal } from '@/components/generics';
 import { Rule } from 'antd/lib/form';
+import ClickToCopy from '../ClickToCopy';
 
 export type CreateEventFormProps = {
   tournament: {
@@ -92,7 +93,11 @@ const CreateEventForm: React.FC<CreateEventFormProps> = ({ tournament, mode }) =
         { key: 'prize', label: 'Prize' },
         // { key: 'magicLink', label: 'Magic Link', rules: [{ type: 'url' } as Rule] },
         { key: 'description', label: 'Description', widget: 'textarea' },
-        { key: 'id', label: 'Event ID' },
+        {
+          key: 'id',
+          label: 'Event ID',
+          viewWidget: () => <ClickToCopy text={tournamentInfo.id} showTip />,
+        },
       ],
     };
     return meta;

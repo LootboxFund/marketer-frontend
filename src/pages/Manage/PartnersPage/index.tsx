@@ -52,7 +52,10 @@ const PartnersPage: React.FC = () => {
   const renderHelpText = () => {
     return (
       <$InfoDescription>
-        {`This page lists all the influencers, creators, and gaming communities you've had revenue sharing agreements with. This is a historical list that is automatically populated.`}
+        {`This page lists all the influencers, creators, and gaming communities you've had revenue sharing agreements with. This is a historical list that is automatically populated. `}
+        <a href="https://lootbox.fyi/3GG9Vqm" target="_blank" rel="noreferrer">
+          View Tutorial
+        </a>
       </$InfoDescription>
     );
   };
@@ -75,7 +78,14 @@ const PartnersPage: React.FC = () => {
             />
             <Popconfirm
               key={`invite-more`}
-              title={`To invite more partners, visit the Outsourcing Marketplace`}
+              title={
+                <span>
+                  {`To invite more partners, visit the Outsourcing Marketplace. `}
+                  <a href="https://lootbox.fyi/3fwaSqj" target="_blank" rel="noreferrer">
+                    View Tutorial
+                  </a>
+                </span>
+              }
               onConfirm={() => {
                 history.push(`/marketplace/outsource`);
               }}
@@ -94,7 +104,10 @@ const PartnersPage: React.FC = () => {
               description={
                 <span style={{ maxWidth: '200px' }}>
                   {`You do not have any partners yet.
-                    Visit the marketplace to start whitelisting partners to offers!`}
+                    Visit the marketplace to start whitelisting partners to offers! `}
+                  <a href="https://google.com" target="_blank" rel="noreferrer">
+                    View Tutorial
+                  </a>
                 </span>
               }
               style={{ border: '1px solid rgba(0,0,0,0.1)', padding: '50px' }}
@@ -116,12 +129,20 @@ const PartnersPage: React.FC = () => {
                 actions={[
                   <Popconfirm
                     key={`invite-${affiliate.id}`}
-                    title={`To invite ${affiliate.name} to your Event, copy their PromoterID "${affiliate.id}" and add them from your Event Page`}
+                    title={
+                      <span>
+                        {`To invite ${affiliate.name} to your Event, copy their PromoterID "${affiliate.id}" and add them from your Event Page. `}
+                        <a href="https://lootbox.fyi/3VoS7V2" target="_blank" rel="noreferrer">
+                          View Tutorial
+                        </a>
+                      </span>
+                    }
                     onConfirm={() => {
                       navigator.clipboard.writeText(affiliate.id);
                       message.success('Copied to clipboard');
                     }}
                     okText="Copy Promoter ID"
+                    style={{ maxWidth: '300px' }}
                   >
                     <Button type="primary" style={{ width: '90%' }}>
                       Invite

@@ -24,8 +24,8 @@ const data = [
   {
     title: 'Fill Out Your Profile',
     description: 'Customize your profile to attract partners to promote or run your events.',
-    tutorial: 'https://lootbox.fund',
-    examples: 'https://google.com',
+    tutorial: 'https://youtu.be/mBgjHVqkCXM',
+    examples: 'https://youtu.be/mBgjHVqkCXM',
     action: '/dashboard/getting-started',
     isAdvanced: true,
     key: 'fill-out-profile',
@@ -33,8 +33,8 @@ const data = [
   {
     title: 'Create an Offer',
     description: 'Offers are promotional incentives to attract new users.',
-    tutorial: 'https://lootbox.fund',
-    examples: 'https://google.com',
+    tutorial: 'https://youtu.be/ziJPOLHM3Pk',
+    examples: 'https://youtu.be/ziJPOLHM3Pk',
     action: '/manage/offers/create',
     isAdvanced: false,
     key: 'create-an-offer',
@@ -42,16 +42,16 @@ const data = [
   {
     title: 'Define an Activation',
     description: 'Activations are specific events you want to see happen.',
-    tutorial: 'https://lootbox.fund',
-    examples: 'https://google.com',
+    tutorial: 'https://youtu.be/bCJYSNXxlQw',
+    examples: 'https://youtu.be/bCJYSNXxlQw',
     isAdvanced: true,
     key: 'define-an-activation',
   },
   {
     title: 'Create an Ad',
     description: 'Deliver your message with a video or image ad shown on Lootbox tickets.',
-    tutorial: 'https://lootbox.fund',
-    examples: 'https://google.com',
+    tutorial: 'https://youtu.be/JGKAMEdIEr8',
+    examples: 'https://youtu.be/JGKAMEdIEr8',
     action: '/manage/ads/create',
     isAdvanced: false,
     key: 'create-an-ad',
@@ -68,8 +68,8 @@ const data = [
     title: 'Recruit Partners',
     description:
       'Recruit influencers, streamers and gaming communities to help promoter or run your events.',
-    tutorial: 'https://lootbox.fund',
-    examples: 'https://google.com',
+    tutorial: 'https://youtu.be/QRxctZJ5uRI',
+    examples: 'https://youtu.be/QRxctZJ5uRI',
     action: '/marketplace/outsource',
     isAdvanced: false,
     key: 'recruit-partners',
@@ -215,7 +215,9 @@ const QuickStartChecklist: React.FC<QuickStartChecklistProps> = ({}) => {
                   />
                 )
               }
-              title={item.action ? <a href={item.action}>{item.title}</a> : <a>{item.title}</a>}
+              title={
+                item.action ? <a href={item.action}>{item.title}</a> : <span>{item.title}</span>
+              }
               description={item.description}
             />
             <$Horizontal style={{ width: '250px' }}>

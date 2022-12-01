@@ -61,10 +61,12 @@ const OutsourcePage: React.FC = () => {
   const renderHelpText = () => {
     return (
       <$InfoDescription>
-        {`The Outsourcing Marketplace lets you hire event organizers from gaming communities, influencers & streamers. Use this if you want to be the MAIN advertiser.`}
+        {`The Outsourcing Marketplace lets you hire event organizers from gaming communities, influencers & streamers.`}
         {` `}To learn more,{' '}
         <span>
-          <a>click here for a tutorial.</a>
+          <a href="https://lootbox.fyi/3tVx80n" target="_blank" rel="noreferrer">
+            click here for a tutorial.
+          </a>
         </span>
       </$InfoDescription>
     );
@@ -119,7 +121,14 @@ const OutsourcePage: React.FC = () => {
           <Space size="middle">
             <Popconfirm
               key={`invite-${record.id}`}
-              title={`To invite ${record.name} to your Event, copy their PromoterID "${record.id}" and add them from your Event Page`}
+              title={
+                <span>
+                  {`To invite ${record.name} to your Event, copy their PromoterID "${record.id}" and add them from your Event Page. `}
+                  <a href="https://lootbox.fyi/3VoS7V2" target="_blank" rel="noreferrer">
+                    View Tutorial
+                  </a>
+                </span>
+              }
               onConfirm={() => {
                 navigator.clipboard.writeText(record.id);
                 message.success('Copied to clipboard');

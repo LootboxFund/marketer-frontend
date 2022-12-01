@@ -7,13 +7,13 @@ import { $Horizontal } from '@/components/generics';
 import { Link } from '@umijs/max';
 import { EyeOutlined } from '@ant-design/icons';
 
-interface AdSetToOfferPickerProps {
+interface AirdropOfferExclusionPickerProps {
   listOfOffers: OfferPreview[];
   chosenOffers: React.MutableRefObject<OfferID[]>;
   disabled: boolean;
   initialSelectedKeys?: OfferID[];
 }
-const AdSetToOfferPicker: React.FC<AdSetToOfferPickerProps> = ({
+const AirdropOfferExclusionPicker: React.FC<AirdropOfferExclusionPickerProps> = ({
   listOfOffers,
   chosenOffers,
   disabled,
@@ -35,12 +35,8 @@ const AdSetToOfferPicker: React.FC<AdSetToOfferPickerProps> = ({
     direction: TransferDirection,
     moveKeys: string[],
   ) => {
-    // setTargetKeys(newTargetKeys);
-    // chosenOffers.current = newTargetKeys as OfferID[];
-
-    // only allow 1 to be selected
-    setTargetKeys([newTargetKeys[0]]);
-    chosenOffers.current = [newTargetKeys[0]] as OfferID[];
+    setTargetKeys(newTargetKeys);
+    chosenOffers.current = newTargetKeys as OfferID[];
   };
 
   const handleSelectChange = (sourceSelectedKeys: string[], targetSelectedKeys: string[]) => {
@@ -68,7 +64,7 @@ const AdSetToOfferPicker: React.FC<AdSetToOfferPickerProps> = ({
       <Transfer
         disabled={disabled}
         dataSource={offersToShow}
-        titles={['Select Options', 'Appears in these Offers']}
+        titles={['All Airdrops', 'Excluded Airdrops']}
         targetKeys={targetKeys}
         selectedKeys={selectedKeys}
         showSearch
@@ -105,4 +101,4 @@ const AdSetToOfferPicker: React.FC<AdSetToOfferPickerProps> = ({
   );
 };
 
-export default AdSetToOfferPicker;
+export default AirdropOfferExclusionPicker;

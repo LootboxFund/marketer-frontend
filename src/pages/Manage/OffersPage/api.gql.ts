@@ -15,6 +15,7 @@ export const LIST_CREATED_OFFERS = gql`
           startDate
           endDate
           status
+          strategy
         }
       }
       ... on ResponseError {

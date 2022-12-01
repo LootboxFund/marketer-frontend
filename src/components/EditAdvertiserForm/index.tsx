@@ -9,6 +9,7 @@ import { AntUploadFile } from '../AntFormBuilder';
 import { AdvertiserStorageFolder } from '@/api/firebase/storage';
 import { $Horizontal } from '@/components/generics';
 import { useAuth } from '@/api/firebase/useAuth';
+import ClickToCopy from '../ClickToCopy';
 
 export type EditAdvertiserFormProps = {
   advertiser: {
@@ -39,10 +40,11 @@ const EditAdvertiserForm: React.FC<EditAdvertiserFormProps> = ({ advertiser, onS
   const [viewMode, setViewMode] = useState(true);
   const [pending, setPending] = useState(false);
   const newMediaDestination = useRef('');
-  console.log(user);
   const [advertiserInfo, setAdvertiserInfo] = useState(ADVERTISER_INFO);
+
   useEffect(() => {
     setAdvertiserInfo({
+      ...advertiserInfo,
       id: advertiser.id,
       name: advertiser.name,
       description: advertiser.description || '',
@@ -53,10 +55,10 @@ const EditAdvertiserForm: React.FC<EditAdvertiserFormProps> = ({ advertiser, onS
     });
   }, [advertiser]);
   useEffect(() => {
-    setAdvertiserInfo({
-      ...advertiserInfo,
+    setAdvertiserInfo((info) => ({
+      ...info,
       privateLoginEmail: user?.email || '',
-    });
+    }));
   }, [user]);
   const handleFinish = useCallback(async (values) => {
     const payload = {} as Omit<UpdateAdvertiserDetailsPayload, 'id'>;
@@ -155,6 +157,8 @@ const EditAdvertiserForm: React.FC<EditAdvertiserFormProps> = ({ advertiser, onS
         key: 'id',
         label: 'Advertiser ID',
         tooltip: 'Your Advertiser ID in case anyone asks you for it.',
+        // @ts-ignore
+        viewWidget: () => <ClickToCopy text={advertiserInfo.id} showTip />,
       });
     }
     return meta;

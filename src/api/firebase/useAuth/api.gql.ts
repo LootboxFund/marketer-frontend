@@ -114,3 +114,29 @@ export const UPGRADE_TO_ADVERTISER = gql`
     }
   }
 `;
+
+export const UPGRADE_TO_AFFILIATE = gql`
+  mutation UpgradeToAffiliate {
+    upgradeToAffiliate {
+      ... on UpgradeToAffiliateResponseSuccess {
+        affiliate {
+          id
+          userID
+          name
+          avatar
+          description
+          rank
+          publicContactEmail
+          website
+          audienceSize
+        }
+      }
+      ... on ResponseError {
+        error {
+          code
+          message
+        }
+      }
+    }
+  }
+`;

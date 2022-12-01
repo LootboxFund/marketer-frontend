@@ -5,7 +5,7 @@ import type {
 } from '@/api/graphql/generated/types';
 import { useAdvertiserUser } from '@/components/AuthGuard/advertiserUserInfo';
 import { PageContainer } from '@ant-design/pro-components';
-import { Button, Image } from 'antd';
+import { Button, Card, Image, Table } from 'antd';
 import { useQuery } from '@apollo/client';
 import Spin from 'antd/lib/spin';
 import React, { useState } from 'react';
@@ -14,7 +14,7 @@ import styles from './index.less';
 import { useParams } from '@umijs/max';
 import BreadCrumbDynamic from '@/components/BreadCrumbDynamic';
 import { TournamentID } from '@wormgraph/helpers';
-import { $ColumnGap, $Horizontal, $InfoDescription } from '@/components/generics';
+import { $ColumnGap, $Horizontal, $InfoDescription, $Vertical } from '@/components/generics';
 import CreateEventForm from '@/components/CreateEventForm';
 import { manifest } from '@/manifest';
 
@@ -55,11 +55,15 @@ const EventPage: React.FC = () => {
         {`View in-depth details about an Event to help make informed decisions. `}
         To learn more,{' '}
         <span>
-          <a>click here for a tutorial.</a>
+          <a href="https://lootbox.fyi/3EUYGcu" target="_blank" rel="noreferrer">
+            click here for a tutorial.
+          </a>
         </span>
       </$InfoDescription>
     );
   };
+  console.log(`--- tournament ---`, tournament);
+
   return (
     <div style={{ maxWidth }}>
       {loading || !tournament ? (

@@ -37,8 +37,12 @@ const AdToAdSetPicker: React.FC<AdToAdSetPickerProps> = ({
     direction: TransferDirection,
     moveKeys: string[],
   ) => {
-    setTargetKeys(newTargetKeys);
-    chosenAdSets.current = newTargetKeys as AdID[];
+    // setTargetKeys(newTargetKeys);
+    // chosenAdSets.current = newTargetKeys as AdID[];
+
+    // only allow 1 to be selected
+    setTargetKeys([newTargetKeys[0]]);
+    chosenAdSets.current = [newTargetKeys[0]] as AdID[];
   };
 
   const handleSelectChange = (sourceSelectedKeys: string[], targetSelectedKeys: string[]) => {

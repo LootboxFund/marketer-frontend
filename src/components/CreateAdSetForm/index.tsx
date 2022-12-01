@@ -322,7 +322,7 @@ const CreateAdSetForm: React.FC<CreateAdSetFormProps> = ({
           render() {
             return (
               <fieldset>
-                <legend>Attach Creatives</legend>
+                <legend>Attach 1 Creative</legend>
               </fieldset>
             );
           },
@@ -345,7 +345,7 @@ const CreateAdSetForm: React.FC<CreateAdSetFormProps> = ({
           ),
           required: true,
           disabled: mode !== 'create',
-          options: [Placement.AfterTicketClaim, Placement.BeforePayout, Placement.AfterPayout],
+          options: [Placement.AfterTicketClaim, Placement.Airdrop],
           rules: [
             {
               validator: (rule: any, value: any, callback: any) => {
@@ -362,7 +362,7 @@ const CreateAdSetForm: React.FC<CreateAdSetFormProps> = ({
           render() {
             return (
               <span style={{ color: 'gray', paddingBottom: '10px' }}>
-                {`Creatives must match Placement`}
+                {`Creative must match Placement`}
               </span>
             );
           },
@@ -392,7 +392,7 @@ const CreateAdSetForm: React.FC<CreateAdSetFormProps> = ({
           render() {
             return (
               <fieldset>
-                <legend>{`Available In Offers (Can modify anytime)`}</legend>
+                <legend>{`Attach 1 Offer (Can modify anytime)`}</legend>
               </fieldset>
             );
           },

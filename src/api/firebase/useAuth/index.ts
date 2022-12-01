@@ -3,11 +3,17 @@ import type {
   MutationCreateUserWithPasswordArgs,
   ResponseError,
   UpgradeToAdvertiserResponse,
+  UpgradeToAffiliateResponse,
 } from '../../graphql/generated/types';
 import { useEffect, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { auth } from '../app';
-import { SIGN_UP_WITH_PASSWORD, CREATE_USER, UPGRADE_TO_ADVERTISER } from './api.gql';
+import {
+  SIGN_UP_WITH_PASSWORD,
+  CREATE_USER,
+  UPGRADE_TO_ADVERTISER,
+  UPGRADE_TO_AFFILIATE,
+} from './api.gql';
 import {
   signInWithEmailAndPassword as signInWithEmailAndPasswordFirebase,
   sendEmailVerification,
@@ -66,6 +72,9 @@ export const useAuth = () => {
   const [phoneConfirmationResult, setPhoneConfirmationResult] = useState<ConfirmationResult | null>(
     null,
   );
+
+  const [upgradeToAffiliateMutation] =
+    useMutation<{ upgradeToAffiliate: UpgradeToAffiliateResponse }>(UPGRADE_TO_AFFILIATE);
 
   const [
     getAdvertiser,
@@ -277,6 +286,19 @@ export const useAuth = () => {
     removeCookie(ADVERTISER_ID_COOKIE, { path: '/' });
   };
 
+  const upgradeToAffiliate = async () => {
+    const { data } = await upgradeToAffiliateMutation();
+
+    if (!data) {
+      throw new Error('An error occurred');
+    } else if (data?.upgradeToAffiliate?.__typename === 'ResponseError') {
+      throw new Error(data.upgradeToAffiliate.error.message);
+    } else if (data?.upgradeToAffiliate?.__typename === 'UpgradeToAffiliateResponseSuccess') {
+      message.success('Successfully registered as an affiliate!');
+    }
+    return data.upgradeToAffiliate;
+  };
+
   // const updatePassword = async (password: string, newPassword: string): Promise<void> => {
 
   return {
@@ -284,6 +306,7 @@ export const useAuth = () => {
     signInWithEmailAndPassword,
     signUpWithEmailAndPassword,
     upgradeToAdvertiser,
+    upgradeToAffiliate,
     sendPhoneVerification,
     signInPhoneWithCode,
     logout,

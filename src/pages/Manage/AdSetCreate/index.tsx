@@ -117,7 +117,9 @@ const AdSetCreate: React.FC = () => {
         {`Create a new Ad Set to define combinations of Ad Creatives + Offer Placements + Audience Targeting. `}
         {` `}If this is your first time managing ad sets,{' '}
         <span>
-          <a>click here for a tutorial.</a>
+          <a href="https://lootbox.fyi/3U4NgYV" target="_blank" rel="noreferrer">
+            click here for a tutorial.
+          </a>
         </span>
       </$InfoDescription>
     );
