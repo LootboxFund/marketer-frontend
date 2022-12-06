@@ -129,14 +129,18 @@ const Welcome: React.FC = () => {
               index={1}
               title="Find Affiliate Partners"
               desc="Shop for qualified gaming communities, influencers & streamers in a central place."
-              action={<Link to="/marketplace/outsource">Find Partners {'>'}</Link>}
+              action={
+                <a href="https://youtu.be/QRxctZJ5uRI" target="_blank" rel="noreferrer">
+                  Find Partners {'>'}
+                </a>
+              }
             />
             <InfoCard
               index={2}
               title="Outsource Your Events"
               desc="Invite them to run your community events, or join their existing plans."
               action={
-                <a href="https://google.com" target="_blank" rel="noreferrer">
+                <a href="https://youtu.be/ziJPOLHM3Pk" target="_blank" rel="noreferrer">
                   Create Proposal {'>'}
                 </a>
               }
