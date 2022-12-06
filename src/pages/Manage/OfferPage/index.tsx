@@ -559,7 +559,7 @@ const OfferPage: React.FC = () => {
               title={
                 <span>
                   {`Go to an Ad Sets' control panel to include it into an Offer. `}
-                  <a href="https://google.com" target="_blank" rel="noreferrer">
+                  <a href="https://lootbox.fyi/3B23RoO" target="_blank" rel="noreferrer">
                     View Tutorial
                   </a>
                 </span>

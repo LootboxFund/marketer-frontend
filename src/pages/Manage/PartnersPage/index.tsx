@@ -105,7 +105,7 @@ const PartnersPage: React.FC = () => {
                 <span style={{ maxWidth: '200px' }}>
                   {`You do not have any partners yet.
                     Visit the marketplace to start whitelisting partners to offers! `}
-                  <a href="https://google.com" target="_blank" rel="noreferrer">
+                  <a href="https://lootbox.fyi/3fwaSqj" target="_blank" rel="noreferrer">
                     View Tutorial
                   </a>
                 </span>
