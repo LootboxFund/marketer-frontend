@@ -88,6 +88,7 @@ const OfferCreate: React.FC = () => {
       // @ts-ignore
       offerCreationVariables.payload.airdropMetadata = payload.airdropMetadata;
     }
+    console.log(`offerCreationVariables`, offerCreationVariables);
     const res = await createOfferMutation({
       variables: offerCreationVariables,
     });
@@ -114,8 +115,6 @@ const OfferCreate: React.FC = () => {
     );
   };
 
-  console.log(`--- offers ---`);
-  console.log(offers);
   return (
     <PageContainer>
       {renderHelpText()}

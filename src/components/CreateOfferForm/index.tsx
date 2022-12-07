@@ -4,6 +4,7 @@ import {
   MeasurementPartnerType,
   OfferID,
   OfferStatus,
+  QuestionFieldType,
 } from '@wormgraph/helpers';
 import moment from 'moment';
 import type { Moment } from 'moment';
@@ -24,7 +25,19 @@ import { DateView } from '../AntFormBuilder';
 import { AdvertiserStorageFolder } from '@/api/firebase/storage';
 import { $Vertical, $Horizontal } from '@/components/generics';
 import AirdropOfferExclusionPicker from './AirdropOfferExclusionPicker';
-import { QuestionFieldType } from '../../api/graphql/generated/types';
+
+const QuestionTypes = [
+  QuestionFieldType.Text,
+  QuestionFieldType.Email,
+  QuestionFieldType.Phone,
+  QuestionFieldType.Address,
+  QuestionFieldType.Screenshot,
+  QuestionFieldType.Date,
+  QuestionFieldType.Link,
+  QuestionFieldType.Number,
+  QuestionFieldType.SingleSelect,
+  QuestionFieldType.MultiSelect,
+];
 
 export type CreateOfferFormProps = {
   offer?: {
@@ -399,13 +412,7 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
           tooltip:
             'Choose text answers for the most flexible. Address refers to a blockchain address. Screenshot is an image upload.',
           widget: 'select',
-          options: [
-            QuestionFieldType.Text,
-            QuestionFieldType.Email,
-            QuestionFieldType.Phone,
-            QuestionFieldType.Address,
-            QuestionFieldType.Screenshot,
-          ],
+          options: QuestionTypes,
         },
         {
           key: 'airdropMetadata_questionTwoText',
@@ -422,13 +429,7 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
           tooltip:
             'Choose text answers for the most flexible. Address refers to a blockchain address. Screenshot is an image upload.',
           widget: 'select',
-          options: [
-            QuestionFieldType.Text,
-            QuestionFieldType.Email,
-            QuestionFieldType.Phone,
-            QuestionFieldType.Address,
-            QuestionFieldType.Screenshot,
-          ],
+          options: QuestionTypes,
         },
       ],
     };
