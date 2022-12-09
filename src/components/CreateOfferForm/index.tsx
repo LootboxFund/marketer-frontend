@@ -75,6 +75,8 @@ const OFFER_INFO = {
   airdropMetadata: {
     excludedOffers: [] as OfferID[],
     instructionsLink: '',
+    instructionsCallToAction: '',
+    callToActionLink: '',
     oneLiner: '',
     questions: [] as QuestionAnswerPreview[],
     value: '',
@@ -118,6 +120,8 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
         airdropMetadata: {
           excludedOffers: (offer.airdropMetadata?.excludedOffers || []) as OfferID[],
           instructionsLink: offer.airdropMetadata?.instructionsLink || '',
+          instructionsCallToAction: offer.airdropMetadata?.instructionsCallToAction || '',
+          callToActionLink: offer.airdropMetadata?.callToActionLink || 'Complete Task',
           oneLiner: offer.airdropMetadata?.oneLiner || '',
           questions: offer.airdropMetadata?.questions || [],
           value: offer.airdropMetadata?.value || '',
@@ -166,6 +170,8 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
         oneLiner: values.airdropMetadata_oneLiner,
         value: values.airdropMetadata_value,
         instructionsLink: values.airdropMetadata_instructionsLink,
+        instructionsCallToAction: values.airdropMetadata_instructionsCallToAction,
+        callToActionLink: values.airdropMetadata_callToActionLink,
         excludedOffers: chosenOffers.current,
         questions: [],
       };
@@ -345,7 +351,7 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
       fields: [
         {
           key: 'airdropMetadata_oneLiner',
-          label: 'One Liner',
+          label: 'One Liner Ask',
           initialValue: offerInfo?.airdropMetadata.oneLiner,
           tooltip:
             'One line description of what you want the user to do to claim your airdrop reward. Max 50 characters.',
@@ -361,17 +367,57 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
         },
         {
           key: 'airdropMetadata_instructionsLink',
-          label: mode === 'create' ? 'Link to Instructions' : 'Instructions',
+          label: 'Video Instructions',
           initialValue: offerInfo?.airdropMetadata.instructionsLink,
           tooltip:
             'Link to a YouTube video or Notion page where users will go to see your full instructions. It should be easy to follow. Use a placeholder bitly or google docs link if you do not have this yet.',
-          rules: [{ type: 'url' } as Rule, { type: 'string', min: 3 } as Rule],
+          rules: [
+            { type: 'url' } as Rule,
+            { type: 'string', min: 3 } as Rule,
+            {
+              validator: (rule: any, value: any, callback: any) => {
+                // Do async validation to check if username already exists
+                // Use setTimeout to emulate api call
+                return new Promise((resolve, reject) => {
+                  if (
+                    offerInfo?.airdropMetadata.instructionsLink.indexOf('youtu.be') == -1 &&
+                    offerInfo?.airdropMetadata.instructionsLink.indexOf('youtube.com') == -1
+                  ) {
+                    resolve('success');
+                  } else {
+                    reject(new Error(`Must be a YouTube video link`));
+                  }
+                });
+              },
+            },
+          ],
           viewWidget: () => (
             <a
               href={offerInfo?.airdropMetadata.instructionsLink || ''}
               target="_blank"
               rel="noreferrer"
             >{`${offerInfo?.airdropMetadata.instructionsLink.slice(0, 25)}...`}</a>
+          ),
+        },
+        {
+          key: 'airdropMetadata_instructionsCallToAction',
+          label: 'Call to Action',
+          initialValue: offerInfo?.airdropMetadata.instructionsCallToAction,
+          tooltip: 'Call to action to complete the task, after watching the instructional video.',
+          rules: [{ type: 'string', max: 20 } as Rule],
+        },
+        {
+          key: 'airdropMetadata_callToActionLink',
+          label: 'CTA Link',
+          initialValue: offerInfo?.airdropMetadata.callToActionLink,
+          tooltip: 'Affiliate link to complete the asked task when clicking the call to action',
+          rules: [{ type: 'url' } as Rule, { type: 'string', min: 3 } as Rule],
+          viewWidget: () => (
+            <a
+              href={offerInfo?.airdropMetadata.callToActionLink || ''}
+              target="_blank"
+              rel="noreferrer"
+            >{`${offerInfo?.airdropMetadata.callToActionLink.slice(0, 25)}...`}</a>
           ),
         },
       ],
