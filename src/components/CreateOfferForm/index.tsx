@@ -380,12 +380,11 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
                 // Use setTimeout to emulate api call
                 return new Promise((resolve, reject) => {
                   if (
-                    offerInfo?.airdropMetadata.instructionsLink.indexOf('youtu.be') == -1 &&
-                    offerInfo?.airdropMetadata.instructionsLink.indexOf('youtube.com') == -1
+                    offerInfo?.airdropMetadata.instructionsLink.indexOf('youtube.com/embed') > -1
                   ) {
                     resolve('success');
                   } else {
-                    reject(new Error(`Must be a YouTube video link`));
+                    reject(new Error(`Must be a YouTube embed video link`));
                   }
                 });
               },
