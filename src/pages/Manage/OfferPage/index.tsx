@@ -424,6 +424,8 @@ const OfferPage: React.FC = () => {
                       oneLiner: offer.airdropMetadata.oneLiner,
                       value: offer.airdropMetadata.value,
                       questions: offer.airdropMetadata.questions,
+                      lootboxTemplateID: offer.airdropMetadata.lootboxTemplateID,
+                      lootboxTemplateStamp: offer.airdropMetadata.lootboxTemplateStamp,
                     }
                   : undefined,
               }}
