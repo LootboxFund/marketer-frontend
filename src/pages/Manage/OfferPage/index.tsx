@@ -419,9 +419,13 @@ const OfferPage: React.FC = () => {
                   ? {
                       excludedOffers: offer.airdropMetadata.excludedOffers,
                       instructionsLink: offer.airdropMetadata.instructionsLink,
+                      instructionsCallToAction: offer.airdropMetadata.instructionsCallToAction,
+                      callToActionLink: offer.airdropMetadata.callToActionLink,
                       oneLiner: offer.airdropMetadata.oneLiner,
                       value: offer.airdropMetadata.value,
                       questions: offer.airdropMetadata.questions,
+                      lootboxTemplateID: offer.airdropMetadata.lootboxTemplateID,
+                      lootboxTemplateStamp: offer.airdropMetadata.lootboxTemplateStamp,
                     }
                   : undefined,
               }}

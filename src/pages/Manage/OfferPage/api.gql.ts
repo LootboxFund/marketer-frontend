@@ -41,7 +41,11 @@ export const GET_OFFER = gql`
             oneLiner
             value
             instructionsLink
+            instructionsCallToAction
+            callToActionLink
             excludedOffers
+            lootboxTemplateID
+            lootboxTemplateStamp
             questions {
               question
               type

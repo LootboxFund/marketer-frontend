@@ -13,6 +13,11 @@ export enum AdvertiserStorageFolder {
   AD_VIDEO = 'ad-video',
   AVATAR = 'avatar',
 }
+export enum AffiliateStorageFolder {
+  AVATAR = 'avatar',
+  TOURNAMENT = 'tournament',
+  LOOTBOX = 'lootbox',
+}
 
 /**
  * Save image to gbucket
@@ -37,7 +42,7 @@ export const uploadImageToFirestore = async ({
   file,
   advertiserID,
 }: {
-  folderName: AdvertiserStorageFolder;
+  folderName: AdvertiserStorageFolder | AffiliateStorageFolder;
   folderID?: string;
   file: File;
   advertiserID: AdvertiserID;
