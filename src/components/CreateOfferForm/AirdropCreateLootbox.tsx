@@ -27,7 +27,7 @@ import { useAdvertiserUser } from '../AuthGuard/advertiserUserInfo';
 
 const DEFAULT_THEME_COLOR = '#000001';
 
-interface LootboxBody {
+export interface LootboxBody {
   description: string;
   backgroundImage: string;
   logoImage: string;
@@ -66,9 +66,10 @@ export type AirdropCreateLootboxProps = {
   };
   onSubmitCreate: (payload: CreateLootboxRequest) => Promise<OnSubmitCreateResponse>;
   mode: 'create';
+  saveProgressOfLootbox: ({ nftBountyValue }: { nftBountyValue: string }) => void;
 };
 
-const LOOTBOX_INFO: LootboxBody = {
+export const LOOTBOX_INFO: LootboxBody = {
   description: '',
   backgroundImage: placeholderBackground,
   logoImage: placeholderImage,
@@ -86,6 +87,7 @@ const AirdropCreateLootbox: React.FC<AirdropCreateLootboxProps> = ({
   airdropParams,
   onSubmitCreate,
   mode,
+  saveProgressOfLootbox,
 }) => {
   const {
     advertiserUser: { id: advertiserUserID },
@@ -145,6 +147,9 @@ const AirdropCreateLootbox: React.FC<AirdropCreateLootboxProps> = ({
     try {
       const { lootboxID } = await onSubmitCreate(payload);
       console.log(`Look at this lootbox = ${lootboxID}`);
+      saveProgressOfLootbox({
+        nftBountyValue: form.getFieldValue('nftBountyValue'),
+      });
     } catch (e: any) {
       if (e?.code === 4001 || e?.code === 'ACTION_REJECTED') {
         return;
@@ -154,6 +159,7 @@ const AirdropCreateLootbox: React.FC<AirdropCreateLootboxProps> = ({
         content: `${e.message}`,
       });
     } finally {
+      // saveProgressOfLootbox(lootboxInfo);
       notification.close('loading-create-lootbox');
       setPending(false);
     }
