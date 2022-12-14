@@ -29,7 +29,11 @@ import { DateView } from '../AntFormBuilder';
 import { AdvertiserStorageFolder } from '@/api/firebase/storage';
 import { $Vertical, $Horizontal } from '@/components/generics';
 import AirdropOfferExclusionPicker from './AirdropOfferExclusionPicker';
-import AirdropCreateLootbox, { CreateLootboxRequest } from './AirdropCreateLootbox';
+import AirdropCreateLootbox, {
+  CreateLootboxRequest,
+  LootboxBody,
+  LOOTBOX_INFO,
+} from './AirdropCreateLootbox';
 import { useMutation } from '@apollo/client';
 import { CreateLootboxResponseFE, CREATE_LOOTBOX } from './api.gql';
 
@@ -142,12 +146,15 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
     CreateLootboxResponseFE,
     MutationCreateLootboxArgs
   >(CREATE_LOOTBOX);
+  console.log(`offerInfo`, offerInfo);
+
   const handleFinish = useCallback(
     async (values) => {
       console.log(`---- values ----`);
       console.log(values);
       console.log(lootboxTemplateID);
-      if (!lootboxTemplateID) return;
+      if (form.getFieldValue('strategy') === OfferStrategyType.Airdrop && !lootboxTemplateID)
+        return;
       setPending(true);
       type OfferFormPayloadFE = CreateOfferPayload | Omit<EditOfferPayload, 'id'>;
       const payload = {} as OfferFormPayloadFE;
@@ -181,9 +188,10 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
         // @ts-ignore
         payload.strategy = values.strategy;
         // @ts-ignore
+        console.log(`values = `, values);
         payload.airdropMetadata = {
           oneLiner: values.airdropMetadata_oneLiner,
-          value: values.airdropMetadata_value,
+          value: values.airdropMetadata_value || offerInfo.airdropMetadata.value,
           instructionsLink: values.airdropMetadata_instructionsLink,
           instructionsCallToAction: values.airdropMetadata_instructionsCallToAction,
           callToActionLink: values.airdropMetadata_callToActionLink,
@@ -370,7 +378,7 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
       fields: [
         {
           key: 'airdropMetadata_oneLiner',
-          label: 'One Liner Ask',
+          label: 'Task to Complete',
           initialValue: offerInfo?.airdropMetadata.oneLiner,
           tooltip:
             'One line description of what you want the user to do to claim your airdrop reward. Max 50 characters.',
@@ -378,7 +386,7 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
         },
         {
           key: 'airdropMetadata_value',
-          label: 'Reward Value',
+          label: `Reward Value`,
           initialValue: offerInfo?.airdropMetadata.value,
           tooltip:
             'The approximate value of the airdropped reward. This is shown to the user when they see your offer. It should ideally be priced in Fiat to be more understandable.',
@@ -420,14 +428,15 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
         {
           key: 'airdropMetadata_instructionsCallToAction',
           label: 'Call to Action',
-          initialValue: offerInfo?.airdropMetadata.instructionsCallToAction,
+          initialValue: offerInfo?.airdropMetadata.instructionsCallToAction || 'Start Task',
           tooltip: 'Call to action to complete the task, after watching the instructional video.',
           rules: [{ type: 'string', max: 20 } as Rule],
         },
         {
           key: 'airdropMetadata_callToActionLink',
           label: 'CTA Link',
-          initialValue: offerInfo?.airdropMetadata.callToActionLink,
+          initialValue:
+            offerInfo?.airdropMetadata.callToActionLink || form.getFieldValue('affiliateBaseLink'),
           tooltip: 'Affiliate link to complete the asked task when clicking the call to action',
           rules: [{ type: 'url' } as Rule, { type: 'string', min: 3 } as Rule],
           viewWidget: () => (
@@ -574,6 +583,9 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
                 <AirdropCreateLootbox
                   lootboxTemplateID={lootboxTemplateID}
                   onSubmitCreate={createLootbox}
+                  saveProgressOfLootbox={(info) =>
+                    form.setFieldsValue({ airdropMetadata_value: info.nftBountyValue })
+                  }
                   mode="create"
                   airdropParams={{
                     tournamentID: '' as TournamentID,
@@ -585,26 +597,27 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
               </fieldset>
             )}
           {(form.getFieldValue('strategy') === OfferStrategyType.Airdrop ||
-            offerInfo.strategy === OfferStrategyType.Airdrop) && (
-            <fieldset
-              style={{
-                opacity: lootboxTemplateID || mode !== 'create' ? 1 : 0.2,
-              }}
-            >
-              <legend>Airdrop Details</legend>
-              <FormBuilder form={form} meta={getMetaForAirdrop1()} viewMode={viewMode} />
-              <$Horizontal justifyContent="flex-end">
-                <div style={{ maxWidth: '800px', width: '100%' }}>
-                  <FormBuilder form={form} meta={getMetaForAirdrop2()} viewMode={viewMode} />
-                </div>
-              </$Horizontal>
-              {!viewMode && (
+            offerInfo.strategy === OfferStrategyType.Airdrop) &&
+            lootboxTemplateID && (
+              <fieldset
+                style={{
+                  opacity: lootboxTemplateID || mode !== 'create' ? 1 : 0.2,
+                }}
+              >
+                <legend>Airdrop Details</legend>
+                <FormBuilder form={form} meta={getMetaForAirdrop1()} viewMode={viewMode} />
                 <$Horizontal justifyContent="flex-end">
-                  <FormBuilder form={form} meta={getMetaForAirdrop3()} viewMode={viewMode} />
+                  <div style={{ maxWidth: '800px', width: '100%' }}>
+                    <FormBuilder form={form} meta={getMetaForAirdrop2()} viewMode={viewMode} />
+                  </div>
                 </$Horizontal>
-              )}
-            </fieldset>
-          )}
+                {!viewMode && (
+                  <$Horizontal justifyContent="flex-end">
+                    <FormBuilder form={form} meta={getMetaForAirdrop3()} viewMode={viewMode} />
+                  </$Horizontal>
+                )}
+              </fieldset>
+            )}
           {!viewMode && (
             <fieldset>
               <legend>Finish</legend>
@@ -614,9 +627,14 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
                     <Button
                       htmlType="submit"
                       type="primary"
-                      disabled={pending || !lootboxTemplateID}
+                      disabled={
+                        pending ||
+                        (form.getFieldValue('strategy') === OfferStrategyType.Airdrop &&
+                          !lootboxTemplateID)
+                      }
                     >
-                      {!lootboxTemplateID
+                      {form.getFieldValue('strategy') === OfferStrategyType.Airdrop &&
+                      !lootboxTemplateID
                         ? 'Save Template First'
                         : pending
                         ? 'Creating...'
