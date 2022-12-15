@@ -6,6 +6,7 @@ import {
   MeasurementPartnerType,
   OfferID,
   OfferStatus,
+  QuestionAnswerID,
   QuestionFieldType,
   TournamentID,
 } from '@wormgraph/helpers';
@@ -36,19 +37,7 @@ import AirdropCreateLootbox, {
 } from './AirdropCreateLootbox';
 import { useMutation } from '@apollo/client';
 import { CreateLootboxResponseFE, CREATE_LOOTBOX } from './api.gql';
-
-const QuestionTypes = [
-  QuestionFieldType.Text,
-  QuestionFieldType.Email,
-  QuestionFieldType.Phone,
-  QuestionFieldType.Address,
-  QuestionFieldType.Screenshot,
-  QuestionFieldType.Date,
-  QuestionFieldType.Link,
-  QuestionFieldType.Number,
-  QuestionFieldType.SingleSelect,
-  QuestionFieldType.MultiSelect,
-];
+import QuestionEditor, { QuestionDef, QuestionTypes } from '../QuestionEditor';
 
 export type CreateOfferFormProps = {
   offer?: {
@@ -199,17 +188,19 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
           lootboxTemplateID: lootboxTemplateID,
           questions: [],
         };
-        if (values.airdropMetadata_questionOneText && values.airdropMetadata_questionOneType) {
-          payload.airdropMetadata.questions.push({
-            question: values.airdropMetadata_questionOneText,
-            type: values.airdropMetadata_questionOneType,
-          });
-        }
-        if (values.airdropMetadata_questionTwoText && values.airdropMetadata_questionTwoType) {
-          payload.airdropMetadata.questions.push({
-            question: values.airdropMetadata_questionTwoText,
-            type: values.airdropMetadata_questionTwoType,
-          });
+        if (payload.airdropMetadata && payload.airdropMetadata.questions) {
+          if (values.airdropMetadata_questionOneText && values.airdropMetadata_questionOneType) {
+            payload.airdropMetadata.questions.push({
+              question: values.airdropMetadata_questionOneText,
+              type: values.airdropMetadata_questionOneType,
+            });
+          }
+          if (values.airdropMetadata_questionTwoText && values.airdropMetadata_questionTwoType) {
+            payload.airdropMetadata.questions.push({
+              question: values.airdropMetadata_questionTwoText,
+              type: values.airdropMetadata_questionTwoType,
+            });
+          }
         }
       }
       if (newMediaDestination.current) {
@@ -280,7 +271,11 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
           label: 'Strategy',
           disabled: mode === 'create' ? false : true,
           widget: 'select',
-          options: [OfferStrategyType.None, OfferStrategyType.Airdrop],
+          options: [
+            OfferStrategyType.None,
+            OfferStrategyType.Airdrop,
+            OfferStrategyType.AfterTicketClaim,
+          ],
           tooltip:
             'The special marketing strategy for this offer. Check the LOOTBOX tutorial docs for more information.',
         },
@@ -562,6 +557,7 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
 
     throw new Error('An error occured!');
   };
+  const questions: QuestionDef[] = [];
   return (
     <Card style={{ flex: 1 }}>
       <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -618,6 +614,13 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
                 )}
               </fieldset>
             )}
+          {form.getFieldValue('strategy') === OfferStrategyType.AfterTicketClaim ||
+          offerInfo.strategy === OfferStrategyType.Airdrop ? (
+            <fieldset>
+              <legend>After Ticket Claim</legend>
+              {questions && <QuestionEditor mode="create" questions={questions} />}
+            </fieldset>
+          ) : null}
           {!viewMode && (
             <fieldset>
               <legend>Finish</legend>
