@@ -37,7 +37,7 @@ import AirdropCreateLootbox, {
 } from './AirdropCreateLootbox';
 import { useMutation } from '@apollo/client';
 import { CreateLootboxResponseFE, CREATE_LOOTBOX } from './api.gql';
-import QuestionEditor, { QuestionDef, QuestionTypes } from '../QuestionEditor';
+import QuestionEditor, { QuestionDef, QuestionEditorState, QuestionTypes } from '../QuestionEditor';
 
 export type CreateOfferFormProps = {
   offer?: {
@@ -91,6 +91,7 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
 }) => {
   const chosenOffers = useRef([] as OfferID[]);
   const newMediaDestination = useRef('');
+  const questionsRef = useRef<QuestionEditorState>({});
   const [form] = Form.useForm();
   // @ts-ignore
   const forceUpdate = FormBuilder.useForceUpdate();
@@ -135,7 +136,6 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
     CreateLootboxResponseFE,
     MutationCreateLootboxArgs
   >(CREATE_LOOTBOX);
-  console.log(`offerInfo`, offerInfo);
 
   const handleFinish = useCallback(
     async (values) => {
@@ -558,6 +558,29 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
     throw new Error('An error occured!');
   };
   const questions: QuestionDef[] = [];
+
+  const tempDemo = {
+    'new-ef00a284-1ae8-4b46-904d-9c28baed7936': {
+      id: 'new-ef00a284-1ae8-4b46-904d-9c28baed7936',
+      question: 'asdfasf',
+      type: 'Text',
+      mandatory: false,
+    },
+    'new-59a642fc-a69c-4278-92e0-62cc268b7861': {
+      id: 'new-59a642fc-a69c-4278-92e0-62cc268b7861',
+      question: 'dgsdfas',
+      type: 'Phone',
+      mandatory: true,
+    },
+    'new-002aedc4-b8c3-41d9-881c-3d8f26e7598c': {
+      id: 'new-002aedc4-b8c3-41d9-881c-3d8f26e7598c',
+      question: 'fhfh',
+      type: 'Address',
+      mandatory: false,
+    },
+  };
+  const tempDemoArr = Object.values(tempDemo) as QuestionDef[];
+
   return (
     <Card style={{ flex: 1 }}>
       <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -618,7 +641,9 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
           offerInfo.strategy === OfferStrategyType.Airdrop ? (
             <fieldset>
               <legend>After Ticket Claim</legend>
-              {questions && <QuestionEditor mode="create" questions={questions} />}
+              {questions && (
+                <QuestionEditor mode="create" questions={tempDemoArr} questionsRef={questionsRef} />
+              )}
             </fieldset>
           ) : null}
           {!viewMode && (
@@ -663,6 +688,7 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
                   >
                     Cancel
                   </Button>
+                  <Button onClick={() => console.log(questionsRef.current)}>Check</Button>
                 </Form.Item>
               </$Horizontal>
             </fieldset>

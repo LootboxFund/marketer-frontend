@@ -3,9 +3,13 @@ import { Button, Card, Form, Modal, Input } from 'antd';
 import { QuestionAnswerID } from '@wormgraph/helpers';
 import { QuestionFieldType } from '../../api/graphql/generated/types';
 import { Rule } from 'antd/lib/form';
+import { v4 as uuidv4 } from 'uuid';
 import { useEffect, useState } from 'react';
 import Checkbox from 'antd/es/checkbox';
-import { $Horizontal, $ColumnGap } from '@/components/generics';
+import { $Horizontal, $ColumnGap, $Vertical, $InfoDescription } from '@/components/generics';
+import Select from 'antd/es/select';
+import Switch from '@ant-design/pro-form/es/components/Switch';
+import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 
 export const QuestionTypes = [
   QuestionFieldType.Text,
@@ -30,20 +34,32 @@ export type QuestionsEditorProps = {
   mode: 'create' | 'edit-only' | 'view-edit' | 'view-only';
   questions: QuestionDef[];
   pending?: boolean;
+  questionsRef: React.MutableRefObject<QuestionEditorState>;
 };
-
-const QuestionsEditor: React.FC<QuestionsEditorProps> = ({ mode, pending, questions }) => {
+export type QuestionEditorState = Record<QuestionAnswerID, QuestionDef>;
+const QuestionsEditor: React.FC<QuestionsEditorProps> = ({
+  mode,
+  pending,
+  questions,
+  questionsRef,
+}) => {
   const [form] = Form.useForm();
   // @ts-ignore
   const forceUpdate = FormBuilder.useForceUpdate();
   const lockedToEdit = mode === 'create' || mode === 'edit-only';
-  const [questionsHash, setQuestionsHash] = useState<Record<QuestionAnswerID, QuestionDef>>({});
+  const [questionsHash, _setQuestionsHash] = useState<QuestionEditorState>({});
+  const setQuestionsHash = (qhash: QuestionEditorState) => {
+    _setQuestionsHash(qhash);
+    if (questionsRef) {
+      questionsRef.current = qhash;
+    }
+  };
   useEffect(() => {
-    console.log('resettings the questions...');
     if (questions.length === 0) {
+      const tempID = uuidv4();
       setQuestionsHash({
-        ['new-1' as QuestionAnswerID]: {
-          id: 'new-1' as QuestionAnswerID,
+        [`new-${tempID}` as QuestionAnswerID]: {
+          id: `new-${tempID}` as QuestionAnswerID,
           question: '',
           type: QuestionFieldType.Text,
           mandatory: false,
@@ -57,108 +73,21 @@ const QuestionsEditor: React.FC<QuestionsEditorProps> = ({ mode, pending, questi
       );
     }
   }, []);
-  const getMeta = (qid: QuestionAnswerID) => {
-    if (!questionsHash[qid]) {
-      const meta = {
-        columns: 1,
-        disabled: pending,
-        initialValues: questionsHash[qid],
-        fields: [],
-      };
-      return meta;
-    }
-    console.log(`questionsHash[qid]`, questionsHash[qid]);
-    const meta = {
-      columns: 4,
-      disabled: pending,
-      initialValues: questionsHash[qid],
-      // @ts-ignore
-      formItemLayout: null,
-      fields: [
-        {
-          key: `${qid}.question`,
-          label: 'Question',
-          initialValue: questionsHash[qid].question,
-          colSpan: 2,
-          required: true,
-          tooltip: 'The question you want users to answer',
-          widget: () => (
-            <Input
-              value={questionsHash[qid].question}
-              onChange={(e) => {
-                console.log(e);
-                setQuestionsHash({
-                  ...questionsHash,
-                  [qid]: {
-                    ...questionsHash[qid],
-                    question: e.target.value,
-                  },
-                });
-                e.target.focus();
-              }}
-            />
-          ),
-        },
-        {
-          key: `${qid}.type`,
-          label: 'Type',
-          initialValue: questionsHash[qid].type,
-          colSpan: 1,
-          tooltip:
-            'Choose text answers for the most flexible. Address refers to a blockchain address. Screenshot is an image upload.',
-          widget: 'select',
-          options: QuestionTypes,
-        },
-        {
-          key: `${qid}.mandatory`,
-          label: 'Mandatory',
-          colSpan: 1,
-          initialValue: questionsHash[qid].mandatory,
-          widget: () => (
-            <$Horizontal verticalCenter>
-              <Checkbox
-                checked={questionsHash[qid].mandatory}
-                onClick={() => {
-                  setQuestionsHash({
-                    ...questionsHash,
-                    [qid]: {
-                      ...questionsHash[qid],
-                      mandatory: !questionsHash[qid].mandatory,
-                    },
-                  });
-                }}
-              />
-              <$ColumnGap />
-              <Button
-                type="ghost"
-                onClick={() => {
-                  const newQuestionsHash = { ...questionsHash };
-                  delete newQuestionsHash[qid];
-                  setQuestionsHash(newQuestionsHash);
-                }}
-              >
-                Remove
-              </Button>
-            </$Horizontal>
-          ),
-          tooltip: 'Whether you want this question to be mandatory, or optional',
-        },
-      ],
-    };
-    return meta;
-  };
   return (
     <div>
-      <$Horizontal justifyContent="flex-end">
+      <$Horizontal justifyContent="space-between">
+        <$InfoDescription fontSize="0.9rem">Lorem ipsum</$InfoDescription>
         <Button
           type="ghost"
           onClick={() => {
+            const tempID = uuidv4();
             setQuestionsHash({
               ...questionsHash,
-              [`new-${Object.keys(questionsHash).length + 1}`]: {
-                id: `new-${Object.keys(questionsHash).length + 1}`,
+              [`new-${tempID}`]: {
+                id: `new-${tempID}`,
                 question: '',
                 type: QuestionFieldType.Text,
+                mandatory: false,
               },
             });
           }}
@@ -167,20 +96,92 @@ const QuestionsEditor: React.FC<QuestionsEditorProps> = ({ mode, pending, questi
         </Button>
       </$Horizontal>
       <br />
-      {Object.keys(questionsHash).map((key) => {
+      {Object.keys(questionsHash).map((key, i) => {
         const q = questionsHash[key];
         return (
-          <div key={`question-${q.id}`}>
-            <FormBuilder
-              form={form}
-              // @ts-ignore
-              meta={getMeta(q.id)}
-              viewMode={mode === 'view-only'}
-              // onValuesChange={forceUpdate}
+          <$Horizontal key={`question-${q.id}`} verticalCenter>
+            <Input
+              addonBefore={`Q${i + 1}`}
+              value={questionsHash[key].question}
+              onChange={(e) => {
+                setQuestionsHash({
+                  ...questionsHash,
+                  [q.id]: {
+                    ...questionsHash[q.id],
+                    question: e.target.value,
+                  },
+                });
+              }}
+              style={{ flex: 3 }}
             />
-          </div>
+            <$ColumnGap />
+            <Select
+              value={questionsHash[q.id].type}
+              onSelect={(e: any) => {
+                console.log(e);
+                setQuestionsHash({
+                  ...questionsHash,
+                  [q.id]: {
+                    ...questionsHash[q.id],
+                    type: e,
+                  },
+                });
+              }}
+              defaultValue={QuestionFieldType.Text}
+              style={{ flex: 1 }}
+            >
+              {QuestionTypes.map((qt) => (
+                <Select.Option key={`${key}-${qt}`} value={qt}>
+                  {qt}
+                </Select.Option>
+              ))}
+            </Select>
+            <$ColumnGap />
+
+            <$Horizontal
+              verticalCenter
+              style={{
+                width: '100px',
+                minWidth: '100px',
+                maxWidth: '100px',
+                display: 'flex',
+                justifyContent: 'center' /* horizontal align */,
+                alignItems: 'center' /* vertical align */,
+              }}
+            >
+              <Switch
+                // @ts-ignore
+                checked={questionsHash[q.id].mandatory || false}
+                onClick={(e: any) => {
+                  console.log(e);
+                  setQuestionsHash({
+                    ...questionsHash,
+                    [q.id]: {
+                      ...questionsHash[q.id],
+                      mandatory: e,
+                    },
+                  });
+                }}
+                checkedChildren="Mandatory"
+                unCheckedChildren="Optional"
+              />
+            </$Horizontal>
+
+            <Button
+              type="dashed"
+              shape="circle"
+              icon={<DeleteOutlined />}
+              size="middle"
+              onClick={(e) => {
+                const newQuestionsHash = { ...questionsHash };
+                delete newQuestionsHash[q.id];
+                setQuestionsHash(newQuestionsHash);
+              }}
+            />
+          </$Horizontal>
         );
       })}
+      <br />
     </div>
   );
 };
