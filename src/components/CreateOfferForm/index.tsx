@@ -564,19 +564,22 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
       id: 'new-ef00a284-1ae8-4b46-904d-9c28baed7936',
       question: 'asdfasf',
       type: 'Text',
-      mandatory: false,
+      mandatory: true,
+      metadata: '',
     },
     'new-59a642fc-a69c-4278-92e0-62cc268b7861': {
       id: 'new-59a642fc-a69c-4278-92e0-62cc268b7861',
       question: 'dgsdfas',
       type: 'Phone',
       mandatory: true,
+      metadata: '',
     },
     'new-002aedc4-b8c3-41d9-881c-3d8f26e7598c': {
       id: 'new-002aedc4-b8c3-41d9-881c-3d8f26e7598c',
       question: 'fhfh',
-      type: 'Address',
+      type: QuestionFieldType.SingleSelect,
       mandatory: false,
+      metadata: 'Cool, Beans, Other',
     },
   };
   const tempDemoArr = Object.values(tempDemo) as QuestionDef[];

@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react';
 import Checkbox from 'antd/es/checkbox';
 import { $Horizontal, $ColumnGap, $Vertical, $InfoDescription } from '@/components/generics';
 import Select from 'antd/es/select';
-import Switch from '@ant-design/pro-form/es/components/Switch';
+import Switch from 'antd/es/switch';
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 
 export const QuestionTypes = [
@@ -29,6 +29,7 @@ export type QuestionDef = {
   question: string;
   type: QuestionFieldType;
   mandatory?: boolean;
+  metadata?: string;
 };
 export type QuestionsEditorProps = {
   mode: 'create' | 'edit-only' | 'view-edit' | 'view-only';
@@ -88,6 +89,7 @@ const QuestionsEditor: React.FC<QuestionsEditorProps> = ({
                 question: '',
                 type: QuestionFieldType.Text,
                 mandatory: false,
+                metadata: '',
               },
             });
           }}
@@ -98,48 +100,80 @@ const QuestionsEditor: React.FC<QuestionsEditorProps> = ({
       <br />
       {Object.keys(questionsHash).map((key, i) => {
         const q = questionsHash[key];
+        console.log(q);
         return (
-          <$Horizontal key={`question-${q.id}`} verticalCenter>
-            <Input
-              addonBefore={`Q${i + 1}`}
-              value={questionsHash[key].question}
-              onChange={(e) => {
-                setQuestionsHash({
-                  ...questionsHash,
-                  [q.id]: {
-                    ...questionsHash[q.id],
-                    question: e.target.value,
-                  },
-                });
-              }}
-              style={{ flex: 3 }}
-            />
-            <$ColumnGap />
-            <Select
-              value={questionsHash[q.id].type}
-              onSelect={(e: any) => {
-                console.log(e);
-                setQuestionsHash({
-                  ...questionsHash,
-                  [q.id]: {
-                    ...questionsHash[q.id],
-                    type: e,
-                  },
-                });
-              }}
-              defaultValue={QuestionFieldType.Text}
-              style={{ flex: 1 }}
-            >
-              {QuestionTypes.map((qt) => (
-                <Select.Option key={`${key}-${qt}`} value={qt}>
-                  {qt}
-                </Select.Option>
-              ))}
-            </Select>
+          <$Horizontal
+            key={`question-${q.id}`}
+            alignItems="flex-start"
+            style={{ marginBottom: '20px' }}
+          >
+            <$Vertical style={{ display: 'flex', flex: 4 }}>
+              <$Horizontal>
+                <Input
+                  addonBefore={`Q${i + 1}`}
+                  value={questionsHash[key].question}
+                  onChange={(e) => {
+                    setQuestionsHash({
+                      ...questionsHash,
+                      [q.id]: {
+                        ...questionsHash[q.id],
+                        question: e.target.value,
+                      },
+                    });
+                  }}
+                  style={{ flex: 3 }}
+                />
+                <$ColumnGap />
+                <Select
+                  value={questionsHash[q.id].type}
+                  onSelect={(e: any) => {
+                    console.log(e);
+                    setQuestionsHash({
+                      ...questionsHash,
+                      [q.id]: {
+                        ...questionsHash[q.id],
+                        type: e,
+                      },
+                    });
+                  }}
+                  defaultValue={QuestionFieldType.Text}
+                  style={{ flex: 1 }}
+                >
+                  {QuestionTypes.map((qt) => (
+                    <Select.Option key={`${key}-${qt}`} value={qt}>
+                      {qt}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </$Horizontal>
+              {q.type === QuestionFieldType.MultiSelect ||
+              q.type === QuestionFieldType.SingleSelect ? (
+                <Input.TextArea
+                  rows={2}
+                  placeholder={`CSV of options. Include "Other" to allow users to input their own option.
+Example: "Option 1, Option 2, Option 3, Other"
+                  `}
+                  value={q.metadata}
+                  onChange={(e) => {
+                    setQuestionsHash({
+                      ...questionsHash,
+                      [q.id]: {
+                        ...q,
+                        metadata: e.target.value,
+                      },
+                    });
+                  }}
+                  style={{
+                    marginTop: '5px',
+                    backgroundColor: 'rgba(0,0,0,0.03)',
+                    border: '1px solid rgba(256,256,256,0.8)',
+                  }}
+                />
+              ) : null}
+            </$Vertical>
             <$ColumnGap />
 
             <$Horizontal
-              verticalCenter
               style={{
                 width: '100px',
                 minWidth: '100px',
@@ -150,14 +184,13 @@ const QuestionsEditor: React.FC<QuestionsEditorProps> = ({
               }}
             >
               <Switch
-                // @ts-ignore
-                checked={questionsHash[q.id].mandatory || false}
+                checked={q.mandatory || false}
                 onClick={(e: any) => {
                   console.log(e);
                   setQuestionsHash({
                     ...questionsHash,
                     [q.id]: {
-                      ...questionsHash[q.id],
+                      ...q,
                       mandatory: e,
                     },
                   });
