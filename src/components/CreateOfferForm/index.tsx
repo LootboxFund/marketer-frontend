@@ -38,6 +38,7 @@ import AirdropCreateLootbox, {
 import { useMutation } from '@apollo/client';
 import { CreateLootboxResponseFE, CREATE_LOOTBOX } from './api.gql';
 import QuestionEditor, { QuestionDef, QuestionEditorState, QuestionTypes } from '../QuestionEditor';
+import { OfferAfterTicketClaimMetadata } from '../../api/graphql/generated/types';
 
 export type CreateOfferFormProps = {
   offer?: {
@@ -53,6 +54,7 @@ export type CreateOfferFormProps = {
     mmp?: MeasurementPartnerType;
     strategy?: OfferStrategyType;
     airdropMetadata?: OfferAirdropMetadata;
+    afterTicketClaimMetadata?: OfferAfterTicketClaimMetadata;
   };
   offers: OfferPreview[];
   advertiserID: AdvertiserID;
@@ -81,6 +83,9 @@ const OFFER_INFO = {
     questions: [] as QuestionAnswerPreview[],
     value: '',
   },
+  afterTicketClaimMetadata: {
+    questions: [] as QuestionAnswerPreview[],
+  },
 };
 const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
   offer,
@@ -91,7 +96,8 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
 }) => {
   const chosenOffers = useRef([] as OfferID[]);
   const newMediaDestination = useRef('');
-  const questionsRef = useRef<QuestionEditorState>({});
+  const airdropQuestionsRef = useRef<QuestionEditorState>({});
+  const afterTicketClaimsQuestionsRef = useRef<QuestionEditorState>({});
   const [form] = Form.useForm();
   // @ts-ignore
   const forceUpdate = FormBuilder.useForceUpdate();
@@ -128,21 +134,49 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
           questions: offer.airdropMetadata?.questions || [],
           value: offer.airdropMetadata?.value || '',
         },
+        afterTicketClaimMetadata: {
+          questions: offer.afterTicketClaimMetadata?.questions || [],
+        },
       });
       chosenOffers.current = (offer.airdropMetadata?.excludedOffers || []) as OfferID[];
+      if (offer.airdropMetadata && offer.airdropMetadata.questions) {
+        const x = offer.airdropMetadata.questions.reduce((acc, curr) => {
+          return {
+            ...acc,
+            [curr.id]: curr,
+          };
+        }, {} as QuestionEditorState);
+        airdropQuestionsRef.current = x;
+      }
+      if (offer.afterTicketClaimMetadata && offer.afterTicketClaimMetadata.questions) {
+        console.log(
+          `offer.afterTicketClaimMetadata.questions`,
+          offer.afterTicketClaimMetadata.questions,
+        );
+        const x = offer.afterTicketClaimMetadata.questions.reduce((acc, curr) => {
+          return {
+            ...acc,
+            [curr.id]: curr,
+          };
+        }, {} as QuestionEditorState);
+        console.log('x....', x);
+        afterTicketClaimsQuestionsRef.current = x;
+      }
     }
-  }, [offer]);
+  }, [offer, advertiserID]);
   const [createLootboxMutation, { loading: loadingLootboxCreate }] = useMutation<
     CreateLootboxResponseFE,
     MutationCreateLootboxArgs
   >(CREATE_LOOTBOX);
-
+  console.log(`---> offerInfo`, offerInfo);
   const handleFinish = useCallback(
     async (values) => {
-      console.log(`---- values ----`);
-      console.log(values);
-      console.log(lootboxTemplateID);
-      if (form.getFieldValue('strategy') === OfferStrategyType.Airdrop && !lootboxTemplateID)
+      console.log(`lootboxTemplateID= ${lootboxTemplateID}`);
+      if (
+        form.getFieldValue('strategy') === OfferStrategyType.Airdrop &&
+        !lootboxTemplateID &&
+        mode === 'create'
+      )
         return;
       setPending(true);
       type OfferFormPayloadFE = CreateOfferPayload | Omit<EditOfferPayload, 'id'>;
@@ -188,19 +222,40 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
           lootboxTemplateID: lootboxTemplateID,
           questions: [],
         };
-        if (payload.airdropMetadata && payload.airdropMetadata.questions) {
-          if (values.airdropMetadata_questionOneText && values.airdropMetadata_questionOneType) {
-            payload.airdropMetadata.questions.push({
-              question: values.airdropMetadata_questionOneText,
-              type: values.airdropMetadata_questionOneType,
-            });
-          }
-          if (values.airdropMetadata_questionTwoText && values.airdropMetadata_questionTwoType) {
-            payload.airdropMetadata.questions.push({
-              question: values.airdropMetadata_questionTwoText,
-              type: values.airdropMetadata_questionTwoType,
-            });
-          }
+        const hasQuestionsInPayload = payload.airdropMetadata && payload.airdropMetadata.questions;
+        if (hasQuestionsInPayload) {
+          Object.values(airdropQuestionsRef.current).forEach((q) => {
+            if (q.question && q.type && hasQuestionsInPayload) {
+              payload.airdropMetadata?.questions?.push({
+                question: q.question,
+                type: q.type,
+                mandatory: q.mandatory,
+                options: q.options,
+              });
+            }
+          });
+        }
+      }
+      if (values.strategy && values.strategy === OfferStrategyType.AfterTicketClaim) {
+        // @ts-ignore
+        payload.strategy = values.strategy;
+        // @ts-ignore
+        payload.afterTicketClaimMetadata = {
+          questions: [],
+        };
+        const hasQuestionsInPayload =
+          payload.afterTicketClaimMetadata && payload.afterTicketClaimMetadata.questions;
+        if (hasQuestionsInPayload) {
+          Object.values(afterTicketClaimsQuestionsRef.current).forEach((q) => {
+            if (q.question && q.type && hasQuestionsInPayload) {
+              payload.afterTicketClaimMetadata?.questions?.push({
+                question: q.question,
+                type: q.type,
+                mandatory: q.mandatory,
+                options: q.options,
+              });
+            }
+          });
         }
       }
       if (newMediaDestination.current) {
@@ -459,50 +514,50 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
       </$Vertical>
     );
   };
-  const getMetaForAirdrop2 = () => {
-    const meta = {
-      columns: 2,
-      disabled: mode === 'create' ? pending : true,
-      initialValues: offerInfo,
-      fields: [
-        {
-          key: 'airdropMetadata_questionOneText',
-          label: 'Question 1',
-          initialValue: offerInfo?.airdropMetadata.questions[0]?.question || '',
-          tooltip:
-            'You can ask up to 2 questions from the user for your data analysis purposes. Watch the tutorial for our recommendations.',
-          rules: [{ type: 'string', min: 3 } as Rule],
-        },
-        {
-          key: 'airdropMetadata_questionOneType',
-          label: 'Field Type',
-          initialValue: offerInfo?.airdropMetadata.questions[0]?.type || QuestionFieldType.Text,
-          tooltip:
-            'Choose text answers for the most flexible. Address refers to a blockchain address. Screenshot is an image upload.',
-          widget: 'select',
-          options: QuestionTypes,
-        },
-        {
-          key: 'airdropMetadata_questionTwoText',
-          label: 'Question 2',
-          initialValue: offerInfo?.airdropMetadata.questions[1]?.question || '',
-          tooltip:
-            'You can ask up to 2 questions from the user for your data analysis purposes. Watch the tutorial for our recommendations.',
-          rules: [{ type: 'string', min: 3 } as Rule],
-        },
-        {
-          key: 'airdropMetadata_questionTwoType',
-          label: 'Field Type',
-          initialValue: offerInfo?.airdropMetadata.questions[1]?.type || QuestionFieldType.Text,
-          tooltip:
-            'Choose text answers for the most flexible. Address refers to a blockchain address. Screenshot is an image upload.',
-          widget: 'select',
-          options: QuestionTypes,
-        },
-      ],
-    };
-    return meta;
-  };
+  // const getMetaForAirdrop2 = () => {
+  //   const meta = {
+  //     columns: 2,
+  //     disabled: mode === 'create' ? pending : true,
+  //     initialValues: offerInfo,
+  //     fields: [
+  //       {
+  //         key: 'airdropMetadata_questionOneText',
+  //         label: 'Question 1',
+  //         initialValue: offerInfo?.airdropMetadata.questions[0]?.question || '',
+  //         tooltip:
+  //           'You can ask up to 2 questions from the user for your data analysis purposes. Watch the tutorial for our recommendations.',
+  //         rules: [{ type: 'string', min: 3 } as Rule],
+  //       },
+  //       {
+  //         key: 'airdropMetadata_questionOneType',
+  //         label: 'Field Type',
+  //         initialValue: offerInfo?.airdropMetadata.questions[0]?.type || QuestionFieldType.Text,
+  //         tooltip:
+  //           'Choose text answers for the most flexible. Address refers to a blockchain address. Screenshot is an image upload.',
+  //         widget: 'select',
+  //         options: QuestionTypes,
+  //       },
+  //       {
+  //         key: 'airdropMetadata_questionTwoText',
+  //         label: 'Question 2',
+  //         initialValue: offerInfo?.airdropMetadata.questions[1]?.question || '',
+  //         tooltip:
+  //           'You can ask up to 2 questions from the user for your data analysis purposes. Watch the tutorial for our recommendations.',
+  //         rules: [{ type: 'string', min: 3 } as Rule],
+  //       },
+  //       {
+  //         key: 'airdropMetadata_questionTwoType',
+  //         label: 'Field Type',
+  //         initialValue: offerInfo?.airdropMetadata.questions[1]?.type || QuestionFieldType.Text,
+  //         tooltip:
+  //           'Choose text answers for the most flexible. Address refers to a blockchain address. Screenshot is an image upload.',
+  //         widget: 'select',
+  //         options: QuestionTypes,
+  //       },
+  //     ],
+  //   };
+  //   return meta;
+  // };
   const getMetaForAirdrop3 = () => {
     const meta = {
       columns: 1,
@@ -559,31 +614,6 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
   };
   const questions: QuestionDef[] = [];
 
-  const tempDemo = {
-    'new-ef00a284-1ae8-4b46-904d-9c28baed7936': {
-      id: 'new-ef00a284-1ae8-4b46-904d-9c28baed7936',
-      question: 'asdfasf',
-      type: 'Text',
-      mandatory: true,
-      metadata: '',
-    },
-    'new-59a642fc-a69c-4278-92e0-62cc268b7861': {
-      id: 'new-59a642fc-a69c-4278-92e0-62cc268b7861',
-      question: 'dgsdfas',
-      type: 'Phone',
-      mandatory: true,
-      metadata: '',
-    },
-    'new-002aedc4-b8c3-41d9-881c-3d8f26e7598c': {
-      id: 'new-002aedc4-b8c3-41d9-881c-3d8f26e7598c',
-      question: 'fhfh',
-      type: QuestionFieldType.SingleSelect,
-      mandatory: false,
-      metadata: 'Cool, Beans, Other',
-    },
-  };
-  const tempDemoArr = Object.values(tempDemo) as QuestionDef[];
-
   return (
     <Card style={{ flex: 1 }}>
       <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -619,33 +649,39 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
               </fieldset>
             )}
           {(form.getFieldValue('strategy') === OfferStrategyType.Airdrop ||
-            offerInfo.strategy === OfferStrategyType.Airdrop) &&
-            lootboxTemplateID && (
-              <fieldset
-                style={{
-                  opacity: lootboxTemplateID || mode !== 'create' ? 1 : 0.2,
-                }}
-              >
-                <legend>Airdrop Details</legend>
-                <FormBuilder form={form} meta={getMetaForAirdrop1()} viewMode={viewMode} />
+            offerInfo.strategy === OfferStrategyType.Airdrop) && (
+            <fieldset
+              style={{
+                opacity: lootboxTemplateID || mode !== 'create' ? 1 : 0.2,
+              }}
+            >
+              <legend>Airdrop Details</legend>
+              <FormBuilder form={form} meta={getMetaForAirdrop1()} viewMode={viewMode} />
+              <$Horizontal justifyContent="flex-end">
+                <div style={{ maxWidth: '800px', width: '100%' }}>
+                  <QuestionEditor
+                    viewMode={viewMode || mode !== 'create'}
+                    questionsRef={airdropQuestionsRef}
+                  />
+                </div>
+              </$Horizontal>
+              {!viewMode && (
                 <$Horizontal justifyContent="flex-end">
-                  <div style={{ maxWidth: '800px', width: '100%' }}>
-                    <FormBuilder form={form} meta={getMetaForAirdrop2()} viewMode={viewMode} />
-                  </div>
+                  <FormBuilder form={form} meta={getMetaForAirdrop3()} viewMode={viewMode} />
                 </$Horizontal>
-                {!viewMode && (
-                  <$Horizontal justifyContent="flex-end">
-                    <FormBuilder form={form} meta={getMetaForAirdrop3()} viewMode={viewMode} />
-                  </$Horizontal>
-                )}
-              </fieldset>
-            )}
+              )}
+            </fieldset>
+          )}
+          <br />
           {form.getFieldValue('strategy') === OfferStrategyType.AfterTicketClaim ||
-          offerInfo.strategy === OfferStrategyType.Airdrop ? (
+          offerInfo.strategy === OfferStrategyType.AfterTicketClaim ? (
             <fieldset>
               <legend>After Ticket Claim</legend>
               {questions && (
-                <QuestionEditor mode="create" questions={tempDemoArr} questionsRef={questionsRef} />
+                <QuestionEditor
+                  viewMode={viewMode || mode !== 'create'}
+                  questionsRef={afterTicketClaimsQuestionsRef}
+                />
               )}
             </fieldset>
           ) : null}
@@ -691,7 +727,6 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
                   >
                     Cancel
                   </Button>
-                  <Button onClick={() => console.log(questionsRef.current)}>Check</Button>
                 </Form.Item>
               </$Horizontal>
             </fieldset>

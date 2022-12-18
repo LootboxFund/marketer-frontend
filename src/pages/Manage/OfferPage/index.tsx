@@ -428,6 +428,9 @@ const OfferPage: React.FC = () => {
                       lootboxTemplateStamp: offer.airdropMetadata.lootboxTemplateStamp,
                     }
                   : undefined,
+                afterTicketClaimMetadata: offer.afterTicketClaimMetadata
+                  ? { questions: offer.afterTicketClaimMetadata.questions }
+                  : undefined,
               }}
               offers={offers.filter((o) => o.strategy === OfferStrategyType.Airdrop)}
               advertiserID={advertiserID as AdvertiserID}

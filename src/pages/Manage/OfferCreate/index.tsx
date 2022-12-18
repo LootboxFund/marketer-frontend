@@ -88,6 +88,10 @@ const OfferCreate: React.FC = () => {
       // @ts-ignore
       offerCreationVariables.payload.airdropMetadata = payload.airdropMetadata;
     }
+    if (payload.afterTicketClaimMetadata) {
+      // @ts-ignore
+      offerCreationVariables.payload.afterTicketClaimMetadata = payload.afterTicketClaimMetadata;
+    }
     console.log(`offerCreationVariables`, offerCreationVariables);
     const res = await createOfferMutation({
       variables: offerCreationVariables,

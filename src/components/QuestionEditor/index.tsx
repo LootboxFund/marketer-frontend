@@ -15,6 +15,7 @@ export const QuestionTypes = [
   QuestionFieldType.Text,
   QuestionFieldType.Email,
   QuestionFieldType.Phone,
+  QuestionFieldType.Checkbox,
   QuestionFieldType.Address,
   QuestionFieldType.Screenshot,
   QuestionFieldType.Date,
@@ -29,25 +30,15 @@ export type QuestionDef = {
   question: string;
   type: QuestionFieldType;
   mandatory?: boolean;
-  metadata?: string;
+  options?: string;
 };
 export type QuestionsEditorProps = {
-  mode: 'create' | 'edit-only' | 'view-edit' | 'view-only';
-  questions: QuestionDef[];
+  viewMode: boolean;
   pending?: boolean;
   questionsRef: React.MutableRefObject<QuestionEditorState>;
 };
 export type QuestionEditorState = Record<QuestionAnswerID, QuestionDef>;
-const QuestionsEditor: React.FC<QuestionsEditorProps> = ({
-  mode,
-  pending,
-  questions,
-  questionsRef,
-}) => {
-  const [form] = Form.useForm();
-  // @ts-ignore
-  const forceUpdate = FormBuilder.useForceUpdate();
-  const lockedToEdit = mode === 'create' || mode === 'edit-only';
+const QuestionsEditor: React.FC<QuestionsEditorProps> = ({ viewMode, pending, questionsRef }) => {
   const [questionsHash, _setQuestionsHash] = useState<QuestionEditorState>({});
   const setQuestionsHash = (qhash: QuestionEditorState) => {
     _setQuestionsHash(qhash);
@@ -56,9 +47,9 @@ const QuestionsEditor: React.FC<QuestionsEditorProps> = ({
     }
   };
   useEffect(() => {
-    if (questions.length === 0) {
+    if (Object.values(questionsRef.current).length === 0) {
       const tempID = uuidv4();
-      setQuestionsHash({
+      _setQuestionsHash({
         [`new-${tempID}` as QuestionAnswerID]: {
           id: `new-${tempID}` as QuestionAnswerID,
           question: '',
@@ -67,17 +58,15 @@ const QuestionsEditor: React.FC<QuestionsEditorProps> = ({
         },
       });
     } else {
-      setQuestionsHash(
-        questions.reduce((acc, q) => {
-          return { ...acc, [q.id]: q };
-        }, {} as Record<QuestionAnswerID, QuestionDef>),
-      );
+      _setQuestionsHash(questionsRef.current);
     }
   }, []);
   return (
     <div>
       <$Horizontal justifyContent="space-between">
-        <$InfoDescription fontSize="0.9rem">Lorem ipsum</$InfoDescription>
+        <$InfoDescription fontSize="0.9rem">
+          These questions are asked after the fan submits their email and during the video ad.
+        </$InfoDescription>
         <Button
           type="ghost"
           onClick={() => {
@@ -89,10 +78,11 @@ const QuestionsEditor: React.FC<QuestionsEditorProps> = ({
                 question: '',
                 type: QuestionFieldType.Text,
                 mandatory: false,
-                metadata: '',
+                options: '',
               },
             });
           }}
+          disabled={viewMode || pending}
         >
           Add Question
         </Button>
@@ -100,7 +90,7 @@ const QuestionsEditor: React.FC<QuestionsEditorProps> = ({
       <br />
       {Object.keys(questionsHash).map((key, i) => {
         const q = questionsHash[key];
-        console.log(q);
+
         return (
           <$Horizontal
             key={`question-${q.id}`}
@@ -110,6 +100,7 @@ const QuestionsEditor: React.FC<QuestionsEditorProps> = ({
             <$Vertical style={{ display: 'flex', flex: 4 }}>
               <$Horizontal>
                 <Input
+                  disabled={viewMode || pending}
                   addonBefore={`Q${i + 1}`}
                   value={questionsHash[key].question}
                   onChange={(e) => {
@@ -125,6 +116,7 @@ const QuestionsEditor: React.FC<QuestionsEditorProps> = ({
                 />
                 <$ColumnGap />
                 <Select
+                  disabled={viewMode || pending}
                   value={questionsHash[q.id].type}
                   onSelect={(e: any) => {
                     console.log(e);
@@ -149,17 +141,18 @@ const QuestionsEditor: React.FC<QuestionsEditorProps> = ({
               {q.type === QuestionFieldType.MultiSelect ||
               q.type === QuestionFieldType.SingleSelect ? (
                 <Input.TextArea
+                  disabled={viewMode || pending}
                   rows={2}
                   placeholder={`CSV of options. Include "Other" to allow users to input their own option.
 Example: "Option 1, Option 2, Option 3, Other"
                   `}
-                  value={q.metadata}
+                  value={q.options}
                   onChange={(e) => {
                     setQuestionsHash({
                       ...questionsHash,
                       [q.id]: {
                         ...q,
-                        metadata: e.target.value,
+                        options: e.target.value,
                       },
                     });
                   }}
@@ -184,6 +177,7 @@ Example: "Option 1, Option 2, Option 3, Other"
               }}
             >
               <Switch
+                disabled={viewMode || pending}
                 checked={q.mandatory || false}
                 onClick={(e: any) => {
                   console.log(e);
@@ -204,6 +198,7 @@ Example: "Option 1, Option 2, Option 3, Other"
               type="dashed"
               shape="circle"
               icon={<DeleteOutlined />}
+              disabled={viewMode || pending}
               size="middle"
               onClick={(e) => {
                 const newQuestionsHash = { ...questionsHash };
