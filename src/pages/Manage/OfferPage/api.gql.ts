@@ -47,8 +47,20 @@ export const GET_OFFER = gql`
             lootboxTemplateID
             lootboxTemplateStamp
             questions {
+              id
               question
               type
+              mandatory
+              options
+            }
+          }
+          afterTicketClaimMetadata {
+            questions {
+              id
+              question
+              type
+              mandatory
+              options
             }
           }
         }
