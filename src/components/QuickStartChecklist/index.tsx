@@ -59,7 +59,7 @@ const data = [
   {
     title: 'Preload Your Wallet',
     description: 'Connect your wallet and preload funds to pay for ads.',
-    tutorial: 'https://lootbox.fund',
+    tutorial: 'https://lootbox.fyi/3T8aJqC',
     action: '/company/account',
     isAdvanced: true,
     key: 'preload-wallet',
@@ -78,15 +78,15 @@ const data = [
     title: 'Share Free Tickets',
     description:
       'Distribute Lootbox tickets to community members so that your offer can attract new customers.',
-    tutorial: 'https://lootbox.fund',
-    examples: 'https://google.com',
+    tutorial: 'https://lootbox.fyi/3EUxhGc',
+    examples: 'https://lootbox.fyi/3EUxhGc',
     isAdvanced: false,
     key: 'share-free-tickets',
   },
   {
     title: 'View Ticket Performance',
     description: 'Review analytics on offer conversions & ticket distribution from partners. ',
-    tutorial: 'https://lootbox.fund',
+    tutorial: 'https://lootbox.fyi/3B90hZL',
     isAdvanced: true,
     key: 'view-ticket-performance',
   },
@@ -95,6 +95,7 @@ const data = [
     description: 'Schedule a call with the LOOTBOX team to meet your account manager.',
     isAdvanced: true,
     key: 'meet-lootbox-team',
+    action: 'https://lootbox.fyi/3XX8dr6',
   },
 ];
 
