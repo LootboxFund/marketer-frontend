@@ -315,8 +315,8 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
           options: [
             MeasurementPartnerType.Appsflyer,
             MeasurementPartnerType.GoogleTagManager,
-            MeasurementPartnerType.LootboxAppWebsiteVisit,
             MeasurementPartnerType.Manual,
+            MeasurementPartnerType.None,
           ],
           tooltip:
             'The tracking software your offer uses to measure performance. Talk with the LOOTBOX team on how to set this up.',

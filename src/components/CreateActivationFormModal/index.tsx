@@ -208,7 +208,6 @@ const CreateActivationFormModal: React.FC<CreateActivationFormModalProps> = ({
           options: [
             MeasurementPartnerType.Appsflyer,
             MeasurementPartnerType.GoogleTagManager,
-            MeasurementPartnerType.LootboxAppWebsiteVisit,
             MeasurementPartnerType.Manual,
           ],
           tooltip:
