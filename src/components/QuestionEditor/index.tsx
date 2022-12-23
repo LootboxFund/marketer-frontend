@@ -15,14 +15,19 @@ export const QuestionTypes = [
   QuestionFieldType.Text,
   QuestionFieldType.Email,
   QuestionFieldType.Phone,
-  QuestionFieldType.Checkbox,
+  QuestionFieldType.Range,
   QuestionFieldType.Address,
-  QuestionFieldType.Screenshot,
-  QuestionFieldType.Date,
   QuestionFieldType.Link,
   QuestionFieldType.Number,
+  QuestionFieldType.Date,
+  QuestionFieldType.Time,
+  QuestionFieldType.DateTime,
   QuestionFieldType.SingleSelect,
   QuestionFieldType.MultiSelect,
+  QuestionFieldType.Consent,
+  QuestionFieldType.Checkbox,
+  // QuestionFieldType.Screenshot,
+  // QuestionFieldType.File,
 ];
 
 export type QuestionDef = {
@@ -61,6 +66,21 @@ const QuestionsEditor: React.FC<QuestionsEditorProps> = ({ viewMode, pending, qu
       _setQuestionsHash(questionsRef.current);
     }
   }, []);
+  const renderPlaceholderText = (type: QuestionFieldType) => {
+    if (type === QuestionFieldType.Consent) {
+      return 'Link to your consent terms of service';
+    }
+    if (type === QuestionFieldType.MultiSelect || type === QuestionFieldType.SingleSelect) {
+      return `CSV of options. Include "Other" to allow users to input their own option.
+Example: "Option 1, Option 2, Option 3, Other"`;
+    }
+    if (type === QuestionFieldType.Range) {
+      return `min number, max number, step increment
+example: 1, 10, 0.5
+min = 1, max = 10, step = 0.5
+      `;
+    }
+  };
   return (
     <div>
       <$Horizontal justifyContent="space-between">
@@ -139,13 +159,13 @@ const QuestionsEditor: React.FC<QuestionsEditorProps> = ({ viewMode, pending, qu
                 </Select>
               </$Horizontal>
               {q.type === QuestionFieldType.MultiSelect ||
-              q.type === QuestionFieldType.SingleSelect ? (
+              q.type === QuestionFieldType.SingleSelect ||
+              q.type === QuestionFieldType.Range ||
+              q.type === QuestionFieldType.Consent ? (
                 <Input.TextArea
                   disabled={viewMode || pending}
                   rows={2}
-                  placeholder={`CSV of options. Include "Other" to allow users to input their own option.
-Example: "Option 1, Option 2, Option 3, Other"
-                  `}
+                  placeholder={renderPlaceholderText(q.type)}
                   value={q.options}
                   onChange={(e) => {
                     setQuestionsHash({

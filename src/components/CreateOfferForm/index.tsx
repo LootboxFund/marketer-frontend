@@ -326,11 +326,7 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
           label: 'Strategy',
           disabled: mode === 'create' ? false : true,
           widget: 'select',
-          options: [
-            OfferStrategyType.None,
-            OfferStrategyType.Airdrop,
-            OfferStrategyType.AfterTicketClaim,
-          ],
+          options: [OfferStrategyType.AfterTicketClaim, OfferStrategyType.Airdrop],
           tooltip:
             'The special marketing strategy for this offer. Check the LOOTBOX tutorial docs for more information.',
         },
