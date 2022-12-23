@@ -2,7 +2,7 @@ import { Ad } from '@/api/graphql/generated/types';
 import { AdID, Placement } from '@wormgraph/helpers';
 import { Avatar, Switch, Transfer } from 'antd';
 import type { TransferDirection } from 'antd/es/transfer';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { $Horizontal } from '@/components/generics';
 import { Link } from '@umijs/max';
 import { EyeOutlined } from '@ant-design/icons';
@@ -57,7 +57,12 @@ const AdToAdSetPicker: React.FC<AdToAdSetPickerProps> = ({
     // console.log('direction:', direction);
     // console.log('target:', e.target);
   };
-  const adsToShow = listOfAds.map((ad) => {
+  const listOfAdsToSplice = useMemo(() => {
+    return listOfAds.slice().sort((a, b) => {
+      return a.placement !== chosenPlacement ? 1 : -1;
+    });
+  }, [listOfAds]);
+  const adsToShow = listOfAdsToSplice.map((ad) => {
     return {
       key: ad.id,
       title: ad.name,

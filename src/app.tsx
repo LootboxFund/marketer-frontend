@@ -14,6 +14,7 @@ import { AdvertiserID, UserID } from '@wormgraph/helpers';
 import AuthGuard from './components/AuthGuard';
 import { CookiesProvider } from 'react-cookie';
 import React from 'react';
+import { HeadProvider } from 'react-head';
 
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
@@ -123,12 +124,27 @@ const RootProvider = ({ children, routes }: any) => {
     routes,
   });
 
+  const initGTag = () => {
+    (window as any).dataLayer = (window as any).dataLayer || [];
+    function gtag(...args: any[]) {
+      // @ts-ignore
+      (window as any).dataLayer.push(args);
+    }
+    gtag('js', new Date());
+    gtag('config', 'G-GVHNC0FVDV');
+  };
+
   return (
-    <ApolloProvider client={client}>
-      <CookiesProvider>
-        <AuthGuard>{newChildren}</AuthGuard>
-      </CookiesProvider>
-    </ApolloProvider>
+    <HeadProvider>
+      {/* <!-- Google tag (gtag.js) --> */}
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-GVHNC0FVDV" />
+      {initGTag()}
+      <ApolloProvider client={client}>
+        <CookiesProvider>
+          <AuthGuard>{newChildren}</AuthGuard>
+        </CookiesProvider>
+      </ApolloProvider>
+    </HeadProvider>
   );
 };
 
