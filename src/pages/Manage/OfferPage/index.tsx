@@ -17,7 +17,6 @@ import {
   MutationWhitelistAffiliateToOfferArgs,
   QueryListWhitelistedAffiliatesToOfferArgs,
   ListWhitelistedAffiliatesToOfferResponse,
-  OrganizerOfferWhitelist,
   OrganizerOfferWhitelistWithProfile,
   OrganizerOfferWhitelistStatus,
   EditWhitelistAffiliateToOfferResponse,
@@ -26,7 +25,7 @@ import {
   ListCreatedOffersResponse,
   QueryListCreatedOffersArgs,
 } from '@/api/graphql/generated/types';
-import { history, useModel } from '@umijs/max';
+import { history } from '@umijs/max';
 import { ActivationStatus } from '@/api/graphql/generated/types';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import {
@@ -74,6 +73,7 @@ import { AdSetStatus, OfferStrategyType } from '../../../api/graphql/generated/t
 import { Link } from '@umijs/max';
 import Meta from 'antd/lib/card/Meta';
 import { LIST_PARTNERS } from '../PartnersPage/api.gql';
+import ActivationFunnel from '@/components/OfferAnalytics/components/ActivationFunnel';
 
 const OfferPage: React.FC = () => {
   // get the advertiser user
@@ -730,6 +730,32 @@ const OfferPage: React.FC = () => {
               </Button>
             </Empty>
           )}
+
+          <br />
+          <br />
+          <$Horizontal justifyContent="space-between">
+            <h2>Offer Analytics</h2>
+            <Button
+              onClick={() => {
+                setAddPartnerModalVisible(true);
+              }}
+              style={{ alignSelf: 'flex-end' }}
+            >
+              Invite Partner
+            </Button>
+          </$Horizontal>
+
+          <$InfoDescription>
+            Your partners will drive activations for your offer. See how many activations have been
+            made so far.
+          </$InfoDescription>
+          <ActivationFunnel
+            offerID={offerID as OfferID}
+            openInviteParterModal={() => {
+              setAddPartnerModalVisible(true);
+            }}
+          />
+
           <br />
           <br />
 
