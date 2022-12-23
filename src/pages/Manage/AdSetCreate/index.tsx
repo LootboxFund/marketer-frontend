@@ -14,7 +14,7 @@ import type {
 } from '@/api/graphql/generated/types';
 import { PageContainer } from '@ant-design/pro-components';
 import { useMutation, useQuery } from '@apollo/client';
-import { AdvertiserID } from '@wormgraph/helpers';
+import { AdvertiserID, OfferID } from '@wormgraph/helpers';
 import Spin from 'antd/lib/spin';
 import { history } from '@umijs/max';
 import React, { useState } from 'react';
@@ -26,8 +26,10 @@ import { $InfoDescription, $Vertical } from '@/components/generics';
 import { LIST_ADS_PREVIEWS } from '../AdsPage/api.gql';
 import { LIST_CREATED_OFFERS } from '../OffersPage/api.gql';
 import { useAdvertiserUser } from '@/components/AuthGuard/advertiserUserInfo';
+import { GET_OFFER } from '../OfferPage/api.gql';
 
 const AdSetCreate: React.FC = () => {
+  const [chosenOffer, setChosenOffer] = useState<OfferID>();
   // get the advertiser user
   const { advertiserUser } = useAdvertiserUser();
   const { id: advertiserID } = advertiserUser;
@@ -37,7 +39,10 @@ const AdSetCreate: React.FC = () => {
     { createAdSet: ResponseError | CreateAdSetResponseSuccess },
     MutationCreateAdSetArgs
   >(CREATE_AD_SET, {
-    refetchQueries: [{ query: LIST_ADSETS_PREVIEWS, variables: { advertiserID } }],
+    refetchQueries: [
+      { query: LIST_ADSETS_PREVIEWS, variables: { advertiserID } },
+      { query: GET_OFFER, variables: { offerID: chosenOffer } },
+    ],
   });
   // LIST ADS
   const [ads, setAds] = React.useState<Ad[]>([]);
@@ -90,6 +95,10 @@ const AdSetCreate: React.FC = () => {
   }
 
   const createAdSet = async (payload: CreateAdSetPayload) => {
+    const chosenOfferID = payload.offerIDs[0];
+    if (chosenOfferID) {
+      setChosenOffer(chosenOfferID as OfferID);
+    }
     const res = await createAdSetMutation({
       variables: {
         payload: {

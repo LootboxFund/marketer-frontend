@@ -1,8 +1,8 @@
-import { OfferPreview, OfferStatus } from '@/api/graphql/generated/types';
-import { OfferID } from '@wormgraph/helpers';
+import { OfferPreview, OfferStatus, Placement } from '@/api/graphql/generated/types';
+import { OfferID, OfferStrategyToAdPlacementConverter } from '@wormgraph/helpers';
 import { Avatar, Transfer } from 'antd';
 import type { TransferDirection } from 'antd/es/transfer';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { $Horizontal } from '@/components/generics';
 import { Link } from '@umijs/max';
 import { EyeOutlined } from '@ant-design/icons';
@@ -12,12 +12,14 @@ interface AdSetToOfferPickerProps {
   chosenOffers: React.MutableRefObject<OfferID[]>;
   disabled: boolean;
   initialSelectedKeys?: OfferID[];
+  chosenPlacement: Placement;
 }
 const AdSetToOfferPicker: React.FC<AdSetToOfferPickerProps> = ({
   listOfOffers,
   chosenOffers,
   disabled,
   initialSelectedKeys,
+  chosenPlacement,
 }) => {
   const [targetKeys, setTargetKeys] = useState<string[]>([]);
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
@@ -37,7 +39,6 @@ const AdSetToOfferPicker: React.FC<AdSetToOfferPickerProps> = ({
   ) => {
     // setTargetKeys(newTargetKeys);
     // chosenOffers.current = newTargetKeys as OfferID[];
-
     // only allow 1 to be selected
     setTargetKeys([newTargetKeys[0]]);
     chosenOffers.current = [newTargetKeys[0]] as OfferID[];
@@ -54,12 +55,22 @@ const AdSetToOfferPicker: React.FC<AdSetToOfferPickerProps> = ({
     // console.log('direction:', direction);
     // console.log('target:', e.target);
   };
-  const offersToShow = listOfOffers.map((offer) => {
+  const offersListToSplice = useMemo(() => {
+    return listOfOffers.slice().sort((a, b) => {
+      return a.status === OfferStatus.Archived ||
+        OfferStrategyToAdPlacementConverter[a.strategy] != chosenPlacement
+        ? 1
+        : -1;
+    });
+  }, [listOfOffers]);
+  const offersToShow = offersListToSplice.map((offer) => {
     return {
       key: offer.id,
       title: offer.title,
       thumbnail: offer.image,
-      disabled: offer.status === OfferStatus.Archived,
+      disabled:
+        offer.status === OfferStatus.Archived ||
+        OfferStrategyToAdPlacementConverter[offer.strategy] != chosenPlacement,
     };
   });
 
