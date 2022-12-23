@@ -222,6 +222,7 @@ const CreateAdSetForm: React.FC<CreateAdSetFormProps> = ({
           />
         ) : null}
         <AdSetToOfferPicker
+          chosenPlacement={chosenPlacementInternalState}
           listOfOffers={listOfOffers}
           chosenOffers={chosenOffers}
           disabled={viewMode}

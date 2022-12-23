@@ -1,5 +1,5 @@
-import { OfferPreview, OfferStatus } from '@/api/graphql/generated/types';
-import { OfferID } from '@wormgraph/helpers';
+import { OfferPreview, OfferStatus, Placement } from '@/api/graphql/generated/types';
+import { OfferID, OfferStrategyToAdPlacementConverter } from '@wormgraph/helpers';
 import { Avatar, Transfer } from 'antd';
 import type { TransferDirection } from 'antd/es/transfer';
 import React, { useEffect, useState } from 'react';
@@ -12,12 +12,14 @@ interface AdSetToOfferPickerProps {
   chosenOffers: React.MutableRefObject<OfferID[]>;
   disabled: boolean;
   initialSelectedKeys?: OfferID[];
+  chosenPlacement: Placement;
 }
 const AdSetToOfferPicker: React.FC<AdSetToOfferPickerProps> = ({
   listOfOffers,
   chosenOffers,
   disabled,
   initialSelectedKeys,
+  chosenPlacement,
 }) => {
   const [targetKeys, setTargetKeys] = useState<string[]>([]);
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
@@ -59,7 +61,9 @@ const AdSetToOfferPicker: React.FC<AdSetToOfferPickerProps> = ({
       key: offer.id,
       title: offer.title,
       thumbnail: offer.image,
-      disabled: offer.status === OfferStatus.Archived,
+      disabled:
+        offer.status === OfferStatus.Archived ||
+        OfferStrategyToAdPlacementConverter[offer.strategy] != chosenPlacement,
     };
   });
 

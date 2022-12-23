@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react';
 import { $Horizontal } from '@/components/generics';
 import { Link } from '@umijs/max';
 import { EyeOutlined } from '@ant-design/icons';
+import { add } from 'lodash';
 
 interface AdToAdSetPickerProps {
   listOfAds: Ad[];
