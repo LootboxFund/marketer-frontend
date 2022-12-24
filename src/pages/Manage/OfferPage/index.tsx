@@ -441,6 +441,31 @@ const OfferPage: React.FC = () => {
             <$ColumnGap />
             <Image width={200} src={offer.image || ''} />
           </$Horizontal>
+
+          <br />
+          <br />
+          <$Horizontal justifyContent="space-between">
+            <h2>Offer Analytics</h2>
+            <Button
+              onClick={() => {
+                setAddPartnerModalVisible(true);
+              }}
+              style={{ alignSelf: 'flex-end' }}
+            >
+              Invite Partner
+            </Button>
+          </$Horizontal>
+
+          <$InfoDescription>
+            Your partners will drive activations for your offer. See how many activations have been
+            made so far.
+          </$InfoDescription>
+          <ActivationFunnel
+            offerID={offerID as OfferID}
+            openInviteParterModal={() => {
+              setAddPartnerModalVisible(true);
+            }}
+          />
           <br />
           <br />
           <$Horizontal justifyContent="space-between">
@@ -730,31 +755,6 @@ const OfferPage: React.FC = () => {
               </Button>
             </Empty>
           )}
-
-          <br />
-          <br />
-          <$Horizontal justifyContent="space-between">
-            <h2>Offer Analytics</h2>
-            <Button
-              onClick={() => {
-                setAddPartnerModalVisible(true);
-              }}
-              style={{ alignSelf: 'flex-end' }}
-            >
-              Invite Partner
-            </Button>
-          </$Horizontal>
-
-          <$InfoDescription>
-            Your partners will drive activations for your offer. See how many activations have been
-            made so far.
-          </$InfoDescription>
-          <ActivationFunnel
-            offerID={offerID as OfferID}
-            openInviteParterModal={() => {
-              setAddPartnerModalVisible(true);
-            }}
-          />
 
           <br />
           <br />
