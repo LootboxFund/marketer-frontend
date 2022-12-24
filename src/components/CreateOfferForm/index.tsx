@@ -73,7 +73,7 @@ const OFFER_INFO = {
   status: OfferStatus.Active,
   affiliateBaseLink: '',
   mmp: MeasurementPartnerType.Manual,
-  strategy: OfferStrategyType.None,
+  strategy: OfferStrategyType.AfterTicketClaim,
   airdropMetadata: {
     excludedOffers: [] as OfferID[],
     instructionsLink: '',
