@@ -4,7 +4,9 @@ import { useQuery } from '@apollo/client';
 import { OfferID } from '@wormgraph/helpers';
 import { Button, Card, Col, Empty, Result, Row, Statistic, Tooltip } from 'antd';
 import { useMemo } from 'react';
+import styled from 'styled-components';
 import { OfferActivationsFE, OFFER_ACTIVATIONS } from '../api.gql';
+import DummyFunnel from './DummyFunnel';
 
 interface EventActivationFunnelProps {
   offerID: OfferID;
@@ -13,6 +15,21 @@ interface EventActivationFunnelProps {
 
 const YDataLabel = 'activationName';
 const XDataLabel = 'adEventCount';
+
+const dummydata = [
+  {
+    [XDataLabel]: 'Demo Top Of Funnel Activation',
+    [YDataLabel]: 183,
+  },
+  {
+    [XDataLabel]: 'Demo Middle Of Funnel Activation',
+    [YDataLabel]: 87,
+  },
+  {
+    [XDataLabel]: 'Demo Bottom Of Funnel Activation',
+    [YDataLabel]: 59,
+  },
+];
 
 const EventActivationFunnel: React.FC<EventActivationFunnelProps> = (props) => {
   const { data, loading, error } = useQuery<OfferActivationsFE, QueryOfferActivationsArgs>(
@@ -69,27 +86,8 @@ const EventActivationFunnel: React.FC<EventActivationFunnelProps> = (props) => {
     );
   }
 
-  if (isEmptyData) {
-    return (
-      <Empty
-        image={Empty.PRESENTED_IMAGE_SIMPLE}
-        imageStyle={{
-          height: 60,
-        }}
-        description={
-          <span style={{ maxWidth: '200px' }}>
-            {`Your offer has no activations yet. Invite Partners to your offer to drive activation conversions.`}
-          </span>
-        }
-        style={{ border: '1px solid rgba(0,0,0,0.1)', padding: '50px' }}
-      >
-        <Button onClick={props.openInviteParterModal}>Invite Partner</Button>
-      </Empty>
-    );
-  }
-
   return (
-    <Card>
+    <div>
       {/* <h2>Activation Funnel</h2>
       <$InfoDescription>
         Promote fan tickets for your event to increase revenue and earn commission on successful
@@ -98,46 +96,74 @@ const EventActivationFunnel: React.FC<EventActivationFunnelProps> = (props) => {
       <Row>
         <Col
           sm={24}
-          md={isEmptyData ? 24 : 18}
+          md={18}
           style={{
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'center',
           }}
         >
-          <Funnel {...config} />
+          {isEmptyData ? (
+            <$FunnelContainer>
+              <DummyFunnel />
+              <br />
+              <br />
+              <span>
+                {`Your offer has no activation conversions yet. Invite Partners to your offer to drive activation conversions.`}
+              </span>
+              <br />
+              <br />
+              <Button onClick={props.openInviteParterModal}>Invite Partner</Button>
+            </$FunnelContainer>
+          ) : (
+            <$FunnelContainer>
+              <Funnel {...config} />
+              <br />
+              <br />
+              <span>
+                {`A funnel of your event's activations showing you how many conversions have been driven thus far.`}
+              </span>
+              <br />
+              <br />
+              <Button onClick={props.openInviteParterModal}>Download CSV</Button>
+            </$FunnelContainer>
+          )}
         </Col>
-        {!isEmptyData && (
-          <Col
-            sm={24}
-            md={6}
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-            }}
-          >
-            {loading && [
-              <Statistic key="loading1" loading={true} />,
-              <Statistic key="loading2" loading={true} />,
-              <Statistic key="loading3" loading={true} />,
-            ]}
-            {parsedData.map((row, idx) => {
-              return (
-                <Tooltip
-                  key={`Statistic${idx}`}
-                  placement="top"
-                  title={`This is a monetizable activation for this offer. See how many activations have been driven here. Add more activations above.`}
-                >
-                  <Statistic loading={loading} title={row[XDataLabel]} value={row[YDataLabel]} />
-                </Tooltip>
-              );
-            })}
-          </Col>
-        )}
+        <Col
+          sm={24}
+          md={6}
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+          }}
+        >
+          {loading
+            ? [
+                <Statistic key="loading1" loading={true} />,
+                <Statistic key="loading2" loading={true} />,
+                <Statistic key="loading3" loading={true} />,
+              ]
+            : (parsedData?.length > 0 ? parsedData : dummydata).map((row, idx) => {
+                return (
+                  <Tooltip
+                    key={`Statistic${idx}`}
+                    placement="top"
+                    title={`You define monetizable activation events for this offer. Tournament hosts and affiliates will promote your offer for you! See how many conversions have been driven here.`}
+                  >
+                    <Statistic loading={loading} title={row[XDataLabel]} value={row[YDataLabel]} />
+                  </Tooltip>
+                );
+              })}
+        </Col>
       </Row>
-    </Card>
+    </div>
   );
 };
+
+const $FunnelContainer = styled.div`
+  padding: 50px 0px;
+  text-align: center;
+`;
 
 export default EventActivationFunnel;
