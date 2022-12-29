@@ -41,6 +41,7 @@ import {
   Empty,
   Popconfirm,
   message,
+  Tabs,
 } from 'antd';
 import React, { useCallback, useState } from 'react';
 import {
@@ -206,6 +207,21 @@ const OfferPage: React.FC = () => {
       { query: LIST_WHITELISTED_AFFILIATES, variables: { payload: { offerID: offerID || '' } } },
     ],
   });
+
+  const analyticTabItems = [
+    {
+      label: 'Activation Funnel',
+      key: 'offer_activation_funnel',
+      children: (
+        <ActivationFunnel
+          offerID={offerID as OfferID}
+          openInviteParterModal={() => {
+            setAddPartnerModalVisible(true);
+          }}
+        />
+      ),
+    },
+  ];
 
   if (listOffersError) {
     return <span>{listOffersError?.message || ''}</span>;
@@ -445,30 +461,6 @@ const OfferPage: React.FC = () => {
           <br />
           <br />
           <$Horizontal justifyContent="space-between">
-            <h2>Offer Analytics</h2>
-            <Button
-              onClick={() => {
-                setAddPartnerModalVisible(true);
-              }}
-              style={{ alignSelf: 'flex-end' }}
-            >
-              Invite Partner
-            </Button>
-          </$Horizontal>
-
-          <$InfoDescription>
-            Your partners will drive activations for your offer. See how many activations have been
-            made so far.
-          </$InfoDescription>
-          <ActivationFunnel
-            offerID={offerID as OfferID}
-            openInviteParterModal={() => {
-              setAddPartnerModalVisible(true);
-            }}
-          />
-          <br />
-          <br />
-          <$Horizontal justifyContent="space-between">
             <h2>Activation Funnel</h2>
             <Button
               onClick={() => {
@@ -583,6 +575,29 @@ const OfferPage: React.FC = () => {
               </Button>
             </Empty>
           )}
+
+          <br />
+          <br />
+          <$Horizontal justifyContent="space-between">
+            <h2>Offer Analytics</h2>
+            <Button
+              onClick={() => {
+                setAddPartnerModalVisible(true);
+              }}
+              style={{ alignSelf: 'flex-end' }}
+            >
+              Invite Partner
+            </Button>
+          </$Horizontal>
+
+          <$InfoDescription>
+            Your partners will drive activations for your offer. See how many activations have been
+            made so far.
+          </$InfoDescription>
+          <Card>
+            <Tabs items={analyticTabItems} type="card" />
+          </Card>
+
           <br />
           <br />
           <$Horizontal justifyContent="space-between">
