@@ -138,22 +138,23 @@ const EventActivationFunnel: React.FC<EventActivationFunnelProps> = (props) => {
             justifyContent: 'center',
           }}
         >
-          {loading && [
-            <Statistic key="loading1" loading={true} />,
-            <Statistic key="loading2" loading={true} />,
-            <Statistic key="loading3" loading={true} />,
-          ]}
-          {(parsedData?.length > 0 ? parsedData : dummydata).map((row, idx) => {
-            return (
-              <Tooltip
-                key={`Statistic${idx}`}
-                placement="top"
-                title={`This is a monetizable activation for this offer. See how many activations have been driven here. Add more activations above.`}
-              >
-                <Statistic loading={loading} title={row[XDataLabel]} value={row[YDataLabel]} />
-              </Tooltip>
-            );
-          })}
+          {loading
+            ? [
+                <Statistic key="loading1" loading={true} />,
+                <Statistic key="loading2" loading={true} />,
+                <Statistic key="loading3" loading={true} />,
+              ]
+            : (parsedData?.length > 0 ? parsedData : dummydata).map((row, idx) => {
+                return (
+                  <Tooltip
+                    key={`Statistic${idx}`}
+                    placement="top"
+                    title={`You define monetizable activation events for this offer. Tournament hosts and affiliates will promote your offer for you! See how many conversions have been driven here.`}
+                  >
+                    <Statistic loading={loading} title={row[XDataLabel]} value={row[YDataLabel]} />
+                  </Tooltip>
+                );
+              })}
         </Col>
       </Row>
     </div>
