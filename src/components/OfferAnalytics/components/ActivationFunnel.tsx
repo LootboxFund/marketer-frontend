@@ -7,6 +7,7 @@ import { useMemo } from 'react';
 import styled from 'styled-components';
 import { OfferActivationsFE, OFFER_ACTIVATIONS } from '../api.gql';
 import DummyFunnel from './DummyFunnel';
+import OfferClaimsCSVDownloader from '../../OfferClaimsCSVDownloader';
 
 interface EventActivationFunnelProps {
   offerID: OfferID;
@@ -125,7 +126,8 @@ const EventActivationFunnel: React.FC<EventActivationFunnelProps> = (props) => {
               </span>
               <br />
               <br />
-              <Button onClick={props.openInviteParterModal}>Download CSV</Button>
+              {/* <Button onClick={props.openInviteParterModal}>Download CSV</Button> */}
+              <OfferClaimsCSVDownloader text="Download CSV" offerID={props.offerID} />
             </$FunnelContainer>
           )}
         </Col>
