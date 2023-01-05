@@ -7,6 +7,8 @@ import { useMemo } from 'react';
 import styled from 'styled-components';
 import { OfferActivationsFE, OFFER_ACTIVATIONS } from '../api.gql';
 import DummyFunnel from './DummyFunnel';
+import OfferClaimsCSVDownloader from '../../OfferClaimsCSVDownloader';
+import { $InfoDescription } from '@/components/generics';
 
 interface EventActivationFunnelProps {
   offerID: OfferID;
@@ -88,11 +90,27 @@ const EventActivationFunnel: React.FC<EventActivationFunnelProps> = (props) => {
 
   return (
     <div>
-      {/* <h2>Activation Funnel</h2>
-      <$InfoDescription>
-        Promote fan tickets for your event to increase revenue and earn commission on successful
-        conversions for this offer. Monetize your platform and provide value to followers.
-      </$InfoDescription> */}
+      <Row justify="space-between">
+        <h2>Activation Funnel</h2>
+        <OfferClaimsCSVDownloader text="Download CSV" offerID={props.offerID} />
+      </Row>
+      <$InfoDescription style={{ textAlign: 'start' }}>
+        A funnel of your event's activations showing you how many conversions have been driven thus
+        far.{' '}
+        {isEmptyData
+          ? 'Your offer has no activation conversions yet. Invite Partners to your offer to drive activation conversions.'
+          : ''}
+        {isEmptyData && (
+          <Button
+            type="link"
+            onClick={props.openInviteParterModal}
+            style={{ paddingLeft: '0px', fontSize: '1rem' }}
+          >
+            Invite Partners.
+          </Button>
+        )}
+      </$InfoDescription>
+
       <Row>
         <Col
           sm={24}
@@ -106,26 +124,11 @@ const EventActivationFunnel: React.FC<EventActivationFunnelProps> = (props) => {
           {isEmptyData ? (
             <$FunnelContainer>
               <DummyFunnel />
-              <br />
-              <br />
-              <span>
-                {`Your offer has no activation conversions yet. Invite Partners to your offer to drive activation conversions.`}
-              </span>
-              <br />
-              <br />
-              <Button onClick={props.openInviteParterModal}>Invite Partner</Button>
             </$FunnelContainer>
           ) : (
             <$FunnelContainer>
               <Funnel {...config} />
-              <br />
-              <br />
-              <span>
-                {`A funnel of your event's activations showing you how many conversions have been driven thus far.`}
-              </span>
-              <br />
-              <br />
-              <Button onClick={props.openInviteParterModal}>Download CSV</Button>
+              {/* <Button onClick={props.openInviteParterModal}>Download CSV</Button> */}
             </$FunnelContainer>
           )}
         </Col>
@@ -161,9 +164,6 @@ const EventActivationFunnel: React.FC<EventActivationFunnelProps> = (props) => {
   );
 };
 
-const $FunnelContainer = styled.div`
-  padding: 50px 0px;
-  text-align: center;
-`;
+const $FunnelContainer = styled.div``;
 
 export default EventActivationFunnel;
