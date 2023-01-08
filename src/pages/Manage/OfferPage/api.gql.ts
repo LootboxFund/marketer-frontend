@@ -18,6 +18,7 @@ export const GET_OFFER = gql`
           affiliateBaseLink
           mmp
           adSets
+          visibility
           activations {
             id
             name

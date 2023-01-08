@@ -13,7 +13,7 @@ import {
 import moment from 'moment';
 import type { Moment } from 'moment';
 import FormBuilder from 'antd-form-builder';
-import { Button, Card, Form, message, Modal } from 'antd';
+import { Button, Card, Form, message, Modal, Tag } from 'antd';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   CreateOfferPayload,
@@ -22,6 +22,7 @@ import {
   OfferAirdropMetadata,
   OfferPreview,
   OfferStrategyType,
+  OfferVisibility,
   QuestionAnswerPreview,
 } from '@/api/graphql/generated/types';
 import { AntUploadFile, PriceInput, PriceView } from '../AntFormBuilder';
@@ -51,6 +52,7 @@ export type CreateOfferFormProps = {
     endDate: number;
     status: OfferStatus;
     affiliateBaseLink?: string;
+    visibility: OfferVisibility;
     mmp?: MeasurementPartnerType;
     strategy?: OfferStrategyType;
     airdropMetadata?: OfferAirdropMetadata;
@@ -74,6 +76,7 @@ const OFFER_INFO = {
   affiliateBaseLink: '',
   mmp: MeasurementPartnerType.Manual,
   strategy: OfferStrategyType.AfterTicketClaim,
+  visibility: OfferVisibility.Private,
   airdropMetadata: {
     excludedOffers: [] as OfferID[],
     instructionsLink: '',
@@ -137,6 +140,7 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
         afterTicketClaimMetadata: {
           questions: offer.afterTicketClaimMetadata?.questions || [],
         },
+        visibility: offer.visibility,
       });
       chosenOffers.current = (offer.airdropMetadata?.excludedOffers || []) as OfferID[];
       if (offer.airdropMetadata && offer.airdropMetadata.questions) {
@@ -203,6 +207,10 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
       }
       if (values.startDate) {
         payload.startDate = values.startDate;
+      }
+      if (values.visibility) {
+        // @ts-ignore
+        payload.visibility = values.visibility;
       }
       if (values.endDate) {
         payload.endDate = values.endDate;
@@ -282,7 +290,7 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
     [lootboxTemplateID],
   );
   const getMeta = () => {
-    const meta = {
+    const meta: any = {
       columns: 2,
       disabled: pending,
       initialValues: offerInfo,
@@ -306,6 +314,24 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
           ],
           tooltip:
             'The trackable link that your users click when they go to claim your offer. This can be your website, an appstore, or a checkout page for example.',
+        },
+        {
+          key: 'visibility',
+          label: 'Visibility',
+          tooltip: 'Determines if your offer is shown in the marketplace.',
+          widget: 'radio-group',
+          options: [OfferVisibility.Public, OfferVisibility.Private],
+          viewWidget: () => {
+            if (!offerInfo?.visibility) {
+              return <Tag> N/A</Tag>;
+            }
+            const color = offerInfo.visibility === OfferVisibility.Public ? 'green' : 'orange';
+            return (
+              <div>
+                <Tag color={color}>{offerInfo.visibility}</Tag>
+              </div>
+            );
+          },
         },
         {
           key: 'mmp',
@@ -334,15 +360,10 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
           key: 'status',
           label: 'Status',
           widget: 'radio-group',
-          // @ts-ignore
           options: [
-            // @ts-ignore
             OfferStatus.Active,
-            // @ts-ignore
             OfferStatus.Inactive,
-            // @ts-ignore
             OfferStatus.Planned,
-            // @ts-ignore
             OfferStatus.Archived,
           ],
           tooltip:
@@ -351,43 +372,34 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
       ],
     };
     if (mode !== 'create') {
-      // @ts-ignore
       meta.fields.push({
         key: 'startDate',
         label: 'Start Date',
         widget: 'date-picker',
-        // @ts-ignore
         viewWidget: DateView,
         tooltip:
           "The date your offer starts being valid. This is an internal field that only your team can see. You must manually update the status of your offer to 'Active' to make it visible to partners.",
       });
-      // @ts-ignore
       meta.fields.push({
         key: 'maxBudget',
         label: 'Max Budget',
-        // @ts-ignore
         widget: PriceInput,
         viewWidget: PriceView,
         initialValue: {
-          // @ts-ignore
-          price: mode === 'create' ? 1000 : offer?.maxBudget || 1000,
+          price: offer?.maxBudget || 1000,
           currency: 'USDC Polygon',
         },
         tooltip:
           "An internal field that only your team can see. It's the maximum budget you're willing to spend on this offer.",
       });
-      // @ts-ignore
       meta.fields.push({
         key: 'endDate',
         label: 'End Date',
-        // @ts-ignore
         widget: 'date-picker',
-        // @ts-ignore
         viewWidget: DateView,
         tooltip:
           "The date your offer stops being valid. This is an internal field that only your team can see. You must manually update the status of your offer to 'Inactive' to make it not visible to partners.",
       });
-      // @ts-ignore
       meta.fields.push({
         key: 'description',
         label: 'Description',
@@ -396,11 +408,9 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
           'The public description of your offer that partners read to understand what your offer goals are.',
       });
       if (!viewMode) {
-        // @ts-ignore
         meta.fields.push({
           key: 'image',
           label: 'Image',
-          // @ts-ignore
           widget: () => (
             <AntUploadFile
               advertiserID={advertiserID}

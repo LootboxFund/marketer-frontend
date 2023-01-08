@@ -1,26 +1,26 @@
 import type {
   BattleFeedResponse,
   BattleFeedResponseSuccess,
-  ListConquestPreviewsResponse,
   QueryBattleFeedArgs,
-  QueryListConquestPreviewsArgs,
   Tournament,
 } from '@/api/graphql/generated/types';
 import { useAdvertiserUser } from '@/components/AuthGuard/advertiserUserInfo';
 import { PageContainer } from '@ant-design/pro-components';
 import { useQuery } from '@apollo/client';
 import { Link } from '@umijs/max';
-import { Button, Card, Input, message } from 'antd';
+import { Card, Input, message, Pagination } from 'antd';
 import Meta from 'antd/lib/card/Meta';
 import Spin from 'antd/lib/spin';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { QUERY_BATTLE_FEED } from './api.gql';
 import styles from './index.less';
-import { $Horizontal, $InfoDescription, $Vertical } from '@/components/generics';
+import { $InfoDescription, $Vertical } from '@/components/generics';
 import { CopyOutlined, EyeOutlined } from '@ant-design/icons';
 
 const EventsGallery: React.FC = () => {
   const { advertiserUser } = useAdvertiserUser();
+  const [pageSize, setPageSize] = useState<number>(12);
+  const [pageNumber, setPageNumber] = useState(1);
   const { id: advertiserID } = advertiserUser;
   const [searchString, setSearchString] = useState('');
   const [tournaments, setTournaments] = useState<Tournament[]>([]);
@@ -29,7 +29,7 @@ const EventsGallery: React.FC = () => {
     { battleFeed: BattleFeedResponse },
     QueryBattleFeedArgs
   >(QUERY_BATTLE_FEED, {
-    variables: { first: 6, after: lastTournament },
+    variables: { first: 10000, after: lastTournament },
     onCompleted: (data) => {
       if (data?.battleFeed?.__typename === 'BattleFeedResponseSuccess') {
         const nodes = data.battleFeed.edges;
@@ -38,21 +38,22 @@ const EventsGallery: React.FC = () => {
     },
   });
 
-  const startsToday = 'Starts today';
-
-  const battleFinished = 'Battle finished';
-
-  if (error) {
-    return <span>{error?.message || 'An error occurred'}</span>;
-  } else if (data?.battleFeed?.__typename === 'ResponseError') {
-    return <span>{data?.battleFeed?.error?.message || 'An error occurred'}</span>;
-  }
-
-  const { pageInfo } = (data?.battleFeed as BattleFeedResponseSuccess) || {};
-
-  const handleMore = () => {
-    setLastTournament(pageInfo?.endCursor || null);
+  const filterBySearchString = (tournament: Tournament) => {
+    return (
+      tournament.id.toLowerCase().indexOf(searchString.toLowerCase()) > -1 ||
+      tournament.title.toLowerCase().indexOf(searchString.toLowerCase()) > -1
+    );
   };
+
+  const { paginatedData } = useMemo(() => {
+    let paginatedData: Tournament[] = [];
+    if (searchString.length > 0) {
+      paginatedData = tournaments.filter(filterBySearchString);
+    } else {
+      paginatedData = tournaments.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
+    }
+    return { paginatedData };
+  }, [tournaments, pageNumber, pageSize, searchString, filterBySearchString]);
 
   const renderHelpText = () => {
     return (
@@ -68,12 +69,16 @@ const EventsGallery: React.FC = () => {
     );
   };
 
-  const filterBySearchString = (tournament: Tournament) => {
-    return (
-      tournament.id.toLowerCase().indexOf(searchString.toLowerCase()) > -1 ||
-      tournament.title.toLowerCase().indexOf(searchString.toLowerCase()) > -1
-    );
+  const handleOnPageChange = (pageNumber: number, pageSize: number) => {
+    setPageNumber(pageNumber);
+    setPageSize(pageSize);
   };
+
+  if (error) {
+    return <span>{error?.message || 'An error occurred'}</span>;
+  } else if (data?.battleFeed?.__typename === 'ResponseError') {
+    return <span>{data?.battleFeed?.error?.message || 'An error occurred'}</span>;
+  }
 
   return (
     <PageContainer>
@@ -94,7 +99,7 @@ const EventsGallery: React.FC = () => {
           />
           <br />
           <div className={styles.content}>
-            {tournaments.filter(filterBySearchString).map((tournament) => (
+            {paginatedData.map((tournament) => (
               <Link key={tournament.id} to={`/dashboard/events/id/${tournament.id}`}>
                 <Card
                   hoverable
@@ -125,6 +130,15 @@ const EventsGallery: React.FC = () => {
           </div>
         </$Vertical>
       )}
+      <br />
+      <br />
+      <Pagination
+        defaultCurrent={1}
+        total={tournaments.length}
+        pageSize={pageSize}
+        onChange={handleOnPageChange}
+        style={{ textAlign: 'center' }}
+      />
     </PageContainer>
   );
 };
