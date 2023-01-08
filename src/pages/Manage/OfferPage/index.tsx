@@ -24,6 +24,7 @@ import {
   OfferPreview,
   ListCreatedOffersResponse,
   QueryListCreatedOffersArgs,
+  OfferVisibility,
 } from '@/api/graphql/generated/types';
 import { history } from '@umijs/max';
 import { ActivationStatus } from '@/api/graphql/generated/types';
@@ -109,6 +110,7 @@ const OfferPage: React.FC = () => {
   >(GET_OFFER, {
     variables: { offerID: offerID || '' },
     onCompleted: (data) => {
+      console.log('yoooo?', data);
       if (data?.viewCreatedOffer.__typename === 'ViewCreatedOfferResponseSuccess') {
         const offer = data.viewCreatedOffer.offer;
 
@@ -248,34 +250,38 @@ const OfferPage: React.FC = () => {
     );
   }
   const editOffer = async (payload: Omit<EditOfferPayload, 'id'>) => {
-    console.log(`--- payload ---`);
-    console.log(payload);
-    const editOfferVariables = {
-      payload: {
-        id: offerID,
-        advertiserID,
-        title: payload.title,
-        description: payload.description,
-        image: payload.image,
-        maxBudget: payload.maxBudget,
-        startDate: payload.startDate,
-        endDate: payload.endDate,
-        status: payload.status,
-      },
+    const requestPayload: EditOfferPayload = {
+      id: offerID,
+      advertiserID,
+      title: payload.title,
+      description: payload.description,
+      image: payload.image,
+      maxBudget: payload.maxBudget,
+      startDate: payload.startDate,
+      endDate: payload.endDate,
+      status: payload.status,
+      visibility: payload.visibility,
     };
-    // @ts-ignore
     if (payload.airdropMetadata) {
-      // @ts-ignore
-      editOfferVariables.payload.airdropMetadata = payload.airdropMetadata;
+      requestPayload.airdropMetadata = payload.airdropMetadata;
+    }
+    if (payload.visibility) {
+      requestPayload.visibility = payload.visibility;
     }
     const res = await editOfferMutation({
-      variables: editOfferVariables,
+      variables: {
+        payload: requestPayload,
+      },
     });
     if (!res?.data || res?.data?.editOffer?.__typename === 'ResponseError') {
-      // @ts-ignore
-      throw new Error(res?.data?.editOffer?.error?.message || words.anErrorOccured);
+      throw new Error(
+        res?.data?.editOffer?.__typename === 'ResponseError'
+          ? res.data.editOffer.error?.message
+          : 'An error occured',
+      );
     }
   };
+
   const createActivation = async (payload: Omit<CreateActivationInput, 'offerID'>) => {
     const res = await createActivationMutation({
       variables: {
@@ -294,8 +300,11 @@ const OfferPage: React.FC = () => {
       },
     });
     if (!res?.data || res?.data?.createActivation?.__typename === 'ResponseError') {
-      // @ts-ignore
-      throw new Error(res?.data?.createActivation?.error?.message || words.anErrorOccured);
+      throw new Error(
+        res?.data?.createActivation?.__typename === 'ResponseError'
+          ? res.data.createActivation.error?.message
+          : 'An error occured',
+      );
     }
     setActivationModalVisible(false);
     setActivationModalType(null);
@@ -320,8 +329,11 @@ const OfferPage: React.FC = () => {
       },
     });
     if (!res?.data || res?.data?.editActivation?.__typename === 'ResponseError') {
-      // @ts-ignore
-      throw new Error(res?.data?.editActivation?.error?.message || words.anErrorOccured);
+      throw new Error(
+        res?.data?.editActivation?.__typename === 'ResponseError'
+          ? res.data.editActivation.error?.message
+          : 'An error occured',
+      );
     }
     setActivationModalVisible(false);
     setActivationModalType(null);
@@ -431,6 +443,7 @@ const OfferPage: React.FC = () => {
                 affiliateBaseLink: offer.affiliateBaseLink || '',
                 mmp: offer.mmp,
                 strategy: offer.strategy || OfferStrategyType.None,
+                visibility: offer.visibility || OfferVisibility.Private,
                 airdropMetadata: offer.airdropMetadata
                   ? {
                       excludedOffers: offer.airdropMetadata.excludedOffers,
