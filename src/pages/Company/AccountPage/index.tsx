@@ -72,13 +72,17 @@ const AccountPage: React.FC = () => {
           avatar: payload.avatar,
           publicContactEmail: payload.publicContactEmail,
           website: payload.website,
+          visibility: payload.visibility,
         },
         advertiserID: advertiserID,
       },
     });
     if (!res?.data || res?.data?.updateAdvertiser?.__typename === 'ResponseError') {
-      // @ts-ignore
-      throw new Error(res?.data?.updateAdvertiser?.error?.message || words.anErrorOccured);
+      throw new Error(
+        res?.data?.updateAdvertiser?.__typename === 'ResponseError'
+          ? res?.data?.updateAdvertiser?.error?.message
+          : 'An error occurred',
+      );
     }
   };
   const loginOut = async () => {
@@ -130,6 +134,7 @@ const AccountPage: React.FC = () => {
                   avatar: advertiser.avatar,
                   publicContactEmail: advertiser.publicContactEmail || '',
                   website: advertiser.website || '',
+                  visibility: advertiser.visibility,
                 }}
                 onSubmit={updateAdvertiser}
                 mode="view-edit"

@@ -2,36 +2,44 @@ import { AdvertiserID, ConquestStatus } from '@wormgraph/helpers';
 import moment from 'moment';
 import type { Moment } from 'moment';
 import FormBuilder from 'antd-form-builder';
-import { Button, Card, Form, Modal, Upload } from 'antd';
+import { Button, Card, Form, Modal, Tag, Upload } from 'antd';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import type { UpdateAdvertiserDetailsPayload } from '@/api/graphql/generated/types';
+import {
+  AdvertiserVisibility,
+  UpdateAdvertiserDetailsPayload,
+} from '@/api/graphql/generated/types';
 import { AntUploadFile } from '../AntFormBuilder';
 import { AdvertiserStorageFolder } from '@/api/firebase/storage';
 import { $Horizontal } from '@/components/generics';
 import { useAuth } from '@/api/firebase/useAuth';
 import ClickToCopy from '../ClickToCopy';
 
+interface AdvertiserInfo {
+  id: AdvertiserID;
+  name: string;
+  description?: string;
+  avatar?: string;
+  publicContactEmail?: string;
+  website?: string;
+  visibility: AdvertiserVisibility;
+  privateLoginEmail?: string;
+}
+
 export type EditAdvertiserFormProps = {
-  advertiser: {
-    id: AdvertiserID;
-    name: string;
-    description?: string;
-    avatar?: string;
-    publicContactEmail?: string;
-    website?: string;
-  };
+  advertiser: AdvertiserInfo;
   onSubmit: (payload: UpdateAdvertiserDetailsPayload) => void;
   mode: 'view-edit' | 'view-only';
 };
 
-const ADVERTISER_INFO = {
-  id: '',
+const ADVERTISER_INFO: AdvertiserInfo = {
+  id: '' as AdvertiserID,
   name: '',
   description: '',
   avatar: '',
   privateLoginEmail: '',
   publicContactEmail: '',
   website: '',
+  visibility: AdvertiserVisibility.Private,
 };
 
 const EditAdvertiserForm: React.FC<EditAdvertiserFormProps> = ({ advertiser, onSubmit, mode }) => {
@@ -52,6 +60,7 @@ const EditAdvertiserForm: React.FC<EditAdvertiserFormProps> = ({ advertiser, onS
       privateLoginEmail: advertiserInfo.privateLoginEmail || '',
       publicContactEmail: advertiser.publicContactEmail || '',
       website: advertiser.website || '',
+      visibility: advertiser.visibility,
     });
   }, [advertiser]);
   useEffect(() => {
@@ -94,7 +103,7 @@ const EditAdvertiserForm: React.FC<EditAdvertiserFormProps> = ({ advertiser, onS
     }
   }, []);
   const getMeta = () => {
-    const meta = {
+    const meta: any = {
       columns: 1,
       disabled: pending,
       initialValues: advertiserInfo,
@@ -104,6 +113,25 @@ const EditAdvertiserForm: React.FC<EditAdvertiserFormProps> = ({ advertiser, onS
           label: 'Name',
           required: true,
           tooltip: 'Your public name that will appear in the marketplace for partners to see.',
+        },
+        {
+          key: 'visibility',
+          label: 'Visibility',
+          tooltip: 'Determines if your account is shown in the marketplace for promoters.',
+          widget: 'radio-group',
+          options: [AdvertiserVisibility.Public, AdvertiserVisibility.Private],
+          viewWidget: () => {
+            if (!advertiserInfo?.visibility) {
+              return <Tag> N/A</Tag>;
+            }
+            const color =
+              advertiserInfo.visibility === AdvertiserVisibility.Public ? 'green' : 'orange';
+            return (
+              <div>
+                <Tag color={color}>{advertiserInfo.visibility}</Tag>
+              </div>
+            );
+          },
         },
         {
           key: 'privateLoginEmail',
@@ -140,7 +168,6 @@ const EditAdvertiserForm: React.FC<EditAdvertiserFormProps> = ({ advertiser, onS
       meta.fields.push({
         key: 'image',
         label: 'Image',
-        // @ts-ignore
         widget: () => (
           <AntUploadFile
             advertiserID={advertiser.id}
@@ -157,7 +184,6 @@ const EditAdvertiserForm: React.FC<EditAdvertiserFormProps> = ({ advertiser, onS
         key: 'id',
         label: 'Advertiser ID',
         tooltip: 'Your Advertiser ID in case anyone asks you for it.',
-        // @ts-ignore
         viewWidget: () => <ClickToCopy text={advertiserInfo.id} showTip />,
       });
     }
