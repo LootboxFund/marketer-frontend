@@ -318,7 +318,7 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
         {
           key: 'visibility',
           label: 'Visibility',
-          tooltip: 'Determines if your offer is shown in the marketplace.',
+          tooltip: 'Determines if your profile is shown in the public marketplace for hosts',
           widget: 'radio-group',
           options: [OfferVisibility.Public, OfferVisibility.Private],
           viewWidget: () => {

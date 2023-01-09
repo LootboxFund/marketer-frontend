@@ -106,7 +106,7 @@ const EventsGallery: React.FC = () => {
                   className={styles.card}
                   cover={
                     <img
-                      alt="example"
+                      alt={tournament.title}
                       src={tournament.coverPhoto || ''}
                       className={styles.cardImage}
                     />

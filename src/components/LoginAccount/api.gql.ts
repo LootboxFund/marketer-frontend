@@ -11,6 +11,7 @@ export const GET_ADVERTISER = gql`
         avatar
         publicContactEmail
         website
+        visibility
       }
       ... on ResponseError {
         error {
