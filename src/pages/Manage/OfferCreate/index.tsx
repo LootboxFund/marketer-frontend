@@ -98,7 +98,7 @@ const OfferCreate: React.FC = () => {
     });
     if (!res?.data || res?.data?.createOffer?.__typename === 'ResponseError') {
       // @ts-ignore
-      throw new Error(res?.data?.createOffer?.error?.message || words.anErrorOccured);
+      throw new Error(res?.data?.createOffer?.error?.message || 'An error occured');
     }
     if (res?.data?.createOffer?.__typename === 'CreateOfferResponseSuccess') {
       history.push(`/manage/offers/id/${res?.data?.createOffer?.offer?.id}`);
