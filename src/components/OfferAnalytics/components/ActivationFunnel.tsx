@@ -21,7 +21,7 @@ const XDataLabel = 'adEventCount';
 const dummydata = [
   {
     [XDataLabel]: 'Demo Top Of Funnel Activation',
-    [YDataLabel]: 183,
+    [YDataLabel]: 183, // Needs non-zero values to render graph...
   },
   {
     [XDataLabel]: 'Demo Middle Of Funnel Activation',
@@ -147,7 +147,15 @@ const EventActivationFunnel: React.FC<EventActivationFunnelProps> = (props) => {
                 <Statistic key="loading2" loading={true} />,
                 <Statistic key="loading3" loading={true} />,
               ]
-            : (parsedData?.length > 0 ? parsedData : dummydata).map((row, idx) => {
+            : (parsedData?.length > 0
+                ? parsedData
+                : dummydata.map((d) => {
+                    return {
+                      ...d,
+                      [YDataLabel]: 0,
+                    };
+                  })
+              ).map((row, idx) => {
                 return (
                   <Tooltip
                     key={`Statistic${idx}`}

@@ -602,7 +602,6 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
           joinCommunityUrl: request.payload.joinCommunityUrl,
           maxTickets: request.payload.maxTickets,
           themeColor: request.payload.themeColor,
-          tournamentID: '',
           type: LootboxType.Airdrop,
         },
       },
@@ -679,8 +678,12 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
             </fieldset>
           )}
           <br />
-          {form.getFieldValue('strategy') === OfferStrategyType.AfterTicketClaim ||
-          offerInfo.strategy === OfferStrategyType.AfterTicketClaim ? (
+          {(form.getFieldValue('strategy') === OfferStrategyType.AfterTicketClaim ||
+            offerInfo.strategy === OfferStrategyType.AfterTicketClaim) &&
+          !(
+            mode === 'create' &&
+            form.getFieldValue('strategy') !== OfferStrategyType.AfterTicketClaim
+          ) ? (
             <fieldset>
               <legend>After Ticket Claim</legend>
               {questions && (
