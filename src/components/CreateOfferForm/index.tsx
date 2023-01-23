@@ -353,6 +353,9 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
           disabled: mode === 'create' ? false : true,
           widget: 'select',
           options: [OfferStrategyType.AfterTicketClaim, OfferStrategyType.Airdrop],
+          onChange: (a: any) => {
+            setOfferInfo((prev) => ({ ...prev, strategy: a }));
+          },
           tooltip:
             'The special marketing strategy for this offer. Check the LOOTBOX tutorial docs for more information.',
         },
@@ -678,12 +681,8 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = ({
             </fieldset>
           )}
           <br />
-          {(form.getFieldValue('strategy') === OfferStrategyType.AfterTicketClaim ||
-            offerInfo.strategy === OfferStrategyType.AfterTicketClaim) &&
-          !(
-            mode === 'create' &&
-            form.getFieldValue('strategy') !== OfferStrategyType.AfterTicketClaim
-          ) ? (
+          {form.getFieldValue('strategy') === OfferStrategyType.AfterTicketClaim ||
+          offerInfo.strategy === OfferStrategyType.AfterTicketClaim ? (
             <fieldset>
               <legend>After Ticket Claim</legend>
               {questions && (
