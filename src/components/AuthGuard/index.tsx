@@ -16,6 +16,7 @@ import { useCookies } from 'react-cookie';
 import RegisterAccount from '../RegisterAccount';
 import Login from '@/pages/User/Login';
 import { IntlProvider } from '@ant-design/pro-components';
+import styled from 'styled-components';
 
 /**
  * strict = forces login
@@ -87,10 +88,29 @@ const AuthGuard = ({ children, strict, ...props }: AuthGuardProps) => {
   }
 
   if (loading) {
-    return <Spin style={{ margin: 'auto' }} />;
+    return props.pageLayout ? (
+      <$PageLayout>
+        <h1 style={{ fontWeight: 900, color: '#26A6EF', fontSize: '2rem', textAlign: 'center' }}>
+          🎁 LOOTBOX
+        </h1>
+        <Spin size="large" style={{ margin: '30px auto auto' }} />
+      </$PageLayout>
+    ) : (
+      <Spin style={{ margin: 'auto' }} />
+    );
   }
 
   return children;
 };
+
+const $PageLayout = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  background-image: url(https://mdn.alipayobjects.com/yuyan_qk0oxh/afts/img/V-_oS6r-i7wAAAAAAAAAAAAAFl94AQBr);
+  background-size: cover;
+  padding-top: 20vh;
+`;
 
 export default AuthGuard;

@@ -141,7 +141,7 @@ const RootProvider = ({ children, routes }: any) => {
       {initGTag()}
       <ApolloProvider client={client}>
         <CookiesProvider>
-          <AuthGuard>{newChildren}</AuthGuard>
+          <AuthGuard pageLayout>{newChildren}</AuthGuard>
         </CookiesProvider>
       </ApolloProvider>
     </HeadProvider>
